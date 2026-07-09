@@ -14,6 +14,9 @@ export const GET_Aicomponents = gql`
       sovereigntyAchSecurity
       sovereigntyAchControl
       sovereigntyAchStrategicAutonomyEvidence
+      sovereigntyAchResilienceEvidence
+      sovereigntyAchSecurityEvidence
+      sovereigntyAchControlEvidence
       lastSovereigntyAssessmentAt
       aiType
       model
@@ -93,6 +96,9 @@ export const GET_Aicomponent = gql`
       sovereigntyAchSecurity
       sovereigntyAchControl
       sovereigntyAchStrategicAutonomyEvidence
+      sovereigntyAchResilienceEvidence
+      sovereigntyAchSecurityEvidence
+      sovereigntyAchControlEvidence
       lastSovereigntyAssessmentAt
       aiType
       model

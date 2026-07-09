@@ -135,6 +135,20 @@ export const extractRelatedElementsFromQueryResult = (
           })
         })
       }
+      if (elementData.supportedByAIComponents) {
+        elementData.supportedByAIComponents.forEach((aiComponent: any) => {
+          relatedElements.push({
+            id: aiComponent.id,
+            name: aiComponent.name,
+            description: aiComponent.description,
+            elementType: 'aiComponent',
+            status: aiComponent.status,
+            aiType: aiComponent.aiType,
+            relationshipType: 'SUPPORTS',
+            reverseArrow: true,
+          })
+        })
+      }
       if (elementData.supportedByBusinessProcesses) {
         elementData.supportedByBusinessProcesses.forEach((proc: any) => {
           relatedElements.push({

@@ -132,6 +132,30 @@ export const createEntityInputFromJson = (entityType: string, row: any): any => 
     updatedAt: row.updatedAt ? new Date(row.updatedAt) : new Date(),
   }
 
+  const parseOptionalSovereigntyMaturity = (value: unknown): string | undefined => {
+    if (typeof value !== 'string') {
+      return undefined
+    }
+
+    const normalized = value.trim().toUpperCase()
+    return ['VERY_HIGH', 'HIGH', 'MEDIUM', 'LOW', 'NONE'].includes(normalized)
+      ? normalized
+      : undefined
+  }
+
+  const parseOptionalNumber = (value: unknown): number | undefined => {
+    if (typeof value === 'number') {
+      return Number.isFinite(value) ? value : undefined
+    }
+
+    if (typeof value === 'string' && value.trim() !== '') {
+      const parsed = parseFloat(value)
+      return Number.isNaN(parsed) ? undefined : parsed
+    }
+
+    return undefined
+  }
+
   switch (entityType) {
     case 'businessCapabilities':
       return {
@@ -159,6 +183,18 @@ export const createEntityInputFromJson = (entityType: string, row: any): any => 
             : row.sequenceNumber
               ? parseInt(row.sequenceNumber, 10)
               : undefined,
+        sovereigntyReqStrategicAutonomy: parseOptionalSovereigntyMaturity(
+          row.sovereigntyReqStrategicAutonomy
+        ),
+        sovereigntyReqResilience: parseOptionalSovereigntyMaturity(row.sovereigntyReqResilience),
+        sovereigntyReqSecurity: parseOptionalSovereigntyMaturity(row.sovereigntyReqSecurity),
+        sovereigntyReqControl: parseOptionalSovereigntyMaturity(row.sovereigntyReqControl),
+        sovereigntyReqStrategicAutonomyRationale:
+          row.sovereigntyReqStrategicAutonomyRationale || undefined,
+        sovereigntyReqResilienceRationale: row.sovereigntyReqResilienceRationale || undefined,
+        sovereigntyReqSecurityRationale: row.sovereigntyReqSecurityRationale || undefined,
+        sovereigntyReqControlRationale: row.sovereigntyReqControlRationale || undefined,
+        sovereigntyReqWeight: parseOptionalNumber(row.sovereigntyReqWeight),
         // Date fields
         introductionDate: row.introductionDate ? new Date(row.introductionDate) : undefined,
         endDate: row.endDate ? new Date(row.endDate) : undefined,
@@ -186,11 +222,25 @@ export const createEntityInputFromJson = (entityType: string, row: any): any => 
         // Numeric fields
         costs:
           typeof row.costs === 'number' ? row.costs : row.costs ? parseFloat(row.costs) : undefined,
+        sovereigntyAchStrategicAutonomy: parseOptionalSovereigntyMaturity(
+          row.sovereigntyAchStrategicAutonomy
+        ),
+        sovereigntyAchResilience: parseOptionalSovereigntyMaturity(row.sovereigntyAchResilience),
+        sovereigntyAchSecurity: parseOptionalSovereigntyMaturity(row.sovereigntyAchSecurity),
+        sovereigntyAchControl: parseOptionalSovereigntyMaturity(row.sovereigntyAchControl),
+        sovereigntyAchStrategicAutonomyEvidence:
+          row.sovereigntyAchStrategicAutonomyEvidence || undefined,
+        sovereigntyAchResilienceEvidence: row.sovereigntyAchResilienceEvidence || undefined,
+        sovereigntyAchSecurityEvidence: row.sovereigntyAchSecurityEvidence || undefined,
+        sovereigntyAchControlEvidence: row.sovereigntyAchControlEvidence || undefined,
         // Date fields
         introductionDate: row.introductionDate ? new Date(row.introductionDate) : undefined,
         endOfLifeDate: row.endOfLifeDate ? new Date(row.endOfLifeDate) : undefined,
         endOfUseDate: row.endOfUseDate ? new Date(row.endOfUseDate) : undefined,
         planningDate: row.planningDate ? new Date(row.planningDate) : undefined,
+        lastSovereigntyAssessmentAt: row.lastSovereigntyAssessmentAt
+          ? new Date(row.lastSovereigntyAssessmentAt)
+          : undefined,
         // Array fields
         technologyStack: Array.isArray(row.technologyStack)
           ? row.technologyStack
@@ -234,6 +284,18 @@ export const createEntityInputFromJson = (entityType: string, row: any): any => 
           ? row.classification
           : 'INTERNAL',
         format: row.format || '',
+        sovereigntyReqStrategicAutonomy: parseOptionalSovereigntyMaturity(
+          row.sovereigntyReqStrategicAutonomy
+        ),
+        sovereigntyReqResilience: parseOptionalSovereigntyMaturity(row.sovereigntyReqResilience),
+        sovereigntyReqSecurity: parseOptionalSovereigntyMaturity(row.sovereigntyReqSecurity),
+        sovereigntyReqControl: parseOptionalSovereigntyMaturity(row.sovereigntyReqControl),
+        sovereigntyReqStrategicAutonomyRationale:
+          row.sovereigntyReqStrategicAutonomyRationale || undefined,
+        sovereigntyReqResilienceRationale: row.sovereigntyReqResilienceRationale || undefined,
+        sovereigntyReqSecurityRationale: row.sovereigntyReqSecurityRationale || undefined,
+        sovereigntyReqControlRationale: row.sovereigntyReqControlRationale || undefined,
+        sovereigntyReqWeight: parseOptionalNumber(row.sovereigntyReqWeight),
         // Date fields
         introductionDate: row.introductionDate ? new Date(row.introductionDate) : undefined,
         endOfLifeDate: row.endOfLifeDate ? new Date(row.endOfLifeDate) : undefined,
@@ -398,6 +460,17 @@ export const createEntityInputFromJson = (entityType: string, row: any): any => 
         capacity: row.capacity || '',
         costs: row.costs ? parseFloat(row.costs.toString()) : undefined,
         vendor: row.vendor || '',
+        sovereigntyAchStrategicAutonomy: parseOptionalSovereigntyMaturity(
+          row.sovereigntyAchStrategicAutonomy
+        ),
+        sovereigntyAchResilience: parseOptionalSovereigntyMaturity(row.sovereigntyAchResilience),
+        sovereigntyAchSecurity: parseOptionalSovereigntyMaturity(row.sovereigntyAchSecurity),
+        sovereigntyAchControl: parseOptionalSovereigntyMaturity(row.sovereigntyAchControl),
+        sovereigntyAchStrategicAutonomyEvidence:
+          row.sovereigntyAchStrategicAutonomyEvidence || undefined,
+        sovereigntyAchResilienceEvidence: row.sovereigntyAchResilienceEvidence || undefined,
+        sovereigntyAchSecurityEvidence: row.sovereigntyAchSecurityEvidence || undefined,
+        sovereigntyAchControlEvidence: row.sovereigntyAchControlEvidence || undefined,
         operatingSystem: row.operatingSystem || '',
         ipAddress: row.ipAddress || '',
         specifications: row.specifications || '',
@@ -407,6 +480,9 @@ export const createEntityInputFromJson = (entityType: string, row: any): any => 
         planningDate: row.planningDate ? new Date(row.planningDate) : undefined,
         endOfUseDate: row.endOfUseDate ? new Date(row.endOfUseDate) : undefined,
         endOfLifeDate: row.endOfLifeDate ? new Date(row.endOfLifeDate) : undefined,
+        lastSovereigntyAssessmentAt: row.lastSovereigntyAssessmentAt
+          ? new Date(row.lastSovereigntyAssessmentAt)
+          : undefined,
         updatedAt: row.updatedAt ? new Date(row.updatedAt) : undefined,
       }
 
@@ -448,6 +524,17 @@ export const createEntityInputFromJson = (entityType: string, row: any): any => 
             : row.costs && row.costs !== ''
               ? parseFloat(row.costs)
               : undefined,
+        sovereigntyAchStrategicAutonomy: parseOptionalSovereigntyMaturity(
+          row.sovereigntyAchStrategicAutonomy
+        ),
+        sovereigntyAchResilience: parseOptionalSovereigntyMaturity(row.sovereigntyAchResilience),
+        sovereigntyAchSecurity: parseOptionalSovereigntyMaturity(row.sovereigntyAchSecurity),
+        sovereigntyAchControl: parseOptionalSovereigntyMaturity(row.sovereigntyAchControl),
+        sovereigntyAchStrategicAutonomyEvidence:
+          row.sovereigntyAchStrategicAutonomyEvidence || undefined,
+        sovereigntyAchResilienceEvidence: row.sovereigntyAchResilienceEvidence || undefined,
+        sovereigntyAchSecurityEvidence: row.sovereigntyAchSecurityEvidence || undefined,
+        sovereigntyAchControlEvidence: row.sovereigntyAchControlEvidence || undefined,
         tags: Array.isArray(row.tags)
           ? row.tags
           : typeof row.tags === 'string' && row.tags.trim()
@@ -455,6 +542,9 @@ export const createEntityInputFromJson = (entityType: string, row: any): any => 
             : undefined,
         trainingDate: row.trainingDate ? new Date(row.trainingDate) : undefined,
         lastUpdated: row.lastUpdated ? new Date(row.lastUpdated) : undefined,
+        lastSovereigntyAssessmentAt: row.lastSovereigntyAssessmentAt
+          ? new Date(row.lastSovereigntyAssessmentAt)
+          : undefined,
       }
 
     case 'visions':

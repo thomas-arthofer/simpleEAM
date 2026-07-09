@@ -22,6 +22,13 @@ export const GET_RELATED_ELEMENTS_FOR_CAPABILITY = gql`
         status
         criticality
       }
+      supportedByAIComponents {
+        id
+        name
+        description
+        aiType
+        status
+      }
       supportedByBusinessProcesses {
         id
         name

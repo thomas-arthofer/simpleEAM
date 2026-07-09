@@ -1,7 +1,7 @@
 # NextGen EAM (Enterprise Architecture Management)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-1.4.2-blue.svg)](./VERSION)
+[![Version](https://img.shields.io/badge/version-1.4.3-blue.svg)](./VERSION)
 
 > **🤖 AI-Generated Project**: This code was fully created with GitHub Copilot in Agent mode. The entire project, including architecture, implementation and documentation, was realized through AI-assisted development.
 
@@ -217,9 +217,9 @@ yarn lint             # Run ESLint
 
 # Version Management
 yarn version          # Show current version
-yarn version:patch    # Increment patch version (1.4.2 -> 1.4.3)
-yarn version:minor    # Increment minor version (1.4.2 -> 1.5.0)
-yarn version:major    # Increment major version (1.4.2 -> 2.0.0)
+yarn version:patch    # Increment patch version (1.4.3 -> 1.4.4)
+yarn version:minor    # Increment minor version (1.4.3 -> 1.5.0)
+yarn version:major    # Increment major version (1.4.3 -> 2.0.0)
 
 # Entity Management
 ./scripts/create-entity.sh [name]  # Create new entity

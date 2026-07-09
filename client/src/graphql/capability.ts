@@ -25,6 +25,9 @@ export const GET_CAPABILITIES = gql`
       sovereigntyReqControl
       sovereigntyReqWeight
       sovereigntyReqStrategicAutonomyRationale
+      sovereigntyReqResilienceRationale
+      sovereigntyReqSecurityRationale
+      sovereigntyReqControlRationale
       status
       type
       businessValue
@@ -84,6 +87,9 @@ export const GET_CAPABILITY = gql`
       sovereigntyReqControl
       sovereigntyReqWeight
       sovereigntyReqStrategicAutonomyRationale
+      sovereigntyReqResilienceRationale
+      sovereigntyReqSecurityRationale
+      sovereigntyReqControlRationale
       status
       type
       businessValue

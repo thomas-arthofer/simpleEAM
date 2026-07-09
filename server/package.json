@@ -1,6 +1,6 @@
 {
   "name": "nextgen-eam-server",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "NextGen EAM GraphQL Server with Neo4j Database",
   "license": "MIT",
   "main": "dist/index.js",

@@ -31,6 +31,9 @@ export const GET_INFRASTRUCTURES = gql`
       sovereigntyAchSecurity
       sovereigntyAchControl
       sovereigntyAchStrategicAutonomyEvidence
+      sovereigntyAchResilienceEvidence
+      sovereigntyAchSecurityEvidence
+      sovereigntyAchControlEvidence
       lastSovereigntyAssessmentAt
       infrastructureType
       status
@@ -117,6 +120,9 @@ export const GET_INFRASTRUCTURE = gql`
       sovereigntyAchSecurity
       sovereigntyAchControl
       sovereigntyAchStrategicAutonomyEvidence
+      sovereigntyAchResilienceEvidence
+      sovereigntyAchSecurityEvidence
+      sovereigntyAchControlEvidence
       lastSovereigntyAssessmentAt
       infrastructureType
       status

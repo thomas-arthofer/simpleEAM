@@ -16,6 +16,7 @@ import { useTranslations } from 'next-intl'
 import { EntityType, ExportSettings } from './types'
 import { useCompanyContext } from '@/contexts/CompanyContext'
 import { entityTypeLabels, entityTypeOrder } from './constants'
+import { useFeatureFlags } from '@/lib/feature-flags'
 
 interface ExportDialogProps {
   exportSettings: ExportSettings
@@ -34,7 +35,34 @@ const ExportDialog: React.FC<ExportDialogProps> = ({
   const tEntityTypes = useTranslations('importExport.entityTypes')
   const tFileFormats = useTranslations('importExport.fileFormats')
   const { selectedCompanyId, companies } = useCompanyContext()
+  const { featureFlags } = useFeatureFlags()
+  const isSovereigntyEnabled = featureFlags.Sovereignty
   const selectedCompanyName = companies.find(c => c.id === selectedCompanyId)?.name
+
+  const sovereigntyRequirementFields = [
+    'sovereigntyReqStrategicAutonomy',
+    'sovereigntyReqResilience',
+    'sovereigntyReqSecurity',
+    'sovereigntyReqControl',
+    'sovereigntyReqStrategicAutonomyRationale',
+    'sovereigntyReqResilienceRationale',
+    'sovereigntyReqSecurityRationale',
+    'sovereigntyReqControlRationale',
+    'sovereigntyReqWeight',
+  ]
+
+  const sovereigntyAchievedFields = [
+    'sovereigntyAchStrategicAutonomy',
+    'sovereigntyAchResilience',
+    'sovereigntyAchSecurity',
+    'sovereigntyAchControl',
+    'sovereigntyAchStrategicAutonomyEvidence',
+    'sovereigntyAchResilienceEvidence',
+    'sovereigntyAchSecurityEvidence',
+    'sovereigntyAchControlEvidence',
+    'lastSovereigntyAssessmentAt',
+  ]
+
   return (
     <Box sx={{ p: 2 }}>
       <Grid container spacing={3} sx={{ width: '100%' }}>
@@ -124,6 +152,7 @@ const ExportDialog: React.FC<ExportDialogProps> = ({
                       'type',
                       'businessValue',
                       'sequenceNumber',
+                      ...(isSovereigntyEnabled ? sovereigntyRequirementFields : []),
                       'introductionDate',
                       'endDate',
                       'owners',
@@ -189,6 +218,7 @@ const ExportDialog: React.FC<ExportDialogProps> = ({
                       'costs',
                       'vendor',
                       'version',
+                      ...(isSovereigntyEnabled ? sovereigntyAchievedFields : []),
                       'technologyStack',
                       'planningDate',
                       'introductionDate',
@@ -218,6 +248,7 @@ const ExportDialog: React.FC<ExportDialogProps> = ({
                       'owners',
                       'classification',
                       'format',
+                      ...(isSovereigntyEnabled ? sovereigntyRequirementFields : []),
                       'planningDate',
                       'introductionDate',
                       'endOfUseDate',
@@ -350,6 +381,7 @@ const ExportDialog: React.FC<ExportDialogProps> = ({
                       'version',
                       'capacity',
                       'location',
+                      ...(isSovereigntyEnabled ? sovereigntyAchievedFields : []),
                       'ipAddress',
                       'operatingSystem',
                       'specifications',
@@ -443,6 +475,7 @@ const ExportDialog: React.FC<ExportDialogProps> = ({
                       'version',
                       'status',
                       'accuracy',
+                      ...(isSovereigntyEnabled ? sovereigntyAchievedFields : []),
                       'trainingDate',
                       'lastUpdated',
                       'provider',

@@ -31,6 +31,9 @@ export const GET_APPLICATIONS = gql`
       sovereigntyAchSecurity
       sovereigntyAchControl
       sovereigntyAchStrategicAutonomyEvidence
+      sovereigntyAchResilienceEvidence
+      sovereigntyAchSecurityEvidence
+      sovereigntyAchControlEvidence
       lastSovereigntyAssessmentAt
       status
       criticality
@@ -139,6 +142,9 @@ export const GET_APPLICATION = gql`
       sovereigntyAchSecurity
       sovereigntyAchControl
       sovereigntyAchStrategicAutonomyEvidence
+      sovereigntyAchResilienceEvidence
+      sovereigntyAchSecurityEvidence
+      sovereigntyAchControlEvidence
       lastSovereigntyAssessmentAt
       status
       criticality

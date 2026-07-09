@@ -32,6 +32,9 @@ export const GET_DATA_OBJECTS = gql`
       sovereigntyReqControl
       sovereigntyReqWeight
       sovereigntyReqStrategicAutonomyRationale
+      sovereigntyReqResilienceRationale
+      sovereigntyReqSecurityRationale
+      sovereigntyReqControlRationale
       owners {
         id
         firstName
@@ -100,6 +103,9 @@ export const GET_DATA_OBJECT = gql`
       sovereigntyReqControl
       sovereigntyReqWeight
       sovereigntyReqStrategicAutonomyRationale
+      sovereigntyReqResilienceRationale
+      sovereigntyReqSecurityRationale
+      sovereigntyReqControlRationale
       owners {
         id
         firstName

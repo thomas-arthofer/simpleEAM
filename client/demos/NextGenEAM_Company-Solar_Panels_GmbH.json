@@ -161,6 +161,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.622Z",
       "updatedAt": "2025-09-09T12:16:52.622Z",
+      "sovereigntyReqStrategicAutonomy": "VERY_HIGH",
+      "sovereigntyReqResilience": "MEDIUM",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Research & Development is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Research & Development directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Research & Development handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Research & Development influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 1,
       "tags": ["innovation", "r&d", "technology"],
       "owners": [
         {
@@ -223,6 +232,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.622Z",
       "updatedAt": "2025-09-09T12:16:52.622Z",
+      "sovereigntyReqStrategicAutonomy": "HIGH",
+      "sovereigntyReqResilience": "HIGH",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "Manufacturing Operations is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Manufacturing Operations directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Manufacturing Operations handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Manufacturing Operations influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 1,
       "tags": ["production", "manufacturing", "operations"],
       "owners": [
         {
@@ -285,6 +303,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.622Z",
       "updatedAt": "2025-09-09T12:16:52.622Z",
+      "sovereigntyReqStrategicAutonomy": "MEDIUM",
+      "sovereigntyReqResilience": "MEDIUM",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Supply Chain Management is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Supply Chain Management directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Supply Chain Management handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Supply Chain Management influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 0.8,
       "tags": ["procurement", "suppliers", "logistics"],
       "owners": [
         {
@@ -347,6 +374,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.622Z",
       "updatedAt": "2025-09-09T12:16:52.622Z",
+      "sovereigntyReqStrategicAutonomy": "VERY_HIGH",
+      "sovereigntyReqResilience": "LOW",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Sales & Marketing is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Sales & Marketing directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Sales & Marketing handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Sales & Marketing influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 0.8,
       "tags": ["sales", "marketing", "customers"],
       "owners": [
         {
@@ -415,6 +451,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.622Z",
       "updatedAt": "2025-09-09T12:16:52.622Z",
+      "sovereigntyReqStrategicAutonomy": "LOW",
+      "sovereigntyReqResilience": "LOW",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Customer Service & Support is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Customer Service & Support directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Customer Service & Support handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Customer Service & Support influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 0.6,
       "tags": ["support", "warranty", "service"],
       "owners": [
         {
@@ -477,6 +522,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.622Z",
       "updatedAt": "2025-09-09T12:16:52.622Z",
+      "sovereigntyReqStrategicAutonomy": "HIGH",
+      "sovereigntyReqResilience": "MEDIUM",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Quality Management is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Quality Management directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Quality Management handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Quality Management influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 1,
       "tags": ["quality", "testing", "compliance"],
       "owners": [
         {
@@ -539,6 +593,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.622Z",
       "updatedAt": "2025-09-09T12:16:52.622Z",
+      "sovereigntyReqStrategicAutonomy": "LOW",
+      "sovereigntyReqResilience": "MEDIUM",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Finance & Accounting is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Finance & Accounting directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Finance & Accounting handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Finance & Accounting influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 0.6,
       "tags": ["finance", "accounting", "reporting"],
       "owners": [
         {
@@ -607,6 +670,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.622Z",
       "updatedAt": "2025-09-09T12:16:52.622Z",
+      "sovereigntyReqStrategicAutonomy": "LOW",
+      "sovereigntyReqResilience": "LOW",
+      "sovereigntyReqSecurity": "MEDIUM",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "Human Resources Management is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Human Resources Management directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Human Resources Management handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Human Resources Management influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 0.6,
       "tags": ["hr", "talent", "workforce"],
       "owners": [
         {
@@ -669,6 +741,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.622Z",
       "updatedAt": "2025-09-09T12:16:52.622Z",
+      "sovereigntyReqStrategicAutonomy": "LOW",
+      "sovereigntyReqResilience": "LOW",
+      "sovereigntyReqSecurity": "MEDIUM",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "IT Management is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in IT Management directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "IT Management handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "IT Management influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 0.6,
       "tags": ["it", "technology", "infrastructure"],
       "owners": [
         {
@@ -731,6 +812,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.670Z",
       "updatedAt": "2025-09-09T12:16:52.670Z",
+      "sovereigntyReqStrategicAutonomy": "VERY_HIGH",
+      "sovereigntyReqResilience": "MEDIUM",
+      "sovereigntyReqSecurity": "MEDIUM",
+      "sovereigntyReqControl": "HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Product Innovation is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Product Innovation directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Product Innovation handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Product Innovation influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 1,
       "tags": ["innovation", "product", "technology"],
       "owners": [
         {
@@ -794,6 +884,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.670Z",
       "updatedAt": "2025-09-09T12:16:52.670Z",
+      "sovereigntyReqStrategicAutonomy": "VERY_HIGH",
+      "sovereigntyReqResilience": "LOW",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Materials Research is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Materials Research directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Materials Research handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Materials Research influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 0.8,
       "tags": ["materials", "research", "cells"],
       "owners": [
         {
@@ -852,6 +951,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.670Z",
       "updatedAt": "2025-09-09T12:16:52.670Z",
+      "sovereigntyReqStrategicAutonomy": "MEDIUM",
+      "sovereigntyReqResilience": "MEDIUM",
+      "sovereigntyReqSecurity": "MEDIUM",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "Prototype Development & Testing is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Prototype Development & Testing directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Prototype Development & Testing handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Prototype Development & Testing influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 0.8,
       "tags": ["prototype", "testing", "development"],
       "owners": [
         {
@@ -910,6 +1018,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.670Z",
       "updatedAt": "2025-09-09T12:16:52.670Z",
+      "sovereigntyReqStrategicAutonomy": "HIGH",
+      "sovereigntyReqResilience": "HIGH",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "Solar Cell Production is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Solar Cell Production directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Solar Cell Production handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Solar Cell Production influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 1,
       "tags": ["cells", "production", "manufacturing"],
       "owners": [
         {
@@ -968,6 +1085,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.670Z",
       "updatedAt": "2025-09-09T12:16:52.670Z",
+      "sovereigntyReqStrategicAutonomy": "HIGH",
+      "sovereigntyReqResilience": "HIGH",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "Module Assembly is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Module Assembly directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Module Assembly handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Module Assembly influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 1,
       "tags": ["assembly", "modules", "manufacturing"],
       "owners": [
         {
@@ -1026,6 +1152,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.670Z",
       "updatedAt": "2025-09-09T12:16:52.670Z",
+      "sovereigntyReqStrategicAutonomy": "LOW",
+      "sovereigntyReqResilience": "MEDIUM",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Packaging & Shipping is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Packaging & Shipping directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Packaging & Shipping handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Packaging & Shipping influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 0.6,
       "tags": ["packaging", "shipping", "logistics"],
       "owners": [
         {
@@ -1089,6 +1224,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.670Z",
       "updatedAt": "2025-09-09T12:16:52.670Z",
+      "sovereigntyReqStrategicAutonomy": "MEDIUM",
+      "sovereigntyReqResilience": "MEDIUM",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "Supplier Management is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Supplier Management directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Supplier Management handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Supplier Management influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 0.8,
       "tags": ["suppliers", "relationships", "performance"],
       "owners": [
         {
@@ -1147,6 +1291,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.670Z",
       "updatedAt": "2025-09-09T12:16:52.670Z",
+      "sovereigntyReqStrategicAutonomy": "MEDIUM",
+      "sovereigntyReqResilience": "MEDIUM",
+      "sovereigntyReqSecurity": "MEDIUM",
+      "sovereigntyReqControl": "HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Procurement is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Procurement directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Procurement handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Procurement influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 0.8,
       "tags": ["procurement", "sourcing", "purchasing"],
       "owners": [
         {
@@ -1210,6 +1363,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.670Z",
       "updatedAt": "2025-09-09T12:16:52.670Z",
+      "sovereigntyReqStrategicAutonomy": "LOW",
+      "sovereigntyReqResilience": "MEDIUM",
+      "sovereigntyReqSecurity": "MEDIUM",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "Inventory Management is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Inventory Management directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Inventory Management handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Inventory Management influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 0.6,
       "tags": ["inventory", "warehousing", "stock"],
       "owners": [
         {
@@ -1273,6 +1435,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.670Z",
       "updatedAt": "2025-09-09T12:16:52.670Z",
+      "sovereigntyReqStrategicAutonomy": "VERY_HIGH",
+      "sovereigntyReqResilience": "LOW",
+      "sovereigntyReqSecurity": "MEDIUM",
+      "sovereigntyReqControl": "HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Lead Generation is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Lead Generation directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Lead Generation handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Lead Generation influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 0.8,
       "tags": ["leads", "marketing", "generation"],
       "owners": [
         {
@@ -1331,6 +1502,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.670Z",
       "updatedAt": "2025-09-09T12:16:52.670Z",
+      "sovereigntyReqStrategicAutonomy": "MEDIUM",
+      "sovereigntyReqResilience": "LOW",
+      "sovereigntyReqSecurity": "MEDIUM",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "Sales Execution is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Sales Execution directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Sales Execution handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Sales Execution influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 0.8,
       "tags": ["sales", "orders", "execution"],
       "owners": [
         {
@@ -1394,6 +1574,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.670Z",
       "updatedAt": "2025-09-09T12:16:52.670Z",
+      "sovereigntyReqStrategicAutonomy": "VERY_HIGH",
+      "sovereigntyReqResilience": "LOW",
+      "sovereigntyReqSecurity": "MEDIUM",
+      "sovereigntyReqControl": "HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Channel Management is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Channel Management directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Channel Management handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Channel Management influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 0.6,
       "tags": ["channels", "partners", "distribution"],
       "owners": [
         {
@@ -1452,6 +1641,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.670Z",
       "updatedAt": "2025-09-09T12:16:52.670Z",
+      "sovereigntyReqStrategicAutonomy": "MEDIUM",
+      "sovereigntyReqResilience": "MEDIUM",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Incoming Material Inspection is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Incoming Material Inspection directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Incoming Material Inspection handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Incoming Material Inspection influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 0.8,
       "tags": ["inspection", "quality", "materials"],
       "owners": [
         {
@@ -1510,6 +1708,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.670Z",
       "updatedAt": "2025-09-09T12:16:52.670Z",
+      "sovereigntyReqStrategicAutonomy": "HIGH",
+      "sovereigntyReqResilience": "HIGH",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Production Testing is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Production Testing directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Production Testing handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Production Testing influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 1,
       "tags": ["testing", "production", "quality"],
       "owners": [
         {
@@ -1568,6 +1775,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.670Z",
       "updatedAt": "2025-09-09T12:16:52.670Z",
+      "sovereigntyReqStrategicAutonomy": "HIGH",
+      "sovereigntyReqResilience": "MEDIUM",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "Certification & Compliance is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Certification & Compliance directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Certification & Compliance handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Certification & Compliance influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 1,
       "tags": ["certification", "compliance", "standards"],
       "owners": [
         {
@@ -1626,6 +1842,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.670Z",
       "updatedAt": "2025-09-09T12:16:52.670Z",
+      "sovereigntyReqStrategicAutonomy": "MEDIUM",
+      "sovereigntyReqResilience": "MEDIUM",
+      "sovereigntyReqSecurity": "MEDIUM",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "Financial Planning & Analysis is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Financial Planning & Analysis directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Financial Planning & Analysis handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Financial Planning & Analysis influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 0.8,
       "tags": ["planning", "analysis", "budgeting"],
       "owners": [],
       "supportedByApplications": [
@@ -1682,6 +1907,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.670Z",
       "updatedAt": "2025-09-09T12:16:52.670Z",
+      "sovereigntyReqStrategicAutonomy": "LOW",
+      "sovereigntyReqResilience": "MEDIUM",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "Accounts Payable is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Accounts Payable directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Accounts Payable handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Accounts Payable influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 0.6,
       "tags": ["payable", "suppliers", "payments"],
       "owners": [],
       "supportedByApplications": [
@@ -1743,6 +1977,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.670Z",
       "updatedAt": "2025-09-09T12:16:52.670Z",
+      "sovereigntyReqStrategicAutonomy": "MEDIUM",
+      "sovereigntyReqResilience": "MEDIUM",
+      "sovereigntyReqSecurity": "MEDIUM",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "Financial Reporting is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Financial Reporting directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Financial Reporting handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Financial Reporting influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 0.8,
       "tags": ["reporting", "statements", "regulatory"],
       "owners": [],
       "supportedByApplications": [
@@ -1794,6 +2037,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.670Z",
       "updatedAt": "2025-09-09T12:16:52.670Z",
+      "sovereigntyReqStrategicAutonomy": "LOW",
+      "sovereigntyReqResilience": "LOW",
+      "sovereigntyReqSecurity": "MEDIUM",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "Talent Acquisition is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Talent Acquisition directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Talent Acquisition handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Talent Acquisition influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 0.6,
       "tags": ["recruitment", "hiring", "onboarding"],
       "owners": [],
       "supportedByApplications": [
@@ -1845,6 +2097,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.670Z",
       "updatedAt": "2025-09-09T12:16:52.670Z",
+      "sovereigntyReqStrategicAutonomy": "LOW",
+      "sovereigntyReqResilience": "LOW",
+      "sovereigntyReqSecurity": "MEDIUM",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "Performance Management is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Performance Management directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Performance Management handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Performance Management influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 0.6,
       "tags": ["performance", "evaluation", "development"],
       "owners": [],
       "supportedByApplications": [
@@ -1901,6 +2162,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.670Z",
       "updatedAt": "2025-09-09T12:16:52.670Z",
+      "sovereigntyReqStrategicAutonomy": "LOW",
+      "sovereigntyReqResilience": "MEDIUM",
+      "sovereigntyReqSecurity": "MEDIUM",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "Payroll & Benefits Administration is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Payroll & Benefits Administration directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Payroll & Benefits Administration handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Payroll & Benefits Administration influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 0.6,
       "tags": ["payroll", "benefits", "compensation"],
       "owners": [],
       "supportedByApplications": [
@@ -1952,6 +2222,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.670Z",
       "updatedAt": "2025-09-09T12:16:52.670Z",
+      "sovereigntyReqStrategicAutonomy": "LOW",
+      "sovereigntyReqResilience": "LOW",
+      "sovereigntyReqSecurity": "MEDIUM",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "IT Service Management is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in IT Service Management directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "IT Service Management handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "IT Service Management influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 0.6,
       "tags": ["service", "incident", "change"],
       "owners": [],
       "supportedByApplications": [
@@ -2003,6 +2282,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.670Z",
       "updatedAt": "2025-09-09T12:16:52.670Z",
+      "sovereigntyReqStrategicAutonomy": "LOW",
+      "sovereigntyReqResilience": "LOW",
+      "sovereigntyReqSecurity": "MEDIUM",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "Infrastructure Management is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Infrastructure Management directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Infrastructure Management handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Infrastructure Management influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 0.6,
       "tags": ["infrastructure", "servers", "networks"],
       "owners": [],
       "supportedByApplications": [
@@ -2054,6 +2342,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.670Z",
       "updatedAt": "2025-09-09T12:16:52.670Z",
+      "sovereigntyReqStrategicAutonomy": "LOW",
+      "sovereigntyReqResilience": "LOW",
+      "sovereigntyReqSecurity": "MEDIUM",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "Application Management is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Application Management directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Application Management handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Application Management influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 0.6,
       "tags": ["applications", "lifecycle", "portfolio"],
       "owners": [],
       "supportedByApplications": [
@@ -2105,6 +2402,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.670Z",
       "updatedAt": "2025-09-09T12:16:52.670Z",
+      "sovereigntyReqStrategicAutonomy": "LOW",
+      "sovereigntyReqResilience": "LOW",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Technical Support is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Technical Support directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Technical Support handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Technical Support influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 0.6,
       "tags": ["technical", "support", "troubleshooting"],
       "owners": [],
       "supportedByApplications": [
@@ -2156,6 +2462,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.670Z",
       "updatedAt": "2025-09-09T12:16:52.670Z",
+      "sovereigntyReqStrategicAutonomy": "LOW",
+      "sovereigntyReqResilience": "LOW",
+      "sovereigntyReqSecurity": "MEDIUM",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "Warranty Management is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Warranty Management directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Warranty Management handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Warranty Management influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 0.6,
       "tags": ["warranty", "claims", "processing"],
       "owners": [],
       "supportedByApplications": [
@@ -2207,6 +2522,15 @@
       "endDate": "",
       "createdAt": "2025-09-09T12:16:52.670Z",
       "updatedAt": "2025-09-09T12:16:52.670Z",
+      "sovereigntyReqStrategicAutonomy": "LOW",
+      "sovereigntyReqResilience": "LOW",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Customer Training is strategically important for differentiation and long-term competitiveness.",
+      "sovereigntyReqResilienceRationale": "Disruptions in Customer Training directly affect delivery capability and operational stability.",
+      "sovereigntyReqSecurityRationale": "Customer Training handles sensitive decisions or know-how and therefore requires an elevated level of protection.",
+      "sovereigntyReqControlRationale": "Customer Training influences quality, compliance, or customer outcomes and requires clear controllability.",
+      "sovereigntyReqWeight": 0.4,
       "tags": ["training", "education", "customers"],
       "owners": [],
       "supportedByApplications": [
@@ -2297,8 +2621,16 @@
         }
       ],
       "supportedByApplications": [
-        { "__typename": "Application", "id": "app-sap-s4hana", "name": "SAP S/4HANA" },
-        { "__typename": "Application", "id": "app-mes-solar", "name": "Solar MES Platform" },
+        {
+          "__typename": "Application",
+          "id": "app-sap-s4hana",
+          "name": "SAP S/4HANA"
+        },
+        {
+          "__typename": "Application",
+          "id": "app-mes-solar",
+          "name": "Solar MES Platform"
+        },
         {
           "__typename": "Application",
           "id": "app-oracle-scm",
@@ -2338,7 +2670,11 @@
         }
       ],
       "parentProcess": [
-        { "__typename": "BusinessProcess", "id": "bp-plan-to-produce", "name": "Plan to Produce" }
+        {
+          "__typename": "BusinessProcess",
+          "id": "bp-plan-to-produce",
+          "name": "Plan to Produce"
+        }
       ],
       "childProcesses": [],
       "supportsCapabilities": [
@@ -2354,8 +2690,16 @@
         }
       ],
       "supportedByApplications": [
-        { "__typename": "Application", "id": "app-sap-s4hana", "name": "SAP S/4HANA" },
-        { "__typename": "Application", "id": "app-power-bi", "name": "Microsoft Power BI" }
+        {
+          "__typename": "Application",
+          "id": "app-sap-s4hana",
+          "name": "SAP S/4HANA"
+        },
+        {
+          "__typename": "Application",
+          "id": "app-power-bi",
+          "name": "Microsoft Power BI"
+        }
       ],
       "partOfArchitectures": [
         {
@@ -2390,11 +2734,19 @@
         }
       ],
       "parentProcess": [
-        { "__typename": "BusinessProcess", "id": "bp-plan-to-produce", "name": "Plan to Produce" }
+        {
+          "__typename": "BusinessProcess",
+          "id": "bp-plan-to-produce",
+          "name": "Plan to Produce"
+        }
       ],
       "childProcesses": [],
       "supportsCapabilities": [
-        { "__typename": "BusinessCapability", "id": "cap-procurement", "name": "Procurement" },
+        {
+          "__typename": "BusinessCapability",
+          "id": "cap-procurement",
+          "name": "Procurement"
+        },
         {
           "__typename": "BusinessCapability",
           "id": "cap-supplier-management",
@@ -2412,7 +2764,11 @@
           "id": "app-oracle-scm",
           "name": "Oracle Supply Chain Management"
         },
-        { "__typename": "Application", "id": "app-sap-s4hana", "name": "SAP S/4HANA" }
+        {
+          "__typename": "Application",
+          "id": "app-sap-s4hana",
+          "name": "SAP S/4HANA"
+        }
       ],
       "partOfArchitectures": [
         {
@@ -2447,7 +2803,11 @@
         }
       ],
       "parentProcess": [
-        { "__typename": "BusinessProcess", "id": "bp-plan-to-produce", "name": "Plan to Produce" }
+        {
+          "__typename": "BusinessProcess",
+          "id": "bp-plan-to-produce",
+          "name": "Plan to Produce"
+        }
       ],
       "childProcesses": [],
       "supportsCapabilities": [
@@ -2463,8 +2823,16 @@
         }
       ],
       "supportedByApplications": [
-        { "__typename": "Application", "id": "app-mes-solar", "name": "Solar MES Platform" },
-        { "__typename": "Application", "id": "app-siemens-plm", "name": "Siemens Teamcenter" }
+        {
+          "__typename": "Application",
+          "id": "app-mes-solar",
+          "name": "Solar MES Platform"
+        },
+        {
+          "__typename": "Application",
+          "id": "app-siemens-plm",
+          "name": "Siemens Teamcenter"
+        }
       ],
       "partOfArchitectures": [
         {
@@ -2519,8 +2887,16 @@
         }
       ],
       "supportedByApplications": [
-        { "__typename": "Application", "id": "app-rd-platform", "name": "R&D Innovation Platform" },
-        { "__typename": "Application", "id": "app-siemens-plm", "name": "Siemens Teamcenter" }
+        {
+          "__typename": "Application",
+          "id": "app-rd-platform",
+          "name": "R&D Innovation Platform"
+        },
+        {
+          "__typename": "Application",
+          "id": "app-siemens-plm",
+          "name": "Siemens Teamcenter"
+        }
       ],
       "partOfArchitectures": [
         {
@@ -2575,7 +2951,11 @@
         }
       ],
       "supportedByApplications": [
-        { "__typename": "Application", "id": "app-rd-platform", "name": "R&D Innovation Platform" },
+        {
+          "__typename": "Application",
+          "id": "app-rd-platform",
+          "name": "R&D Innovation Platform"
+        },
         {
           "__typename": "Application",
           "id": "app-quality-solar",
@@ -2607,7 +2987,12 @@
       "category": "Commercial",
       "tags": ["sales", "crm", "marketing"],
       "owners": [
-        { "__typename": "Person", "id": "person-ceo", "firstName": "Sarah", "lastName": "Johnson" }
+        {
+          "__typename": "Person",
+          "id": "person-ceo",
+          "firstName": "Sarah",
+          "lastName": "Johnson"
+        }
       ],
       "parentProcess": [],
       "childProcesses": [],
@@ -2644,7 +3029,11 @@
           "id": "app-hubspot-marketing",
           "name": "HubSpot Marketing Hub"
         },
-        { "__typename": "Application", "id": "app-sap-s4hana", "name": "SAP S/4HANA" }
+        {
+          "__typename": "Application",
+          "id": "app-sap-s4hana",
+          "name": "SAP S/4HANA"
+        }
       ],
       "partOfArchitectures": [
         {
@@ -2677,6 +3066,15 @@
       "planningDate": "2021-06-01",
       "createdAt": "2025-09-09T12:16:52.765Z",
       "updatedAt": "2025-12-15T08:59:24.686Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor SAP and the current operating model shape the technological autonomy of SAP S/4HANA.",
+      "sovereigntyAchResilienceEvidence": "SAP S/4HANA is designed for critical processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "SAP S/4HANA is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Sandra Garcia and the current platform setup support the controllability of SAP S/4HANA.",
+      "lastSovereigntyAssessmentAt": "2025-12-15T08:59:24.686Z",
       "technologyStack": ["SAP HANA", "ABAP", "Fiori"],
       "sevenRStrategy": "RETAIN",
       "timeCategory": "INVEST",
@@ -2882,6 +3280,15 @@
       "planningDate": "2020-10-01",
       "createdAt": "2025-09-09T12:16:52.765Z",
       "updatedAt": "2025-09-09T12:16:52.765Z",
+      "sovereigntyAchStrategicAutonomy": "LOW",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Salesforce and the current operating model shape the technological autonomy of Salesforce Sales Cloud.",
+      "sovereigntyAchResilienceEvidence": "Salesforce Sales Cloud is designed for high processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Salesforce Sales Cloud is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by David Wilson and the current platform setup support the controllability of Salesforce Sales Cloud.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "technologyStack": ["Salesforce Platform", "Apex", "Lightning"],
       "sevenRStrategy": "RETAIN",
       "timeCategory": "INVEST",
@@ -3035,6 +3442,15 @@
       "planningDate": "2022-01-01",
       "createdAt": "2025-09-09T12:16:52.765Z",
       "updatedAt": "2025-09-09T12:16:52.765Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor In-house Development and the current operating model shape the technological autonomy of Solar MES Platform.",
+      "sovereigntyAchResilienceEvidence": "Solar MES Platform is designed for critical processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Solar MES Platform is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by James Thompson and the current platform setup support the controllability of Solar MES Platform.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "technologyStack": ["Node.js", "React", "PostgreSQL", "Docker", "Kubernetes"],
       "sevenRStrategy": "RETAIN",
       "timeCategory": "INVEST",
@@ -3218,6 +3634,15 @@
       "planningDate": "2021-11-01",
       "createdAt": "2025-09-09T12:16:52.765Z",
       "updatedAt": "2025-09-09T12:16:52.765Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor In-house Development and the current operating model shape the technological autonomy of Solar Quality Management System.",
+      "sovereigntyAchResilienceEvidence": "Solar Quality Management System is designed for high processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Solar Quality Management System is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Dr. Thomas Miller and the current platform setup support the controllability of Solar Quality Management System.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "technologyStack": ["Python", "Django", "PostgreSQL", "InfluxDB", "Grafana"],
       "sevenRStrategy": "RETAIN",
       "timeCategory": "INVEST",
@@ -3383,6 +3808,15 @@
       "planningDate": "2019-12-01",
       "createdAt": "2025-09-09T12:16:52.765Z",
       "updatedAt": "2025-09-09T12:16:52.765Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Oracle and the current operating model shape the technological autonomy of Oracle Supply Chain Management.",
+      "sovereigntyAchResilienceEvidence": "Oracle Supply Chain Management is designed for high processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Oracle Supply Chain Management is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Maria Rodriguez and the current platform setup support the controllability of Oracle Supply Chain Management.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "technologyStack": ["Oracle Cloud", "Java", "Oracle Database"],
       "sevenRStrategy": "REPLATFORM",
       "timeCategory": "TOLERATE",
@@ -3529,6 +3963,15 @@
       "planningDate": "2022-06-01",
       "createdAt": "2025-09-09T12:16:52.765Z",
       "updatedAt": "2025-09-09T12:16:52.765Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor In-house Development and the current operating model shape the technological autonomy of R&D Innovation Platform.",
+      "sovereigntyAchResilienceEvidence": "R&D Innovation Platform is designed for medium processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "R&D Innovation Platform is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Dr. Lisa Anderson and the current platform setup support the controllability of R&D Innovation Platform.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "technologyStack": ["Python", "FastAPI", "MongoDB", "Apache Kafka", "Jupyter"],
       "sevenRStrategy": "RETAIN",
       "timeCategory": "INVEST",
@@ -3673,6 +4116,15 @@
       "planningDate": "2021-01-01",
       "createdAt": "2025-09-09T12:16:52.765Z",
       "updatedAt": "2025-09-09T12:16:52.765Z",
+      "sovereigntyAchStrategicAutonomy": "LOW",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Workday and the current operating model shape the technological autonomy of Workday HCM.",
+      "sovereigntyAchResilienceEvidence": "Workday HCM is designed for medium processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Workday HCM is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Kevin Jones and the current platform setup support the controllability of Workday HCM.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "technologyStack": ["Workday Platform", "Cloud Native"],
       "sevenRStrategy": "RETAIN",
       "timeCategory": "INVEST",
@@ -3796,6 +4248,15 @@
       "planningDate": "2020-08-01",
       "createdAt": "2025-09-09T12:16:52.765Z",
       "updatedAt": "2025-09-09T12:16:52.765Z",
+      "sovereigntyAchStrategicAutonomy": "LOW",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor HubSpot and the current operating model shape the technological autonomy of HubSpot Marketing Hub.",
+      "sovereigntyAchResilienceEvidence": "HubSpot Marketing Hub is designed for medium processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "HubSpot Marketing Hub is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Emily Brown and the current platform setup support the controllability of HubSpot Marketing Hub.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "technologyStack": ["HubSpot Platform", "JavaScript", "APIs"],
       "sevenRStrategy": "RETAIN",
       "timeCategory": "INVEST",
@@ -3906,6 +4367,15 @@
       "planningDate": "2020-02-01",
       "createdAt": "2025-09-09T12:16:52.765Z",
       "updatedAt": "2025-09-09T12:16:52.765Z",
+      "sovereigntyAchStrategicAutonomy": "LOW",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Zendesk and the current operating model shape the technological autonomy of Zendesk Support.",
+      "sovereigntyAchResilienceEvidence": "Zendesk Support is designed for medium processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Zendesk Support is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Amanda Taylor and the current platform setup support the controllability of Zendesk Support.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "technologyStack": ["Zendesk Platform", "APIs", "Webhooks"],
       "sevenRStrategy": "RETAIN",
       "timeCategory": "INVEST",
@@ -4026,6 +4496,15 @@
       "planningDate": "2018-09-01",
       "createdAt": "2025-09-09T12:16:52.765Z",
       "updatedAt": "2025-09-09T12:16:52.765Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "MEDIUM",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Manhattan Associates and the current operating model shape the technological autonomy of Manhattan WMS.",
+      "sovereigntyAchResilienceEvidence": "Manhattan WMS is designed for high processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Manhattan WMS is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Maria Rodriguez and the current platform setup support the controllability of Manhattan WMS.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "technologyStack": ["Java", "Oracle Database", "Windows Server"],
       "sevenRStrategy": "REPLATFORM",
       "timeCategory": "TOLERATE",
@@ -4152,6 +4631,15 @@
       "planningDate": "2021-06-01",
       "createdAt": "2025-09-09T12:16:52.765Z",
       "updatedAt": "2025-09-09T12:16:52.765Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Microsoft and the current operating model shape the technological autonomy of Microsoft Power BI.",
+      "sovereigntyAchResilienceEvidence": "Microsoft Power BI is designed for medium processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Microsoft Power BI is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Sandra Garcia and the current platform setup support the controllability of Microsoft Power BI.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "technologyStack": ["Power BI Service", "DAX", "Power Query"],
       "sevenRStrategy": "RETAIN",
       "timeCategory": "INVEST",
@@ -4266,6 +4754,15 @@
       "planningDate": "2020-06-01",
       "createdAt": "2025-09-09T12:16:52.765Z",
       "updatedAt": "2025-09-09T12:16:52.765Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "MEDIUM",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Siemens and the current operating model shape the technological autonomy of Siemens Teamcenter.",
+      "sovereigntyAchResilienceEvidence": "Siemens Teamcenter is designed for high processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Siemens Teamcenter is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Dr. Lisa Anderson and the current platform setup support the controllability of Siemens Teamcenter.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "technologyStack": ["Teamcenter", "Oracle Database", "Windows Server"],
       "sevenRStrategy": "RETAIN",
       "timeCategory": "INVEST",
@@ -4405,6 +4902,15 @@
       "planningDate": "2004-06-01",
       "createdAt": "2025-09-09T12:16:52.765Z",
       "updatedAt": "2025-09-09T12:16:52.765Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "MEDIUM",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Internal and the current operating model shape the technological autonomy of Legacy ERP System.",
+      "sovereigntyAchResilienceEvidence": "Legacy ERP System is designed for low processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Legacy ERP System is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Sandra Garcia and the current platform setup support the controllability of Legacy ERP System.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "technologyStack": ["COBOL", "DB2", "mainframe"],
       "sevenRStrategy": "RETIRE",
       "timeCategory": "ELIMINATE",
@@ -4453,6 +4959,15 @@
       "planningDate": "2022-08-01",
       "createdAt": "2025-09-09T12:16:52.765Z",
       "updatedAt": "2025-09-09T12:16:52.765Z",
+      "sovereigntyAchStrategicAutonomy": "LOW",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor ServiceNow and the current operating model shape the technological autonomy of ServiceNow ITSM.",
+      "sovereigntyAchResilienceEvidence": "ServiceNow ITSM is designed for high processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "ServiceNow ITSM is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Sandra Garcia and the current platform setup support the controllability of ServiceNow ITSM.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "technologyStack": ["ServiceNow Platform", "JavaScript", "REST APIs"],
       "sevenRStrategy": "RETAIN",
       "timeCategory": "INVEST",
@@ -4580,6 +5095,15 @@
       "planningDate": "2022-01-01",
       "createdAt": "2025-09-09T12:16:52.765Z",
       "updatedAt": "2025-09-09T12:16:52.765Z",
+      "sovereigntyAchStrategicAutonomy": "LOW",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor SAP and the current operating model shape the technological autonomy of SAP Concur.",
+      "sovereigntyAchResilienceEvidence": "SAP Concur is designed for medium processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "SAP Concur is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Robert Davis and the current platform setup support the controllability of SAP Concur.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "technologyStack": ["SAP Concur Platform", "APIs"],
       "sevenRStrategy": "RETAIN",
       "timeCategory": "INVEST",
@@ -4689,6 +5213,15 @@
       "planningDate": "2021-04-01",
       "createdAt": "2025-09-09T12:16:52.765Z",
       "updatedAt": "2026-02-13T14:46:53.282Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Cornerstone OnDemand and the current operating model shape the technological autonomy of Cornerstone OnDemand.",
+      "sovereigntyAchResilienceEvidence": "Cornerstone OnDemand is designed for medium processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Cornerstone OnDemand is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Kevin Jones and the current platform setup support the controllability of Cornerstone OnDemand.",
+      "lastSovereigntyAssessmentAt": "2026-02-13T14:46:53.282Z",
       "technologyStack": ["Cornerstone Platform", "APIs", "SCORM"],
       "sevenRStrategy": "RETAIN",
       "timeCategory": "INVEST",
@@ -4808,6 +5341,15 @@
       "planningDate": "2018-08-01",
       "createdAt": "2025-09-09T12:16:52.765Z",
       "updatedAt": "2025-09-09T12:16:52.765Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "MEDIUM",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Oracle and the current operating model shape the technological autonomy of Oracle Hyperion.",
+      "sovereigntyAchResilienceEvidence": "Oracle Hyperion is designed for high processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Oracle Hyperion is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Robert Davis and the current platform setup support the controllability of Oracle Hyperion.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "technologyStack": ["Oracle Hyperion", "Essbase", "Oracle Database"],
       "sevenRStrategy": "REPLATFORM",
       "timeCategory": "TOLERATE",
@@ -4908,6 +5450,15 @@
       "planningDate": "",
       "createdAt": "2025-12-15T08:09:05.577Z",
       "updatedAt": "2025-12-15T15:52:25.293Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "MEDIUM",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor n/a and the current operating model shape the technological autonomy of New Applicationtype with newline.",
+      "sovereigntyAchResilienceEvidence": "New Applicationtype with newline is designed for medium processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "New Applicationtype with newline is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Admin User and the current platform setup support the controllability of New Applicationtype with newline.",
+      "lastSovereigntyAssessmentAt": "2025-12-15T15:52:25.293Z",
       "technologyStack": [],
       "owners": [
         {
@@ -4958,6 +5509,15 @@
       "planningDate": "",
       "createdAt": "2025-09-09T12:16:52.810Z",
       "updatedAt": "2025-09-09T12:16:52.810Z",
+      "sovereigntyReqStrategicAutonomy": "HIGH",
+      "sovereigntyReqResilience": "HIGH",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Customer Master Data should remain available within a controllable data context.",
+      "sovereigntyReqResilienceRationale": "Customer Master Data must remain reliably available even during platform or integration disruptions.",
+      "sovereigntyReqSecurityRationale": "Customer Master Data is classified as CONFIDENTIAL and therefore requires corresponding security measures.",
+      "sovereigntyReqControlRationale": "Access, use, and sharing of Customer Master Data must be transparently controllable.",
+      "sovereigntyReqWeight": 0.9,
       "owners": [
         {
           "__typename": "Person",
@@ -5020,6 +5580,15 @@
       "planningDate": "",
       "createdAt": "2025-09-09T12:16:52.810Z",
       "updatedAt": "2025-09-09T12:16:52.810Z",
+      "sovereigntyReqStrategicAutonomy": "HIGH",
+      "sovereigntyReqResilience": "HIGH",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Sales Orders should remain available within a controllable data context.",
+      "sovereigntyReqResilienceRationale": "Sales Orders must remain reliably available even during platform or integration disruptions.",
+      "sovereigntyReqSecurityRationale": "Sales Orders is classified as CONFIDENTIAL and therefore requires corresponding security measures.",
+      "sovereigntyReqControlRationale": "Access, use, and sharing of Sales Orders must be transparently controllable.",
+      "sovereigntyReqWeight": 0.9,
       "owners": [
         {
           "__typename": "Person",
@@ -5082,6 +5651,15 @@
       "planningDate": "",
       "createdAt": "2025-09-09T12:16:52.810Z",
       "updatedAt": "2025-09-09T12:16:52.810Z",
+      "sovereigntyReqStrategicAutonomy": "MEDIUM",
+      "sovereigntyReqResilience": "MEDIUM",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "Leads and Prospects should remain available within a controllable data context.",
+      "sovereigntyReqResilienceRationale": "Leads and Prospects must remain reliably available even during platform or integration disruptions.",
+      "sovereigntyReqSecurityRationale": "Leads and Prospects is classified as INTERNAL and therefore requires corresponding security measures.",
+      "sovereigntyReqControlRationale": "Access, use, and sharing of Leads and Prospects must be transparently controllable.",
+      "sovereigntyReqWeight": 0.7,
       "owners": [
         {
           "__typename": "Person",
@@ -5132,6 +5710,15 @@
       "planningDate": "",
       "createdAt": "2025-09-09T12:16:52.810Z",
       "updatedAt": "2025-09-09T12:16:52.810Z",
+      "sovereigntyReqStrategicAutonomy": "HIGH",
+      "sovereigntyReqResilience": "HIGH",
+      "sovereigntyReqSecurity": "VERY_HIGH",
+      "sovereigntyReqControl": "VERY_HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Solar Panel Designs should remain available within a controllable data context.",
+      "sovereigntyReqResilienceRationale": "Solar Panel Designs must remain reliably available even during platform or integration disruptions.",
+      "sovereigntyReqSecurityRationale": "Solar Panel Designs is classified as STRICTLY_CONFIDENTIAL and therefore requires corresponding security measures.",
+      "sovereigntyReqControlRationale": "Access, use, and sharing of Solar Panel Designs must be transparently controllable.",
+      "sovereigntyReqWeight": 1,
       "owners": [
         {
           "__typename": "Person",
@@ -5182,6 +5769,15 @@
       "planningDate": "",
       "createdAt": "2025-09-09T12:16:52.810Z",
       "updatedAt": "2025-09-09T12:16:52.810Z",
+      "sovereigntyReqStrategicAutonomy": "HIGH",
+      "sovereigntyReqResilience": "HIGH",
+      "sovereigntyReqSecurity": "VERY_HIGH",
+      "sovereigntyReqControl": "VERY_HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Research and Experimental Data should remain available within a controllable data context.",
+      "sovereigntyReqResilienceRationale": "Research and Experimental Data must remain reliably available even during platform or integration disruptions.",
+      "sovereigntyReqSecurityRationale": "Research and Experimental Data is classified as STRICTLY_CONFIDENTIAL and therefore requires corresponding security measures.",
+      "sovereigntyReqControlRationale": "Access, use, and sharing of Research and Experimental Data must be transparently controllable.",
+      "sovereigntyReqWeight": 1,
       "owners": [
         {
           "__typename": "Person",
@@ -5227,6 +5823,15 @@
       "planningDate": "",
       "createdAt": "2025-09-09T12:16:52.810Z",
       "updatedAt": "2025-09-09T12:16:52.810Z",
+      "sovereigntyReqStrategicAutonomy": "HIGH",
+      "sovereigntyReqResilience": "HIGH",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Material Specifications should remain available within a controllable data context.",
+      "sovereigntyReqResilienceRationale": "Material Specifications must remain reliably available even during platform or integration disruptions.",
+      "sovereigntyReqSecurityRationale": "Material Specifications is classified as CONFIDENTIAL and therefore requires corresponding security measures.",
+      "sovereigntyReqControlRationale": "Access, use, and sharing of Material Specifications must be transparently controllable.",
+      "sovereigntyReqWeight": 0.9,
       "owners": [
         {
           "__typename": "Person",
@@ -5298,6 +5903,15 @@
       "planningDate": "",
       "createdAt": "2025-09-09T12:16:52.810Z",
       "updatedAt": "2025-09-09T12:16:52.810Z",
+      "sovereigntyReqStrategicAutonomy": "MEDIUM",
+      "sovereigntyReqResilience": "MEDIUM",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "Production Metrics should remain available within a controllable data context.",
+      "sovereigntyReqResilienceRationale": "Production Metrics must remain reliably available even during platform or integration disruptions.",
+      "sovereigntyReqSecurityRationale": "Production Metrics is classified as INTERNAL and therefore requires corresponding security measures.",
+      "sovereigntyReqControlRationale": "Access, use, and sharing of Production Metrics must be transparently controllable.",
+      "sovereigntyReqWeight": 0.7,
       "owners": [
         {
           "__typename": "Person",
@@ -5348,6 +5962,15 @@
       "planningDate": "",
       "createdAt": "2025-09-09T12:16:52.810Z",
       "updatedAt": "2025-12-15T08:15:20.456Z",
+      "sovereigntyReqStrategicAutonomy": "MEDIUM",
+      "sovereigntyReqResilience": "MEDIUM",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "Manufacturing Work Orders should remain available within a controllable data context.",
+      "sovereigntyReqResilienceRationale": "Manufacturing Work Orders must remain reliably available even during platform or integration disruptions.",
+      "sovereigntyReqSecurityRationale": "Manufacturing Work Orders is classified as INTERNAL and therefore requires corresponding security measures.",
+      "sovereigntyReqControlRationale": "Access, use, and sharing of Manufacturing Work Orders must be transparently controllable.",
+      "sovereigntyReqWeight": 0.7,
       "owners": [
         {
           "__typename": "Person",
@@ -5405,6 +6028,15 @@
       "planningDate": "",
       "createdAt": "2025-09-09T12:16:52.810Z",
       "updatedAt": "2025-09-09T12:16:52.810Z",
+      "sovereigntyReqStrategicAutonomy": "MEDIUM",
+      "sovereigntyReqResilience": "MEDIUM",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "Equipment Status and Maintenance should remain available within a controllable data context.",
+      "sovereigntyReqResilienceRationale": "Equipment Status and Maintenance must remain reliably available even during platform or integration disruptions.",
+      "sovereigntyReqSecurityRationale": "Equipment Status and Maintenance is classified as INTERNAL and therefore requires corresponding security measures.",
+      "sovereigntyReqControlRationale": "Access, use, and sharing of Equipment Status and Maintenance must be transparently controllable.",
+      "sovereigntyReqWeight": 0.7,
       "owners": [
         {
           "__typename": "Person",
@@ -5444,6 +6076,15 @@
       "planningDate": "",
       "createdAt": "2025-09-09T12:16:52.810Z",
       "updatedAt": "2025-09-09T12:16:52.810Z",
+      "sovereigntyReqStrategicAutonomy": "HIGH",
+      "sovereigntyReqResilience": "HIGH",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Quality Test Results should remain available within a controllable data context.",
+      "sovereigntyReqResilienceRationale": "Quality Test Results must remain reliably available even during platform or integration disruptions.",
+      "sovereigntyReqSecurityRationale": "Quality Test Results is classified as CONFIDENTIAL and therefore requires corresponding security measures.",
+      "sovereigntyReqControlRationale": "Access, use, and sharing of Quality Test Results must be transparently controllable.",
+      "sovereigntyReqWeight": 0.9,
       "owners": [
         {
           "__typename": "Person",
@@ -5504,6 +6145,15 @@
       "planningDate": "",
       "createdAt": "2025-09-09T12:16:52.810Z",
       "updatedAt": "2025-09-09T12:16:52.810Z",
+      "sovereigntyReqStrategicAutonomy": "HIGH",
+      "sovereigntyReqResilience": "HIGH",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Compliance Certificates should remain available within a controllable data context.",
+      "sovereigntyReqResilienceRationale": "Compliance Certificates must remain reliably available even during platform or integration disruptions.",
+      "sovereigntyReqSecurityRationale": "Compliance Certificates is classified as CONFIDENTIAL and therefore requires corresponding security measures.",
+      "sovereigntyReqControlRationale": "Access, use, and sharing of Compliance Certificates must be transparently controllable.",
+      "sovereigntyReqWeight": 0.9,
       "owners": [
         {
           "__typename": "Person",
@@ -5549,6 +6199,15 @@
       "planningDate": "",
       "createdAt": "2025-09-09T12:16:52.810Z",
       "updatedAt": "2025-09-09T12:16:52.810Z",
+      "sovereigntyReqStrategicAutonomy": "MEDIUM",
+      "sovereigntyReqResilience": "MEDIUM",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "Defect and Non-Conformance Data should remain available within a controllable data context.",
+      "sovereigntyReqResilienceRationale": "Defect and Non-Conformance Data must remain reliably available even during platform or integration disruptions.",
+      "sovereigntyReqSecurityRationale": "Defect and Non-Conformance Data is classified as INTERNAL and therefore requires corresponding security measures.",
+      "sovereigntyReqControlRationale": "Access, use, and sharing of Defect and Non-Conformance Data must be transparently controllable.",
+      "sovereigntyReqWeight": 0.7,
       "owners": [
         {
           "__typename": "Person",
@@ -5588,6 +6247,15 @@
       "planningDate": "",
       "createdAt": "2025-09-09T12:16:52.810Z",
       "updatedAt": "2025-09-09T12:16:52.810Z",
+      "sovereigntyReqStrategicAutonomy": "HIGH",
+      "sovereigntyReqResilience": "HIGH",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Supplier Master Data should remain available within a controllable data context.",
+      "sovereigntyReqResilienceRationale": "Supplier Master Data must remain reliably available even during platform or integration disruptions.",
+      "sovereigntyReqSecurityRationale": "Supplier Master Data is classified as CONFIDENTIAL and therefore requires corresponding security measures.",
+      "sovereigntyReqControlRationale": "Access, use, and sharing of Supplier Master Data must be transparently controllable.",
+      "sovereigntyReqWeight": 0.9,
       "owners": [
         {
           "__typename": "Person",
@@ -5650,6 +6318,15 @@
       "planningDate": "",
       "createdAt": "2025-09-09T12:16:52.810Z",
       "updatedAt": "2025-09-09T12:16:52.810Z",
+      "sovereigntyReqStrategicAutonomy": "MEDIUM",
+      "sovereigntyReqResilience": "MEDIUM",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "Purchase Orders should remain available within a controllable data context.",
+      "sovereigntyReqResilienceRationale": "Purchase Orders must remain reliably available even during platform or integration disruptions.",
+      "sovereigntyReqSecurityRationale": "Purchase Orders is classified as INTERNAL and therefore requires corresponding security measures.",
+      "sovereigntyReqControlRationale": "Access, use, and sharing of Purchase Orders must be transparently controllable.",
+      "sovereigntyReqWeight": 0.7,
       "owners": [
         {
           "__typename": "Person",
@@ -5717,6 +6394,15 @@
       "planningDate": "",
       "createdAt": "2025-09-09T12:16:52.810Z",
       "updatedAt": "2025-09-09T12:16:52.810Z",
+      "sovereigntyReqStrategicAutonomy": "MEDIUM",
+      "sovereigntyReqResilience": "MEDIUM",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "Inventory Levels should remain available within a controllable data context.",
+      "sovereigntyReqResilienceRationale": "Inventory Levels must remain reliably available even during platform or integration disruptions.",
+      "sovereigntyReqSecurityRationale": "Inventory Levels is classified as INTERNAL and therefore requires corresponding security measures.",
+      "sovereigntyReqControlRationale": "Access, use, and sharing of Inventory Levels must be transparently controllable.",
+      "sovereigntyReqWeight": 0.7,
       "owners": [
         {
           "__typename": "Person",
@@ -5767,6 +6453,15 @@
       "planningDate": "",
       "createdAt": "2025-09-09T12:16:52.810Z",
       "updatedAt": "2025-09-09T12:16:52.810Z",
+      "sovereigntyReqStrategicAutonomy": "HIGH",
+      "sovereigntyReqResilience": "HIGH",
+      "sovereigntyReqSecurity": "VERY_HIGH",
+      "sovereigntyReqControl": "VERY_HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Financial Transactions should remain available within a controllable data context.",
+      "sovereigntyReqResilienceRationale": "Financial Transactions must remain reliably available even during platform or integration disruptions.",
+      "sovereigntyReqSecurityRationale": "Financial Transactions is classified as STRICTLY_CONFIDENTIAL and therefore requires corresponding security measures.",
+      "sovereigntyReqControlRationale": "Access, use, and sharing of Financial Transactions must be transparently controllable.",
+      "sovereigntyReqWeight": 1,
       "owners": [
         {
           "__typename": "Person",
@@ -5824,6 +6519,15 @@
       "planningDate": "",
       "createdAt": "2025-09-09T12:16:52.810Z",
       "updatedAt": "2025-09-09T12:16:52.810Z",
+      "sovereigntyReqStrategicAutonomy": "HIGH",
+      "sovereigntyReqResilience": "HIGH",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Cost Accounting Data should remain available within a controllable data context.",
+      "sovereigntyReqResilienceRationale": "Cost Accounting Data must remain reliably available even during platform or integration disruptions.",
+      "sovereigntyReqSecurityRationale": "Cost Accounting Data is classified as CONFIDENTIAL and therefore requires corresponding security measures.",
+      "sovereigntyReqControlRationale": "Access, use, and sharing of Cost Accounting Data must be transparently controllable.",
+      "sovereigntyReqWeight": 0.9,
       "owners": [
         {
           "__typename": "Person",
@@ -5863,6 +6567,15 @@
       "planningDate": "",
       "createdAt": "2025-09-09T12:16:52.810Z",
       "updatedAt": "2025-09-09T12:16:52.810Z",
+      "sovereigntyReqStrategicAutonomy": "HIGH",
+      "sovereigntyReqResilience": "HIGH",
+      "sovereigntyReqSecurity": "VERY_HIGH",
+      "sovereigntyReqControl": "VERY_HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Employee Master Data should remain available within a controllable data context.",
+      "sovereigntyReqResilienceRationale": "Employee Master Data must remain reliably available even during platform or integration disruptions.",
+      "sovereigntyReqSecurityRationale": "Employee Master Data is classified as STRICTLY_CONFIDENTIAL and therefore requires corresponding security measures.",
+      "sovereigntyReqControlRationale": "Access, use, and sharing of Employee Master Data must be transparently controllable.",
+      "sovereigntyReqWeight": 1,
       "owners": [
         {
           "__typename": "Person",
@@ -5908,6 +6621,15 @@
       "planningDate": "",
       "createdAt": "2025-09-09T12:16:52.810Z",
       "updatedAt": "2025-09-09T12:16:52.810Z",
+      "sovereigntyReqStrategicAutonomy": "HIGH",
+      "sovereigntyReqResilience": "HIGH",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Training and Certification Records should remain available within a controllable data context.",
+      "sovereigntyReqResilienceRationale": "Training and Certification Records must remain reliably available even during platform or integration disruptions.",
+      "sovereigntyReqSecurityRationale": "Training and Certification Records is classified as CONFIDENTIAL and therefore requires corresponding security measures.",
+      "sovereigntyReqControlRationale": "Access, use, and sharing of Training and Certification Records must be transparently controllable.",
+      "sovereigntyReqWeight": 0.9,
       "owners": [
         {
           "__typename": "Person",
@@ -5953,6 +6675,15 @@
       "planningDate": "",
       "createdAt": "2025-09-09T12:16:52.810Z",
       "updatedAt": "2025-09-09T12:16:52.810Z",
+      "sovereigntyReqStrategicAutonomy": "MEDIUM",
+      "sovereigntyReqResilience": "MEDIUM",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "Customer Service Tickets should remain available within a controllable data context.",
+      "sovereigntyReqResilienceRationale": "Customer Service Tickets must remain reliably available even during platform or integration disruptions.",
+      "sovereigntyReqSecurityRationale": "Customer Service Tickets is classified as INTERNAL and therefore requires corresponding security measures.",
+      "sovereigntyReqControlRationale": "Access, use, and sharing of Customer Service Tickets must be transparently controllable.",
+      "sovereigntyReqWeight": 0.7,
       "owners": [
         {
           "__typename": "Person",
@@ -5998,6 +6729,15 @@
       "planningDate": "",
       "createdAt": "2025-09-09T12:16:52.810Z",
       "updatedAt": "2025-09-09T12:16:52.810Z",
+      "sovereigntyReqStrategicAutonomy": "HIGH",
+      "sovereigntyReqResilience": "HIGH",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Warranty Claims should remain available within a controllable data context.",
+      "sovereigntyReqResilienceRationale": "Warranty Claims must remain reliably available even during platform or integration disruptions.",
+      "sovereigntyReqSecurityRationale": "Warranty Claims is classified as CONFIDENTIAL and therefore requires corresponding security measures.",
+      "sovereigntyReqControlRationale": "Access, use, and sharing of Warranty Claims must be transparently controllable.",
+      "sovereigntyReqWeight": 0.9,
       "owners": [
         {
           "__typename": "Person",
@@ -6043,6 +6783,15 @@
       "planningDate": "",
       "createdAt": "2025-09-09T12:16:52.810Z",
       "updatedAt": "2025-09-09T12:16:52.810Z",
+      "sovereigntyReqStrategicAutonomy": "MEDIUM",
+      "sovereigntyReqResilience": "MEDIUM",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "IT Incident Tickets should remain available within a controllable data context.",
+      "sovereigntyReqResilienceRationale": "IT Incident Tickets must remain reliably available even during platform or integration disruptions.",
+      "sovereigntyReqSecurityRationale": "IT Incident Tickets is classified as INTERNAL and therefore requires corresponding security measures.",
+      "sovereigntyReqControlRationale": "Access, use, and sharing of IT Incident Tickets must be transparently controllable.",
+      "sovereigntyReqWeight": 0.7,
       "owners": [
         {
           "__typename": "Person",
@@ -6076,6 +6825,15 @@
       "planningDate": "",
       "createdAt": "2025-09-09T12:16:52.810Z",
       "updatedAt": "2025-09-09T12:16:52.810Z",
+      "sovereigntyReqStrategicAutonomy": "MEDIUM",
+      "sovereigntyReqResilience": "MEDIUM",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "IT Change Requests should remain available within a controllable data context.",
+      "sovereigntyReqResilienceRationale": "IT Change Requests must remain reliably available even during platform or integration disruptions.",
+      "sovereigntyReqSecurityRationale": "IT Change Requests is classified as INTERNAL and therefore requires corresponding security measures.",
+      "sovereigntyReqControlRationale": "Access, use, and sharing of IT Change Requests must be transparently controllable.",
+      "sovereigntyReqWeight": 0.7,
       "owners": [
         {
           "__typename": "Person",
@@ -6109,6 +6867,15 @@
       "planningDate": "",
       "createdAt": "2025-09-09T12:16:52.810Z",
       "updatedAt": "2025-09-09T12:16:52.810Z",
+      "sovereigntyReqStrategicAutonomy": "MEDIUM",
+      "sovereigntyReqResilience": "MEDIUM",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "IT Asset Inventory should remain available within a controllable data context.",
+      "sovereigntyReqResilienceRationale": "IT Asset Inventory must remain reliably available even during platform or integration disruptions.",
+      "sovereigntyReqSecurityRationale": "IT Asset Inventory is classified as INTERNAL and therefore requires corresponding security measures.",
+      "sovereigntyReqControlRationale": "Access, use, and sharing of IT Asset Inventory must be transparently controllable.",
+      "sovereigntyReqWeight": 0.7,
       "owners": [
         {
           "__typename": "Person",
@@ -6142,6 +6909,15 @@
       "planningDate": "",
       "createdAt": "2025-09-09T12:16:52.810Z",
       "updatedAt": "2025-09-09T12:16:52.810Z",
+      "sovereigntyReqStrategicAutonomy": "MEDIUM",
+      "sovereigntyReqResilience": "MEDIUM",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "MEDIUM",
+      "sovereigntyReqStrategicAutonomyRationale": "Training Course Materials should remain available within a controllable data context.",
+      "sovereigntyReqResilienceRationale": "Training Course Materials must remain reliably available even during platform or integration disruptions.",
+      "sovereigntyReqSecurityRationale": "Training Course Materials is classified as INTERNAL and therefore requires corresponding security measures.",
+      "sovereigntyReqControlRationale": "Access, use, and sharing of Training Course Materials must be transparently controllable.",
+      "sovereigntyReqWeight": 0.7,
       "owners": [
         {
           "__typename": "Person",
@@ -6169,6 +6945,15 @@
       "planningDate": "",
       "createdAt": "2025-09-09T12:16:52.810Z",
       "updatedAt": "2025-09-09T12:16:52.810Z",
+      "sovereigntyReqStrategicAutonomy": "HIGH",
+      "sovereigntyReqResilience": "HIGH",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Employee Expense Reports should remain available within a controllable data context.",
+      "sovereigntyReqResilienceRationale": "Employee Expense Reports must remain reliably available even during platform or integration disruptions.",
+      "sovereigntyReqSecurityRationale": "Employee Expense Reports is classified as CONFIDENTIAL and therefore requires corresponding security measures.",
+      "sovereigntyReqControlRationale": "Access, use, and sharing of Employee Expense Reports must be transparently controllable.",
+      "sovereigntyReqWeight": 0.9,
       "owners": [
         {
           "__typename": "Person",
@@ -6202,6 +6987,15 @@
       "planningDate": "",
       "createdAt": "2025-09-09T12:16:52.810Z",
       "updatedAt": "2025-09-09T12:16:52.810Z",
+      "sovereigntyReqStrategicAutonomy": "HIGH",
+      "sovereigntyReqResilience": "HIGH",
+      "sovereigntyReqSecurity": "HIGH",
+      "sovereigntyReqControl": "HIGH",
+      "sovereigntyReqStrategicAutonomyRationale": "Budget and Financial Forecasts should remain available within a controllable data context.",
+      "sovereigntyReqResilienceRationale": "Budget and Financial Forecasts must remain reliably available even during platform or integration disruptions.",
+      "sovereigntyReqSecurityRationale": "Budget and Financial Forecasts is classified as CONFIDENTIAL and therefore requires corresponding security measures.",
+      "sovereigntyReqControlRationale": "Access, use, and sharing of Budget and Financial Forecasts must be transparently controllable.",
+      "sovereigntyReqWeight": 0.9,
       "owners": [
         {
           "__typename": "Person",
@@ -6321,6 +7115,15 @@
       "endOfLifeDate": "",
       "createdAt": "2025-09-09T12:16:52.942Z",
       "updatedAt": "2025-09-09T12:16:52.942Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor SAP and the current operating model shape the technological autonomy of SAP S/4HANA.",
+      "sovereigntyAchResilienceEvidence": "SAP S/4HANA is designed for critical processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "SAP S/4HANA is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Sandra Garcia and the current platform setup support the controllability of SAP S/4HANA.",
+      "lastSovereigntyAssessmentAt": "2025-12-15T08:59:24.686Z",
       "sourceApplications": [
         {
           "__typename": "Application",
@@ -6369,6 +7172,15 @@
       "endOfLifeDate": "",
       "createdAt": "2025-09-09T12:16:52.942Z",
       "updatedAt": "2025-09-09T12:16:52.942Z",
+      "sovereigntyAchStrategicAutonomy": "LOW",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor HubSpot and the current operating model shape the technological autonomy of HubSpot Marketing Hub.",
+      "sovereigntyAchResilienceEvidence": "HubSpot Marketing Hub is designed for medium processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "HubSpot Marketing Hub is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Emily Brown and the current platform setup support the controllability of HubSpot Marketing Hub.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "sourceApplications": [
         {
           "__typename": "Application",
@@ -6431,7 +7243,7 @@
       "description": "Real-time transfer of production data and quality test triggers",
       "interfaceType": "MESSAGE_QUEUE",
       "status": "ACTIVE",
-      "protocol": "TCP",
+      "protocol": "OTHER",
       "version": "1.2",
       "introductionDate": "2023-07-01",
       "planningDate": "",
@@ -6439,6 +7251,15 @@
       "endOfLifeDate": "",
       "createdAt": "2025-09-09T12:16:52.942Z",
       "updatedAt": "2025-09-09T12:16:52.942Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "MEDIUM",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor n/a and the current operating model shape the technological autonomy of New Applicationtype with newline.",
+      "sovereigntyAchResilienceEvidence": "New Applicationtype with newline is designed for medium processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "New Applicationtype with newline is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Admin User and the current platform setup support the controllability of New Applicationtype with newline.",
+      "lastSovereigntyAssessmentAt": "2025-12-15T15:52:25.293Z",
       "sourceApplications": [
         {
           "__typename": "Application",
@@ -6492,6 +7313,15 @@
       "endOfLifeDate": "",
       "createdAt": "2025-09-09T12:16:52.942Z",
       "updatedAt": "2025-09-09T12:16:52.942Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor In-house Development and the current operating model shape the technological autonomy of Solar MES Platform.",
+      "sovereigntyAchResilienceEvidence": "Solar MES Platform is designed for critical processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Solar MES Platform is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by James Thompson and the current platform setup support the controllability of Solar MES Platform.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "sourceApplications": [
         {
           "__typename": "Application",
@@ -6545,6 +7375,15 @@
       "endOfLifeDate": "2026-12-31",
       "createdAt": "2025-09-09T12:16:52.942Z",
       "updatedAt": "2025-09-09T12:16:52.942Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor In-house Development and the current operating model shape the technological autonomy of Solar Quality Management System.",
+      "sovereigntyAchResilienceEvidence": "Solar Quality Management System is designed for high processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Solar Quality Management System is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Dr. Thomas Miller and the current platform setup support the controllability of Solar Quality Management System.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "sourceApplications": [
         {
           "__typename": "Application",
@@ -6610,6 +7449,15 @@
       "endOfLifeDate": "2025-12-31",
       "createdAt": "2025-09-09T12:16:52.942Z",
       "updatedAt": "2025-09-09T12:16:52.942Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor SAP and the current operating model shape the technological autonomy of SAP S/4HANA.",
+      "sovereigntyAchResilienceEvidence": "SAP S/4HANA is designed for critical processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "SAP S/4HANA is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Sandra Garcia and the current platform setup support the controllability of SAP S/4HANA.",
+      "lastSovereigntyAssessmentAt": "2025-12-15T08:59:24.686Z",
       "sourceApplications": [
         {
           "__typename": "Application",
@@ -6658,6 +7506,15 @@
       "endOfLifeDate": "",
       "createdAt": "2025-09-09T12:16:52.942Z",
       "updatedAt": "2025-09-09T12:16:52.942Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "MEDIUM",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Manhattan Associates and the current operating model shape the technological autonomy of Manhattan WMS.",
+      "sovereigntyAchResilienceEvidence": "Manhattan WMS is designed for high processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Manhattan WMS is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Maria Rodriguez and the current platform setup support the controllability of Manhattan WMS.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "sourceApplications": [
         {
           "__typename": "Application",
@@ -6711,6 +7568,15 @@
       "endOfLifeDate": "",
       "createdAt": "2025-09-09T12:16:52.942Z",
       "updatedAt": "2025-09-09T12:16:52.942Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "MEDIUM",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Siemens and the current operating model shape the technological autonomy of Siemens Teamcenter.",
+      "sovereigntyAchResilienceEvidence": "Siemens Teamcenter is designed for high processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Siemens Teamcenter is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Dr. Lisa Anderson and the current platform setup support the controllability of Siemens Teamcenter.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "sourceApplications": [
         {
           "__typename": "Application",
@@ -6764,6 +7630,15 @@
       "endOfLifeDate": "",
       "createdAt": "2025-09-09T12:16:52.942Z",
       "updatedAt": "2025-09-09T12:16:52.942Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor In-house Development and the current operating model shape the technological autonomy of R&D Innovation Platform.",
+      "sovereigntyAchResilienceEvidence": "R&D Innovation Platform is designed for medium processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "R&D Innovation Platform is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Dr. Lisa Anderson and the current platform setup support the controllability of R&D Innovation Platform.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "sourceApplications": [
         {
           "__typename": "Application",
@@ -6812,6 +7687,15 @@
       "endOfLifeDate": "",
       "createdAt": "2025-09-09T12:16:52.942Z",
       "updatedAt": "2025-09-09T12:16:52.942Z",
+      "sovereigntyAchStrategicAutonomy": "LOW",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Workday and the current operating model shape the technological autonomy of Workday HCM.",
+      "sovereigntyAchResilienceEvidence": "Workday HCM is designed for medium processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Workday HCM is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Kevin Jones and the current platform setup support the controllability of Workday HCM.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "sourceApplications": [
         {
           "__typename": "Application",
@@ -6865,6 +7749,15 @@
       "endOfLifeDate": "",
       "createdAt": "2025-09-09T12:16:52.942Z",
       "updatedAt": "2025-09-09T12:16:52.942Z",
+      "sovereigntyAchStrategicAutonomy": "LOW",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Zendesk and the current operating model shape the technological autonomy of Zendesk Support.",
+      "sovereigntyAchResilienceEvidence": "Zendesk Support is designed for medium processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Zendesk Support is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Amanda Taylor and the current platform setup support the controllability of Zendesk Support.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "sourceApplications": [
         {
           "__typename": "Application",
@@ -6945,6 +7838,15 @@
       "endOfLifeDate": "",
       "createdAt": "2025-09-09T12:16:52.942Z",
       "updatedAt": "2025-09-09T12:16:52.942Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor SAP and the current operating model shape the technological autonomy of SAP S/4HANA.",
+      "sovereigntyAchResilienceEvidence": "SAP S/4HANA is designed for critical processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "SAP S/4HANA is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Sandra Garcia and the current platform setup support the controllability of SAP S/4HANA.",
+      "lastSovereigntyAssessmentAt": "2025-12-15T08:59:24.686Z",
       "sourceApplications": [
         {
           "__typename": "Application",
@@ -6998,6 +7900,15 @@
       "endOfLifeDate": "",
       "createdAt": "2025-09-09T12:16:52.942Z",
       "updatedAt": "2025-09-09T12:16:52.942Z",
+      "sovereigntyAchStrategicAutonomy": "LOW",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor ServiceNow and the current operating model shape the technological autonomy of ServiceNow ITSM.",
+      "sovereigntyAchResilienceEvidence": "ServiceNow ITSM is designed for high processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "ServiceNow ITSM is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Sandra Garcia and the current platform setup support the controllability of ServiceNow ITSM.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "sourceApplications": [
         {
           "__typename": "Application",
@@ -7051,6 +7962,15 @@
       "endOfLifeDate": "",
       "createdAt": "2025-09-09T12:16:52.942Z",
       "updatedAt": "2025-09-09T12:16:52.942Z",
+      "sovereigntyAchStrategicAutonomy": "LOW",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor ServiceNow and the current operating model shape the technological autonomy of ServiceNow ITSM.",
+      "sovereigntyAchResilienceEvidence": "ServiceNow ITSM is designed for high processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "ServiceNow ITSM is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Sandra Garcia and the current platform setup support the controllability of ServiceNow ITSM.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "sourceApplications": [
         {
           "__typename": "Application",
@@ -7099,6 +8019,15 @@
       "endOfLifeDate": "",
       "createdAt": "2025-09-09T12:16:52.942Z",
       "updatedAt": "2025-09-09T12:16:52.942Z",
+      "sovereigntyAchStrategicAutonomy": "LOW",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor SAP and the current operating model shape the technological autonomy of SAP Concur.",
+      "sovereigntyAchResilienceEvidence": "SAP Concur is designed for medium processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "SAP Concur is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Robert Davis and the current platform setup support the controllability of SAP Concur.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "sourceApplications": [
         {
           "__typename": "Application",
@@ -7164,6 +8093,15 @@
       "endOfLifeDate": "2026-06-30",
       "createdAt": "2025-09-09T12:16:52.942Z",
       "updatedAt": "2025-09-09T12:16:52.942Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Cornerstone OnDemand and the current operating model shape the technological autonomy of Cornerstone OnDemand.",
+      "sovereigntyAchResilienceEvidence": "Cornerstone OnDemand is designed for medium processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Cornerstone OnDemand is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Kevin Jones and the current platform setup support the controllability of Cornerstone OnDemand.",
+      "lastSovereigntyAssessmentAt": "2026-02-13T14:46:53.282Z",
       "sourceApplications": [
         {
           "__typename": "Application",
@@ -7212,6 +8150,15 @@
       "avatarUrl": "",
       "createdAt": "2025-09-09T12:16:52.718Z",
       "updatedAt": "2025-09-09T12:16:52.718Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "MEDIUM",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Oracle and the current operating model shape the technological autonomy of Oracle Hyperion.",
+      "sovereigntyAchResilienceEvidence": "Oracle Hyperion is designed for high processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Oracle Hyperion is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Robert Davis and the current platform setup support the controllability of Oracle Hyperion.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "ownedApplications": [],
       "ownedDataObjects": [],
       "ownedCapabilities": [],
@@ -7475,6 +8422,15 @@
       "avatarUrl": "",
       "createdAt": "2025-09-09T12:41:36.777Z",
       "updatedAt": "2025-11-27T07:38:22.041Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "MEDIUM",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "Manhattan WMS Servers is based on HPE and therefore provides a corresponding level of infrastructure autonomy.",
+      "sovereigntyAchResilienceEvidence": "Manhattan WMS Servers is designed for Manufacturing Datacenter and contributes to the stable delivery of critical workloads.",
+      "sovereigntyAchSecurityEvidence": "Manhattan WMS Servers is operated in a controlled environment with appropriate baseline security measures.",
+      "sovereigntyAchControlEvidence": "Ownership by Mark Lee and the chosen infrastructure architecture provide the required controllability.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.854Z",
       "ownedApplications": [],
       "ownedDataObjects": [],
       "ownedCapabilities": [],
@@ -7624,6 +8580,15 @@
       "avatarUrl": "",
       "createdAt": "2025-09-09T12:16:52.718Z",
       "updatedAt": "2025-09-09T12:16:52.718Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "MEDIUM",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Oracle and the current operating model shape the technological autonomy of Oracle Hyperion.",
+      "sovereigntyAchResilienceEvidence": "Oracle Hyperion is designed for high processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Oracle Hyperion is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Robert Davis and the current platform setup support the controllability of Oracle Hyperion.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "ownedApplications": [
         {
           "__typename": "Application",
@@ -7692,6 +8657,15 @@
       "avatarUrl": "",
       "createdAt": "2025-09-09T12:16:52.718Z",
       "updatedAt": "2025-09-09T12:16:52.718Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "MEDIUM",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Siemens and the current operating model shape the technological autonomy of Siemens Teamcenter.",
+      "sovereigntyAchResilienceEvidence": "Siemens Teamcenter is designed for high processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Siemens Teamcenter is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Dr. Lisa Anderson and the current platform setup support the controllability of Siemens Teamcenter.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "ownedApplications": [
         {
           "__typename": "Application",
@@ -7755,6 +8729,15 @@
       "avatarUrl": "",
       "createdAt": "2025-09-09T12:16:52.718Z",
       "updatedAt": "2025-09-09T12:16:52.718Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor In-house Development and the current operating model shape the technological autonomy of Solar MES Platform.",
+      "sovereigntyAchResilienceEvidence": "Solar MES Platform is designed for critical processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Solar MES Platform is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by James Thompson and the current platform setup support the controllability of Solar MES Platform.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "ownedApplications": [
         {
           "__typename": "Application",
@@ -7823,6 +8806,15 @@
       "avatarUrl": "",
       "createdAt": "2025-09-09T12:16:52.718Z",
       "updatedAt": "2025-09-09T12:16:52.718Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "MEDIUM",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Manhattan Associates and the current operating model shape the technological autonomy of Manhattan WMS.",
+      "sovereigntyAchResilienceEvidence": "Manhattan WMS is designed for high processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Manhattan WMS is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Maria Rodriguez and the current platform setup support the controllability of Manhattan WMS.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "ownedApplications": [
         {
           "__typename": "Application",
@@ -7876,6 +8868,15 @@
       "avatarUrl": "",
       "createdAt": "2025-09-09T12:16:52.718Z",
       "updatedAt": "2025-09-09T12:16:52.718Z",
+      "sovereigntyAchStrategicAutonomy": "LOW",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Salesforce and the current operating model shape the technological autonomy of Salesforce Sales Cloud.",
+      "sovereigntyAchResilienceEvidence": "Salesforce Sales Cloud is designed for high processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Salesforce Sales Cloud is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by David Wilson and the current platform setup support the controllability of Salesforce Sales Cloud.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "ownedApplications": [
         {
           "__typename": "Application",
@@ -7919,6 +8920,15 @@
       "avatarUrl": "",
       "createdAt": "2025-09-09T12:16:52.718Z",
       "updatedAt": "2025-09-09T12:16:52.718Z",
+      "sovereigntyAchStrategicAutonomy": "LOW",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor HubSpot and the current operating model shape the technological autonomy of HubSpot Marketing Hub.",
+      "sovereigntyAchResilienceEvidence": "HubSpot Marketing Hub is designed for medium processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "HubSpot Marketing Hub is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Emily Brown and the current platform setup support the controllability of HubSpot Marketing Hub.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "ownedApplications": [
         {
           "__typename": "Application",
@@ -7982,6 +8992,15 @@
       "avatarUrl": "",
       "createdAt": "2025-09-09T12:16:52.718Z",
       "updatedAt": "2025-09-09T12:16:52.718Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor In-house Development and the current operating model shape the technological autonomy of Solar Quality Management System.",
+      "sovereigntyAchResilienceEvidence": "Solar Quality Management System is designed for high processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Solar Quality Management System is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Dr. Thomas Miller and the current platform setup support the controllability of Solar Quality Management System.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "ownedApplications": [
         {
           "__typename": "Application",
@@ -8025,6 +9044,15 @@
       "avatarUrl": "",
       "createdAt": "2025-09-09T12:16:52.718Z",
       "updatedAt": "2025-09-09T12:16:52.718Z",
+      "sovereigntyAchStrategicAutonomy": "LOW",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Zendesk and the current operating model shape the technological autonomy of Zendesk Support.",
+      "sovereigntyAchResilienceEvidence": "Zendesk Support is designed for medium processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Zendesk Support is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Amanda Taylor and the current platform setup support the controllability of Zendesk Support.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "ownedApplications": [
         {
           "__typename": "Application",
@@ -8078,6 +9106,15 @@
       "avatarUrl": "",
       "createdAt": "2025-09-09T12:16:52.718Z",
       "updatedAt": "2025-09-09T12:16:52.718Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Cornerstone OnDemand and the current operating model shape the technological autonomy of Cornerstone OnDemand.",
+      "sovereigntyAchResilienceEvidence": "Cornerstone OnDemand is designed for medium processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Cornerstone OnDemand is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Kevin Jones and the current platform setup support the controllability of Cornerstone OnDemand.",
+      "lastSovereigntyAssessmentAt": "2026-02-13T14:46:53.282Z",
       "ownedApplications": [
         {
           "__typename": "Application",
@@ -8162,6 +9199,15 @@
       "avatarUrl": "",
       "createdAt": "2025-11-18T12:50:32.031Z",
       "updatedAt": "2026-01-15T10:24:07.758Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor SAP and the current operating model shape the technological autonomy of SAP S/4HANA.",
+      "sovereigntyAchResilienceEvidence": "SAP S/4HANA is designed for critical processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "SAP S/4HANA is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Sandra Garcia and the current platform setup support the controllability of SAP S/4HANA.",
+      "lastSovereigntyAssessmentAt": "2025-12-15T08:59:24.686Z",
       "ownedApplications": [],
       "ownedDataObjects": [],
       "ownedCapabilities": [],
@@ -8644,6 +9690,15 @@
       "timestamp": "2025-09-09T12:16:52.986Z",
       "createdAt": "2025-09-09T12:16:52.986Z",
       "updatedAt": "2025-09-09T12:16:52.986Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor In-house Development and the current operating model shape the technological autonomy of Solar MES Platform.",
+      "sovereigntyAchResilienceEvidence": "Solar MES Platform is designed for critical processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Solar MES Platform is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by James Thompson and the current platform setup support the controllability of Solar MES Platform.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "containsApplications": [],
       "containsCapabilities": [],
       "containsDataObjects": [],
@@ -9079,6 +10134,15 @@
       "timestamp": "2025-09-09T12:16:52.986Z",
       "createdAt": "2025-09-09T12:16:52.986Z",
       "updatedAt": "2025-09-09T12:16:52.986Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor In-house Development and the current operating model shape the technological autonomy of Solar MES Platform.",
+      "sovereigntyAchResilienceEvidence": "Solar MES Platform is designed for critical processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Solar MES Platform is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by James Thompson and the current platform setup support the controllability of Solar MES Platform.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "containsApplications": [],
       "containsCapabilities": [],
       "containsDataObjects": [],
@@ -9431,6 +10495,15 @@
       "diagramPng": "",
       "createdAt": "2025-09-11T08:35:06.613Z",
       "updatedAt": "2025-12-09T15:16:48.358Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Oracle and the current operating model shape the technological autonomy of Oracle Supply Chain Management.",
+      "sovereigntyAchResilienceEvidence": "Oracle Supply Chain Management is designed for high processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Oracle Supply Chain Management is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Maria Rodriguez and the current platform setup support the controllability of Oracle Supply Chain Management.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "containsApplications": [
         {
           "__typename": "Application",
@@ -9486,6 +10559,15 @@
       "diagramPng": "",
       "createdAt": "2025-12-09T13:28:47.902Z",
       "updatedAt": "2025-12-09T14:48:59.800Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Cornerstone OnDemand and the current operating model shape the technological autonomy of Cornerstone OnDemand.",
+      "sovereigntyAchResilienceEvidence": "Cornerstone OnDemand is designed for medium processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Cornerstone OnDemand is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Kevin Jones and the current platform setup support the controllability of Cornerstone OnDemand.",
+      "lastSovereigntyAssessmentAt": "2026-02-13T14:46:53.282Z",
       "containsApplications": [
         {
           "__typename": "Application",
@@ -9541,6 +10623,15 @@
       "diagramPng": "",
       "createdAt": "2025-12-10T08:56:10.587Z",
       "updatedAt": "2025-12-15T15:53:26.651Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Cornerstone OnDemand and the current operating model shape the technological autonomy of Cornerstone OnDemand.",
+      "sovereigntyAchResilienceEvidence": "Cornerstone OnDemand is designed for medium processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Cornerstone OnDemand is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Kevin Jones and the current platform setup support the controllability of Cornerstone OnDemand.",
+      "lastSovereigntyAssessmentAt": "2026-02-13T14:46:53.282Z",
       "containsApplications": [
         {
           "__typename": "Application",
@@ -9649,6 +10740,15 @@
       "diagramPng": "",
       "createdAt": "2025-12-11T10:56:56.167Z",
       "updatedAt": "",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor SAP and the current operating model shape the technological autonomy of SAP S/4HANA.",
+      "sovereigntyAchResilienceEvidence": "SAP S/4HANA is designed for critical processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "SAP S/4HANA is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Sandra Garcia and the current platform setup support the controllability of SAP S/4HANA.",
+      "lastSovereigntyAssessmentAt": "2025-12-15T08:59:24.686Z",
       "containsApplications": [
         {
           "__typename": "Application",
@@ -9936,6 +11036,15 @@
       "tags": ["agility", "flexibility", "adaptation"],
       "createdAt": "2025-09-09T12:16:52.898Z",
       "updatedAt": "2025-09-09T12:16:52.898Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor In-house Development and the current operating model shape the technological autonomy of R&D Innovation Platform.",
+      "sovereigntyAchResilienceEvidence": "R&D Innovation Platform is designed for medium processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "R&D Innovation Platform is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Dr. Lisa Anderson and the current platform setup support the controllability of R&D Innovation Platform.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "appliedInArchitectures": [
         {
           "__typename": "Architecture",
@@ -9982,6 +11091,15 @@
       "tags": ["customer", "experience", "satisfaction"],
       "createdAt": "2025-09-09T12:16:52.898Z",
       "updatedAt": "2025-09-09T12:16:52.898Z",
+      "sovereigntyAchStrategicAutonomy": "LOW",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Salesforce and the current operating model shape the technological autonomy of Salesforce Sales Cloud.",
+      "sovereigntyAchResilienceEvidence": "Salesforce Sales Cloud is designed for high processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Salesforce Sales Cloud is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by David Wilson and the current platform setup support the controllability of Salesforce Sales Cloud.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "appliedInArchitectures": [
         {
           "__typename": "Architecture",
@@ -10043,6 +11161,15 @@
       "tags": ["sustainability", "environment", "responsibility"],
       "createdAt": "2025-09-09T12:16:52.898Z",
       "updatedAt": "2025-09-09T12:16:52.898Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Cornerstone OnDemand and the current operating model shape the technological autonomy of Cornerstone OnDemand.",
+      "sovereigntyAchResilienceEvidence": "Cornerstone OnDemand is designed for medium processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Cornerstone OnDemand is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Kevin Jones and the current platform setup support the controllability of Cornerstone OnDemand.",
+      "lastSovereigntyAssessmentAt": "2026-02-13T14:46:53.282Z",
       "appliedInArchitectures": [
         {
           "__typename": "Architecture",
@@ -10089,6 +11216,15 @@
       "tags": ["data", "governance", "analytics"],
       "createdAt": "2025-09-09T12:16:52.898Z",
       "updatedAt": "2025-09-09T12:16:52.898Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Oracle and the current operating model shape the technological autonomy of Oracle Supply Chain Management.",
+      "sovereigntyAchResilienceEvidence": "Oracle Supply Chain Management is designed for high processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Oracle Supply Chain Management is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Maria Rodriguez and the current platform setup support the controllability of Oracle Supply Chain Management.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "appliedInArchitectures": [
         {
           "__typename": "Architecture",
@@ -10125,6 +11261,15 @@
       "tags": ["consistency", "accuracy", "reliability"],
       "createdAt": "2025-09-09T12:16:52.898Z",
       "updatedAt": "2025-09-09T12:16:52.898Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Microsoft and the current operating model shape the technological autonomy of Microsoft Power BI.",
+      "sovereigntyAchResilienceEvidence": "Microsoft Power BI is designed for medium processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Microsoft Power BI is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Sandra Garcia and the current platform setup support the controllability of Microsoft Power BI.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "appliedInArchitectures": [
         {
           "__typename": "Architecture",
@@ -10161,6 +11306,15 @@
       "tags": ["real-time", "monitoring", "visibility"],
       "createdAt": "2025-09-09T12:16:52.898Z",
       "updatedAt": "2025-09-09T12:16:52.898Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Microsoft and the current operating model shape the technological autonomy of Microsoft Power BI.",
+      "sovereigntyAchResilienceEvidence": "Microsoft Power BI is designed for medium processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Microsoft Power BI is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Sandra Garcia and the current platform setup support the controllability of Microsoft Power BI.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "appliedInArchitectures": [
         {
           "__typename": "Architecture",
@@ -10202,6 +11356,15 @@
       "tags": ["cloud", "scalability", "efficiency"],
       "createdAt": "2025-09-09T12:16:52.898Z",
       "updatedAt": "2025-09-09T12:16:52.898Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Microsoft and the current operating model shape the technological autonomy of Microsoft Power BI.",
+      "sovereigntyAchResilienceEvidence": "Microsoft Power BI is designed for medium processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Microsoft Power BI is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Sandra Garcia and the current platform setup support the controllability of Microsoft Power BI.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "appliedInArchitectures": [
         {
           "__typename": "Architecture",
@@ -10298,6 +11461,15 @@
       "tags": ["api", "integration", "ecosystem"],
       "createdAt": "2025-09-09T12:16:52.898Z",
       "updatedAt": "2025-09-09T12:16:52.898Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Cornerstone OnDemand and the current operating model shape the technological autonomy of Cornerstone OnDemand.",
+      "sovereigntyAchResilienceEvidence": "Cornerstone OnDemand is designed for medium processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Cornerstone OnDemand is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Kevin Jones and the current platform setup support the controllability of Cornerstone OnDemand.",
+      "lastSovereigntyAssessmentAt": "2026-02-13T14:46:53.282Z",
       "appliedInArchitectures": [
         {
           "__typename": "Architecture",
@@ -10374,6 +11546,15 @@
       "tags": ["microservices", "modularity", "scalability"],
       "createdAt": "2025-09-09T12:16:52.898Z",
       "updatedAt": "2025-09-09T12:16:52.898Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Cornerstone OnDemand and the current operating model shape the technological autonomy of Cornerstone OnDemand.",
+      "sovereigntyAchResilienceEvidence": "Cornerstone OnDemand is designed for medium processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Cornerstone OnDemand is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Kevin Jones and the current platform setup support the controllability of Cornerstone OnDemand.",
+      "lastSovereigntyAssessmentAt": "2026-02-13T14:46:53.282Z",
       "appliedInArchitectures": [
         {
           "__typename": "Architecture",
@@ -10420,6 +11601,15 @@
       "tags": ["automation", "efficiency", "reliability"],
       "createdAt": "2025-09-09T12:16:52.898Z",
       "updatedAt": "2025-09-09T12:16:52.898Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor In-house Development and the current operating model shape the technological autonomy of Solar Quality Management System.",
+      "sovereigntyAchResilienceEvidence": "Solar Quality Management System is designed for high processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Solar Quality Management System is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Dr. Thomas Miller and the current platform setup support the controllability of Solar Quality Management System.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "appliedInArchitectures": [
         {
           "__typename": "Architecture",
@@ -10476,6 +11666,15 @@
       "tags": ["open-source", "standards", "interoperability"],
       "createdAt": "2025-09-09T12:16:52.898Z",
       "updatedAt": "2025-09-09T12:16:52.898Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor In-house Development and the current operating model shape the technological autonomy of Solar Quality Management System.",
+      "sovereigntyAchResilienceEvidence": "Solar Quality Management System is designed for high processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Solar Quality Management System is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Dr. Thomas Miller and the current platform setup support the controllability of Solar Quality Management System.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "appliedInArchitectures": [
         {
           "__typename": "Architecture",
@@ -10522,6 +11721,15 @@
       "tags": ["edge", "manufacturing", "latency"],
       "createdAt": "2025-09-09T12:16:52.898Z",
       "updatedAt": "2025-09-09T12:16:52.898Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "MEDIUM",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Siemens and the current operating model shape the technological autonomy of Siemens Teamcenter.",
+      "sovereigntyAchResilienceEvidence": "Siemens Teamcenter is designed for high processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Siemens Teamcenter is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Dr. Lisa Anderson and the current platform setup support the controllability of Siemens Teamcenter.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "appliedInArchitectures": [
         {
           "__typename": "Architecture",
@@ -10678,6 +11886,15 @@
       "tags": ["privacy", "protection", "compliance"],
       "createdAt": "2025-09-09T12:16:52.898Z",
       "updatedAt": "2025-09-09T12:16:52.898Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Cornerstone OnDemand and the current operating model shape the technological autonomy of Cornerstone OnDemand.",
+      "sovereigntyAchResilienceEvidence": "Cornerstone OnDemand is designed for medium processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Cornerstone OnDemand is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Kevin Jones and the current platform setup support the controllability of Cornerstone OnDemand.",
+      "lastSovereigntyAssessmentAt": "2026-02-13T14:46:53.282Z",
       "appliedInArchitectures": [
         {
           "__typename": "Architecture",
@@ -10764,6 +11981,15 @@
       "tags": ["events", "streaming", "real-time"],
       "createdAt": "2025-09-09T12:16:52.898Z",
       "updatedAt": "2025-09-09T12:16:52.898Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor SAP and the current operating model shape the technological autonomy of SAP S/4HANA.",
+      "sovereigntyAchResilienceEvidence": "SAP S/4HANA is designed for critical processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "SAP S/4HANA is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Sandra Garcia and the current platform setup support the controllability of SAP S/4HANA.",
+      "lastSovereigntyAssessmentAt": "2025-12-15T08:59:24.686Z",
       "appliedInArchitectures": [
         {
           "__typename": "Architecture",
@@ -10869,6 +12095,15 @@
       "tags": ["cost", "transparency", "optimization"],
       "createdAt": "2025-09-09T12:16:52.898Z",
       "updatedAt": "2025-09-09T12:16:52.898Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "MEDIUM",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "The vendor Siemens and the current operating model shape the technological autonomy of Siemens Teamcenter.",
+      "sovereigntyAchResilienceEvidence": "Siemens Teamcenter is designed for high processes and is operated robustly on the current platform.",
+      "sovereigntyAchSecurityEvidence": "Siemens Teamcenter is subject to an elevated security and authorization model due to its business usage.",
+      "sovereigntyAchControlEvidence": "Business ownership by Dr. Lisa Anderson and the current platform setup support the controllability of Siemens Teamcenter.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.765Z",
       "appliedInArchitectures": [
         {
           "__typename": "Architecture",
@@ -10920,6 +12155,15 @@
       "endOfLifeDate": "",
       "createdAt": "2025-09-09T12:16:52.854Z",
       "updatedAt": "2026-02-13T14:47:42.637Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "AWS US East 1 (Virginia) is based on Amazon Web Services and therefore provides a corresponding level of infrastructure autonomy.",
+      "sovereigntyAchResilienceEvidence": "AWS US East 1 (Virginia) is designed for US East (N. Virginia) and contributes to the stable delivery of critical workloads.",
+      "sovereigntyAchSecurityEvidence": "AWS US East 1 (Virginia) is operated in a controlled environment with appropriate baseline security measures.",
+      "sovereigntyAchControlEvidence": "Ownership by Sandra Garcia and the chosen infrastructure architecture provide the required controllability.",
+      "lastSovereigntyAssessmentAt": "2026-02-13T14:47:42.637Z",
       "hostsApplications": [],
       "owners": [
         {
@@ -10975,6 +12219,15 @@
       "endOfLifeDate": "",
       "createdAt": "2025-09-09T12:16:52.854Z",
       "updatedAt": "2025-09-09T12:16:52.854Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "AWS EU West 1 (Ireland) is based on Amazon Web Services and therefore provides a corresponding level of infrastructure autonomy.",
+      "sovereigntyAchResilienceEvidence": "AWS EU West 1 (Ireland) is designed for EU West (Ireland) and contributes to the stable delivery of critical workloads.",
+      "sovereigntyAchSecurityEvidence": "AWS EU West 1 (Ireland) is operated in a controlled environment with appropriate baseline security measures.",
+      "sovereigntyAchControlEvidence": "Ownership by Sandra Garcia and the chosen infrastructure architecture provide the required controllability.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.854Z",
       "hostsApplications": [],
       "owners": [
         {
@@ -11032,6 +12285,15 @@
       "endOfLifeDate": "",
       "createdAt": "2025-09-09T12:16:52.854Z",
       "updatedAt": "2025-09-09T12:16:52.854Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "EKS Production Cluster is based on Amazon Web Services and therefore provides a corresponding level of infrastructure autonomy.",
+      "sovereigntyAchResilienceEvidence": "EKS Production Cluster is designed for AWS US East 1 and contributes to the stable delivery of critical workloads.",
+      "sovereigntyAchSecurityEvidence": "EKS Production Cluster is operated in a controlled environment with appropriate baseline security measures.",
+      "sovereigntyAchControlEvidence": "Ownership by Mark Lee and the chosen infrastructure architecture provide the required controllability.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.854Z",
       "hostsApplications": [
         {
           "__typename": "Application",
@@ -11083,6 +12345,15 @@
       "endOfLifeDate": "",
       "createdAt": "2025-09-09T12:16:52.854Z",
       "updatedAt": "2025-09-09T12:16:52.854Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "EKS Development Cluster is based on Amazon Web Services and therefore provides a corresponding level of infrastructure autonomy.",
+      "sovereigntyAchResilienceEvidence": "EKS Development Cluster is designed for AWS US East 1 and contributes to the stable delivery of critical workloads.",
+      "sovereigntyAchSecurityEvidence": "EKS Development Cluster is operated in a controlled environment with appropriate baseline security measures.",
+      "sovereigntyAchControlEvidence": "Ownership by Mark Lee and the chosen infrastructure architecture provide the required controllability.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.854Z",
       "hostsApplications": [],
       "owners": [
         {
@@ -11123,6 +12394,15 @@
       "endOfLifeDate": "",
       "createdAt": "2025-09-09T12:16:52.854Z",
       "updatedAt": "2025-09-09T12:16:52.854Z",
+      "sovereigntyAchStrategicAutonomy": "MEDIUM",
+      "sovereigntyAchResilience": "MEDIUM",
+      "sovereigntyAchSecurity": "MEDIUM",
+      "sovereigntyAchControl": "MEDIUM",
+      "sovereigntyAchStrategicAutonomyEvidence": "ECS Fargate Cluster is based on Amazon Web Services and therefore provides a corresponding level of infrastructure autonomy.",
+      "sovereigntyAchResilienceEvidence": "ECS Fargate Cluster is designed for AWS US East 1 and contributes to the stable delivery of critical workloads.",
+      "sovereigntyAchSecurityEvidence": "ECS Fargate Cluster is operated in a controlled environment with appropriate baseline security measures.",
+      "sovereigntyAchControlEvidence": "Ownership by Mark Lee and the chosen infrastructure architecture provide the required controllability.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.854Z",
       "hostsApplications": [
         {
           "__typename": "Application",
@@ -11169,6 +12449,15 @@
       "endOfLifeDate": "",
       "createdAt": "2025-09-09T12:16:52.854Z",
       "updatedAt": "2025-09-09T12:16:52.854Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "MEDIUM",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "SAP S/4HANA VM Cluster is based on Amazon Web Services and therefore provides a corresponding level of infrastructure autonomy.",
+      "sovereigntyAchResilienceEvidence": "SAP S/4HANA VM Cluster is designed for AWS US East 1 and contributes to the stable delivery of critical workloads.",
+      "sovereigntyAchSecurityEvidence": "SAP S/4HANA VM Cluster is operated in a controlled environment with appropriate baseline security measures.",
+      "sovereigntyAchControlEvidence": "Ownership by Sandra Garcia and the chosen infrastructure architecture provide the required controllability.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.854Z",
       "hostsApplications": [
         {
           "__typename": "Application",
@@ -11215,6 +12504,15 @@
       "endOfLifeDate": "",
       "createdAt": "2025-09-09T12:16:52.854Z",
       "updatedAt": "2025-09-09T12:16:52.854Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "MEDIUM",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "Oracle SCM VM Cluster is based on Oracle Cloud and therefore provides a corresponding level of infrastructure autonomy.",
+      "sovereigntyAchResilienceEvidence": "Oracle SCM VM Cluster is designed for Oracle Cloud US East and contributes to the stable delivery of critical workloads.",
+      "sovereigntyAchSecurityEvidence": "Oracle SCM VM Cluster is operated in a controlled environment with appropriate baseline security measures.",
+      "sovereigntyAchControlEvidence": "Ownership by Sandra Garcia and the chosen infrastructure architecture provide the required controllability.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.854Z",
       "hostsApplications": [
         {
           "__typename": "Application",
@@ -11255,6 +12553,15 @@
       "endOfLifeDate": "",
       "createdAt": "2025-09-09T12:16:52.854Z",
       "updatedAt": "2025-09-09T12:16:52.854Z",
+      "sovereigntyAchStrategicAutonomy": "VERY_HIGH",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "VERY_HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "Manufacturing Datacenter is based on Internal and therefore provides a corresponding level of infrastructure autonomy.",
+      "sovereigntyAchResilienceEvidence": "Manufacturing Datacenter is designed for Solar Panel Manufacturing Facility, Phoenix, AZ and contributes to the stable delivery of critical workloads.",
+      "sovereigntyAchSecurityEvidence": "Manufacturing Datacenter is operated in a controlled environment with appropriate baseline security measures.",
+      "sovereigntyAchControlEvidence": "Ownership by Mark Lee and the chosen infrastructure architecture provide the required controllability.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.854Z",
       "hostsApplications": [],
       "owners": [
         {
@@ -11300,6 +12607,15 @@
       "endOfLifeDate": "",
       "createdAt": "2025-09-09T12:16:52.854Z",
       "updatedAt": "2025-09-09T12:16:52.854Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "MEDIUM",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "Siemens PLM Servers is based on Dell Technologies and therefore provides a corresponding level of infrastructure autonomy.",
+      "sovereigntyAchResilienceEvidence": "Siemens PLM Servers is designed for Manufacturing Datacenter and contributes to the stable delivery of critical workloads.",
+      "sovereigntyAchSecurityEvidence": "Siemens PLM Servers is operated in a controlled environment with appropriate baseline security measures.",
+      "sovereigntyAchControlEvidence": "Ownership by Mark Lee and the chosen infrastructure architecture provide the required controllability.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.854Z",
       "hostsApplications": [
         {
           "__typename": "Application",
@@ -11346,6 +12662,15 @@
       "endOfLifeDate": "",
       "createdAt": "2025-09-09T12:16:52.854Z",
       "updatedAt": "2025-09-09T12:16:52.854Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "MEDIUM",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "Manhattan WMS Servers is based on HPE and therefore provides a corresponding level of infrastructure autonomy.",
+      "sovereigntyAchResilienceEvidence": "Manhattan WMS Servers is designed for Manufacturing Datacenter and contributes to the stable delivery of critical workloads.",
+      "sovereigntyAchSecurityEvidence": "Manhattan WMS Servers is operated in a controlled environment with appropriate baseline security measures.",
+      "sovereigntyAchControlEvidence": "Ownership by Mark Lee and the chosen infrastructure architecture provide the required controllability.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.854Z",
       "hostsApplications": [
         {
           "__typename": "Application",
@@ -11392,6 +12717,15 @@
       "endOfLifeDate": "",
       "createdAt": "2025-09-09T12:16:52.854Z",
       "updatedAt": "2025-09-09T12:16:52.854Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "EKS Europe Cluster is based on Amazon Web Services and therefore provides a corresponding level of infrastructure autonomy.",
+      "sovereigntyAchResilienceEvidence": "EKS Europe Cluster is designed for AWS EU West 1 and contributes to the stable delivery of critical workloads.",
+      "sovereigntyAchSecurityEvidence": "EKS Europe Cluster is operated in a controlled environment with appropriate baseline security measures.",
+      "sovereigntyAchControlEvidence": "Ownership by Mark Lee and the chosen infrastructure architecture provide the required controllability.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:52.854Z",
       "hostsApplications": [],
       "owners": [
         {
@@ -11430,6 +12764,15 @@
       "lastUpdated": "2024-08-20",
       "createdAt": "2025-09-09T12:16:53.289Z",
       "updatedAt": "2025-09-09T12:16:53.289Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "Solar Panel Quality Prediction System is governed by Internal Development and can therefore be influenced effectively from a technology perspective.",
+      "sovereigntyAchResilienceEvidence": "Solar Panel Quality Prediction System is designed for production-near usage on the current platform with robust operations.",
+      "sovereigntyAchSecurityEvidence": "Solar Panel Quality Prediction System processes valuable production and quality data and is therefore operated with a high level of security.",
+      "sovereigntyAchControlEvidence": "Model, version, and runtime environment of Solar Panel Quality Prediction System are clearly documented and can be controlled deliberately.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:53.289Z",
       "tags": ["quality-control", "manufacturing", "predictive-analytics"],
       "owners": [],
       "supportsCapabilities": [
@@ -11506,6 +12849,15 @@
       "lastUpdated": "2024-09-05",
       "createdAt": "2025-09-09T12:16:53.289Z",
       "updatedAt": "2026-02-13T15:13:58.626Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "Automated Visual Defect Detection is governed by Internal Development and can therefore be influenced effectively from a technology perspective.",
+      "sovereigntyAchResilienceEvidence": "Automated Visual Defect Detection is designed for production-near usage on the current platform with robust operations.",
+      "sovereigntyAchSecurityEvidence": "Automated Visual Defect Detection processes valuable production and quality data and is therefore operated with a high level of security.",
+      "sovereigntyAchControlEvidence": "Model, version, and runtime environment of Automated Visual Defect Detection are clearly documented and can be controlled deliberately.",
+      "lastSovereigntyAssessmentAt": "2026-02-13T15:13:58.626Z",
       "tags": ["computer-vision, defect-detection, quality-assurance"],
       "owners": [],
       "supportsCapabilities": [
@@ -11577,6 +12929,15 @@
       "lastUpdated": "2024-08-30",
       "createdAt": "2025-09-09T12:16:53.289Z",
       "updatedAt": "2025-09-09T12:16:53.289Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "MEDIUM",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "Equipment Maintenance Predictor is governed by Internal Development and can therefore be influenced effectively from a technology perspective.",
+      "sovereigntyAchResilienceEvidence": "Equipment Maintenance Predictor is designed for production-near usage on the current platform with robust operations.",
+      "sovereigntyAchSecurityEvidence": "Equipment Maintenance Predictor processes valuable production and quality data and is therefore operated with a high level of security.",
+      "sovereigntyAchControlEvidence": "Model, version, and runtime environment of Equipment Maintenance Predictor are clearly documented and can be controlled deliberately.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:53.289Z",
       "tags": ["predictive-maintenance", "equipment", "iot"],
       "owners": [],
       "supportsCapabilities": [
@@ -11643,6 +13004,15 @@
       "lastUpdated": "2024-09-01",
       "createdAt": "2025-09-09T12:16:53.289Z",
       "updatedAt": "2025-09-09T12:16:53.289Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "MEDIUM",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "Solar Market Demand Forecaster is governed by Internal Development and can therefore be influenced effectively from a technology perspective.",
+      "sovereigntyAchResilienceEvidence": "Solar Market Demand Forecaster is designed for production-near usage on the current platform with robust operations.",
+      "sovereigntyAchSecurityEvidence": "Solar Market Demand Forecaster processes valuable production and quality data and is therefore operated with a high level of security.",
+      "sovereigntyAchControlEvidence": "Model, version, and runtime environment of Solar Market Demand Forecaster are clearly documented and can be controlled deliberately.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:53.289Z",
       "tags": ["demand-forecasting", "market-analysis", "time-series"],
       "owners": [],
       "supportsCapabilities": [
@@ -11724,6 +13094,15 @@
       "lastUpdated": "2024-09-06",
       "createdAt": "2025-09-09T12:16:53.289Z",
       "updatedAt": "2025-09-09T12:16:53.289Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "MEDIUM",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "SolarBot Customer Assistant is governed by OpenAI + Internal and can therefore be influenced effectively from a technology perspective.",
+      "sovereigntyAchResilienceEvidence": "SolarBot Customer Assistant is designed for production-near usage on the current platform with robust operations.",
+      "sovereigntyAchSecurityEvidence": "SolarBot Customer Assistant processes valuable production and quality data and is therefore operated with a high level of security.",
+      "sovereigntyAchControlEvidence": "Model, version, and runtime environment of SolarBot Customer Assistant are clearly documented and can be controlled deliberately.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:53.289Z",
       "tags": ["customer-service", "nlp", "automation"],
       "owners": [],
       "supportsCapabilities": [
@@ -11800,6 +13179,15 @@
       "lastUpdated": "2024-08-25",
       "createdAt": "2025-09-09T12:16:53.289Z",
       "updatedAt": "2025-09-09T12:16:53.289Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "MEDIUM",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "Supply Chain Optimization Engine is governed by Internal Development and can therefore be influenced effectively from a technology perspective.",
+      "sovereigntyAchResilienceEvidence": "Supply Chain Optimization Engine is designed for production-near usage on the current platform with robust operations.",
+      "sovereigntyAchSecurityEvidence": "Supply Chain Optimization Engine processes valuable production and quality data and is therefore operated with a high level of security.",
+      "sovereigntyAchControlEvidence": "Model, version, and runtime environment of Supply Chain Optimization Engine are clearly documented and can be controlled deliberately.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:53.289Z",
       "tags": ["supply-chain", "optimization", "logistics"],
       "owners": [],
       "supportsCapabilities": [
@@ -11876,6 +13264,15 @@
       "lastUpdated": "2024-09-03",
       "createdAt": "2025-09-09T12:16:53.289Z",
       "updatedAt": "2025-09-09T12:16:53.289Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "HIGH",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "Solar Energy Production Forecaster is governed by Internal Development and can therefore be influenced effectively from a technology perspective.",
+      "sovereigntyAchResilienceEvidence": "Solar Energy Production Forecaster is designed for production-near usage on the current platform with robust operations.",
+      "sovereigntyAchSecurityEvidence": "Solar Energy Production Forecaster processes valuable production and quality data and is therefore operated with a high level of security.",
+      "sovereigntyAchControlEvidence": "Model, version, and runtime environment of Solar Energy Production Forecaster are clearly documented and can be controlled deliberately.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:53.289Z",
       "tags": ["energy-forecasting", "weather-data", "performance"],
       "owners": [],
       "supportsCapabilities": [
@@ -11947,6 +13344,15 @@
       "lastUpdated": "2024-08-28",
       "createdAt": "2025-09-09T12:16:53.289Z",
       "updatedAt": "2025-09-09T12:16:53.289Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "MEDIUM",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "Solar Solution Recommendation Engine is governed by Internal Development and can therefore be influenced effectively from a technology perspective.",
+      "sovereigntyAchResilienceEvidence": "Solar Solution Recommendation Engine is designed for production-near usage on the current platform with robust operations.",
+      "sovereigntyAchSecurityEvidence": "Solar Solution Recommendation Engine processes valuable production and quality data and is therefore operated with a high level of security.",
+      "sovereigntyAchControlEvidence": "Model, version, and runtime environment of Solar Solution Recommendation Engine are clearly documented and can be controlled deliberately.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:53.289Z",
       "tags": ["recommendations", "customer-experience", "sales"],
       "owners": [],
       "supportsCapabilities": [
@@ -12033,6 +13439,15 @@
       "lastUpdated": "2024-09-07",
       "createdAt": "2025-09-09T12:16:53.289Z",
       "updatedAt": "2025-09-09T12:16:53.289Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "MEDIUM",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "Dynamic Pricing Optimization System is governed by Internal Development and can therefore be influenced effectively from a technology perspective.",
+      "sovereigntyAchResilienceEvidence": "Dynamic Pricing Optimization System is designed for production-near usage on the current platform with robust operations.",
+      "sovereigntyAchSecurityEvidence": "Dynamic Pricing Optimization System processes valuable production and quality data and is therefore operated with a high level of security.",
+      "sovereigntyAchControlEvidence": "Model, version, and runtime environment of Dynamic Pricing Optimization System are clearly documented and can be controlled deliberately.",
+      "lastSovereigntyAssessmentAt": "2025-09-09T12:16:53.289Z",
       "tags": ["pricing", "optimization", "market-intelligence"],
       "owners": [],
       "supportsCapabilities": [
@@ -12104,6 +13519,15 @@
       "lastUpdated": "2024-08-22",
       "createdAt": "2025-09-09T12:16:53.289Z",
       "updatedAt": "2025-12-16T15:54:02.776Z",
+      "sovereigntyAchStrategicAutonomy": "HIGH",
+      "sovereigntyAchResilience": "MEDIUM",
+      "sovereigntyAchSecurity": "HIGH",
+      "sovereigntyAchControl": "HIGH",
+      "sovereigntyAchStrategicAutonomyEvidence": "Carbon Footprint Analytics System is governed by Internal Development and can therefore be influenced effectively from a technology perspective.",
+      "sovereigntyAchResilienceEvidence": "Carbon Footprint Analytics System is designed for production-near usage on the current platform with robust operations.",
+      "sovereigntyAchSecurityEvidence": "Carbon Footprint Analytics System processes valuable production and quality data and is therefore operated with a high level of security.",
+      "sovereigntyAchControlEvidence": "Model, version, and runtime environment of Carbon Footprint Analytics System are clearly documented and can be controlled deliberately.",
+      "lastSovereigntyAssessmentAt": "2025-12-16T15:54:02.776Z",
       "tags": ["sustainability, carbon-footprint, environmental"],
       "owners": [],
       "supportsCapabilities": [
@@ -12181,20 +13605,46 @@
       "timeHorizon": "2030",
       "year": "2030-01-01",
       "owners": [
-        { "__typename": "Person", "id": "person-ceo", "firstName": "Sarah", "lastName": "Johnson" }
+        {
+          "__typename": "Person",
+          "id": "person-ceo",
+          "firstName": "Sarah",
+          "lastName": "Johnson"
+        }
       ],
       "supportsMissions": [
-        { "id": "mission-deliver-reliable-clean-energy", "score": 3 },
-        { "id": "mission-scale-efficient-solar-production", "score": 3 }
+        {
+          "id": "mission-deliver-reliable-clean-energy",
+          "score": 3
+        },
+        {
+          "id": "mission-scale-efficient-solar-production",
+          "score": 3
+        }
       ],
       "supportedByGoals": [
-        { "id": "goal-expand-market-share-dach", "score": 3 },
-        { "id": "goal-reduce-production-cost-per-watt", "score": 2 },
-        { "id": "goal-improve-customer-nps", "score": 2 }
+        {
+          "id": "goal-expand-market-share-dach",
+          "score": 3
+        },
+        {
+          "id": "goal-reduce-production-cost-per-watt",
+          "score": 2
+        },
+        {
+          "id": "goal-improve-customer-nps",
+          "score": 2
+        }
       ],
       "supportedByValues": [
-        { "id": "value-sustainability-first", "score": 3 },
-        { "id": "value-customer-obsession", "score": 2 }
+        {
+          "id": "value-sustainability-first",
+          "score": 3
+        },
+        {
+          "id": "value-customer-obsession",
+          "score": 2
+        }
       ],
       "partOfArchitectures": [
         {
@@ -12226,9 +13676,24 @@
           "lastName": "Williams"
         }
       ],
-      "supportedByVisions": [{ "id": "vision-solar-market-leadership-2030", "score": 3 }],
-      "supportedByValues": [{ "id": "value-quality-with-integrity", "score": 3 }],
-      "supportedByGoals": [{ "id": "goal-reduce-production-cost-per-watt", "score": 2 }],
+      "supportedByVisions": [
+        {
+          "id": "vision-solar-market-leadership-2030",
+          "score": 3
+        }
+      ],
+      "supportedByValues": [
+        {
+          "id": "value-quality-with-integrity",
+          "score": 3
+        }
+      ],
+      "supportedByGoals": [
+        {
+          "id": "goal-reduce-production-cost-per-watt",
+          "score": 2
+        }
+      ],
       "partOfArchitectures": [
         {
           "__typename": "Architecture",
@@ -12257,9 +13722,24 @@
           "lastName": "Rodriguez"
         }
       ],
-      "supportedByVisions": [{ "id": "vision-solar-market-leadership-2030", "score": 3 }],
-      "supportedByValues": [{ "id": "value-sustainability-first", "score": 3 }],
-      "supportedByGoals": [{ "id": "goal-reduce-production-cost-per-watt", "score": 3 }],
+      "supportedByVisions": [
+        {
+          "id": "vision-solar-market-leadership-2030",
+          "score": 3
+        }
+      ],
+      "supportedByValues": [
+        {
+          "id": "value-sustainability-first",
+          "score": 3
+        }
+      ],
+      "supportedByGoals": [
+        {
+          "id": "goal-reduce-production-cost-per-watt",
+          "score": 3
+        }
+      ],
       "partOfArchitectures": [
         {
           "__typename": "Architecture",
@@ -12281,13 +13761,29 @@
       "name": "Sustainability First",
       "valueStatement": "We make long-term environmental impact the baseline for every strategic and operational decision.",
       "owners": [
-        { "__typename": "Person", "id": "person-ceo", "firstName": "Sarah", "lastName": "Johnson" }
+        {
+          "__typename": "Person",
+          "id": "person-ceo",
+          "firstName": "Sarah",
+          "lastName": "Johnson"
+        }
       ],
       "supportsMissions": [
-        { "id": "mission-deliver-reliable-clean-energy", "score": 2 },
-        { "id": "mission-scale-efficient-solar-production", "score": 2 }
+        {
+          "id": "mission-deliver-reliable-clean-energy",
+          "score": 2
+        },
+        {
+          "id": "mission-scale-efficient-solar-production",
+          "score": 2
+        }
       ],
-      "supportsVisions": [{ "id": "vision-solar-market-leadership-2030", "score": 3 }],
+      "supportsVisions": [
+        {
+          "id": "vision-solar-market-leadership-2030",
+          "score": 3
+        }
+      ],
       "partOfArchitectures": [
         {
           "__typename": "Architecture",
@@ -12307,10 +13803,25 @@
       "name": "Customer Obsession",
       "valueStatement": "We design processes, products, and services starting from customer outcomes.",
       "owners": [
-        { "__typename": "Person", "id": "person-ceo", "firstName": "Sarah", "lastName": "Johnson" }
+        {
+          "__typename": "Person",
+          "id": "person-ceo",
+          "firstName": "Sarah",
+          "lastName": "Johnson"
+        }
       ],
-      "supportsMissions": [{ "id": "mission-deliver-reliable-clean-energy", "score": 2 }],
-      "supportsVisions": [{ "id": "vision-solar-market-leadership-2030", "score": 2 }],
+      "supportsMissions": [
+        {
+          "id": "mission-deliver-reliable-clean-energy",
+          "score": 2
+        }
+      ],
+      "supportsVisions": [
+        {
+          "id": "vision-solar-market-leadership-2030",
+          "score": 2
+        }
+      ],
       "partOfArchitectures": [
         {
           "__typename": "Architecture",
@@ -12337,8 +13848,18 @@
           "lastName": "Williams"
         }
       ],
-      "supportsMissions": [{ "id": "mission-deliver-reliable-clean-energy", "score": 3 }],
-      "supportsVisions": [{ "id": "vision-solar-market-leadership-2030", "score": 2 }],
+      "supportsMissions": [
+        {
+          "id": "mission-deliver-reliable-clean-energy",
+          "score": 3
+        }
+      ],
+      "supportsVisions": [
+        {
+          "id": "vision-solar-market-leadership-2030",
+          "score": 2
+        }
+      ],
       "partOfArchitectures": [
         {
           "__typename": "Architecture",
@@ -12360,12 +13881,37 @@
       "name": "Expand DACH Market Share",
       "goalStatement": "Increase DACH market share from 12% to 18% by 2028 through channel and product expansion.",
       "owners": [
-        { "__typename": "Person", "id": "person-ceo", "firstName": "Sarah", "lastName": "Johnson" }
+        {
+          "__typename": "Person",
+          "id": "person-ceo",
+          "firstName": "Sarah",
+          "lastName": "Johnson"
+        }
       ],
-      "operationalizesVisions": [{ "id": "vision-solar-market-leadership-2030", "score": 3 }],
-      "supportsMissions": [{ "id": "mission-deliver-reliable-clean-energy", "score": 2 }],
-      "supportsValues": [{ "id": "value-customer-obsession", "score": 2 }],
-      "achievedByStrategies": [{ "id": "strategy-growth-through-channels", "score": 3 }],
+      "operationalizesVisions": [
+        {
+          "id": "vision-solar-market-leadership-2030",
+          "score": 3
+        }
+      ],
+      "supportsMissions": [
+        {
+          "id": "mission-deliver-reliable-clean-energy",
+          "score": 2
+        }
+      ],
+      "supportsValues": [
+        {
+          "id": "value-customer-obsession",
+          "score": 2
+        }
+      ],
+      "achievedByStrategies": [
+        {
+          "id": "strategy-growth-through-channels",
+          "score": 3
+        }
+      ],
       "partOfArchitectures": [
         {
           "__typename": "Architecture",
@@ -12385,15 +13931,41 @@
       "name": "Reduce Production Cost per Watt",
       "goalStatement": "Reduce production cost per watt by 20% by 2027 through automation and yield optimization.",
       "owners": [
-        { "__typename": "Person", "id": "person-cfo", "firstName": "Robert", "lastName": "Davis" }
+        {
+          "__typename": "Person",
+          "id": "person-cfo",
+          "firstName": "Robert",
+          "lastName": "Davis"
+        }
       ],
-      "operationalizesVisions": [{ "id": "vision-solar-market-leadership-2030", "score": 2 }],
-      "supportsMissions": [{ "id": "mission-scale-efficient-solar-production", "score": 3 }],
+      "operationalizesVisions": [
+        {
+          "id": "vision-solar-market-leadership-2030",
+          "score": 2
+        }
+      ],
+      "supportsMissions": [
+        {
+          "id": "mission-scale-efficient-solar-production",
+          "score": 3
+        }
+      ],
       "supportsValues": [
-        { "id": "value-sustainability-first", "score": 2 },
-        { "id": "value-quality-with-integrity", "score": 2 }
+        {
+          "id": "value-sustainability-first",
+          "score": 2
+        },
+        {
+          "id": "value-quality-with-integrity",
+          "score": 2
+        }
       ],
-      "achievedByStrategies": [{ "id": "strategy-smart-factory-rollout", "score": 3 }],
+      "achievedByStrategies": [
+        {
+          "id": "strategy-smart-factory-rollout",
+          "score": 3
+        }
+      ],
       "partOfArchitectures": [
         {
           "__typename": "Architecture",
@@ -12413,12 +13985,37 @@
       "name": "Improve Customer NPS",
       "goalStatement": "Increase customer net promoter score from 42 to 60 by 2027 via proactive service and transparency.",
       "owners": [
-        { "__typename": "Person", "id": "person-ceo", "firstName": "Sarah", "lastName": "Johnson" }
+        {
+          "__typename": "Person",
+          "id": "person-ceo",
+          "firstName": "Sarah",
+          "lastName": "Johnson"
+        }
       ],
-      "operationalizesVisions": [{ "id": "vision-solar-market-leadership-2030", "score": 2 }],
-      "supportsMissions": [{ "id": "mission-deliver-reliable-clean-energy", "score": 2 }],
-      "supportsValues": [{ "id": "value-customer-obsession", "score": 3 }],
-      "achievedByStrategies": [{ "id": "strategy-digital-customer-journey", "score": 3 }],
+      "operationalizesVisions": [
+        {
+          "id": "vision-solar-market-leadership-2030",
+          "score": 2
+        }
+      ],
+      "supportsMissions": [
+        {
+          "id": "mission-deliver-reliable-clean-energy",
+          "score": 2
+        }
+      ],
+      "supportsValues": [
+        {
+          "id": "value-customer-obsession",
+          "score": 3
+        }
+      ],
+      "achievedByStrategies": [
+        {
+          "id": "strategy-digital-customer-journey",
+          "score": 3
+        }
+      ],
       "partOfArchitectures": [
         {
           "__typename": "Architecture",
@@ -12447,7 +14044,12 @@
           "lastName": "Chen"
         }
       ],
-      "achievesGoals": [{ "id": "goal-reduce-production-cost-per-watt", "score": 3 }],
+      "achievesGoals": [
+        {
+          "id": "goal-reduce-production-cost-per-watt",
+          "score": 3
+        }
+      ],
       "partOfArchitectures": [
         {
           "__typename": "Architecture",
@@ -12467,9 +14069,19 @@
       "name": "Growth Through Channels",
       "description": "Scale channel partner enablement and targeted campaigns to increase market presence in strategic regions.",
       "owners": [
-        { "__typename": "Person", "id": "person-ceo", "firstName": "Sarah", "lastName": "Johnson" }
+        {
+          "__typename": "Person",
+          "id": "person-ceo",
+          "firstName": "Sarah",
+          "lastName": "Johnson"
+        }
       ],
-      "achievesGoals": [{ "id": "goal-expand-market-share-dach", "score": 3 }],
+      "achievesGoals": [
+        {
+          "id": "goal-expand-market-share-dach",
+          "score": 3
+        }
+      ],
       "partOfArchitectures": [
         {
           "__typename": "Architecture",
@@ -12489,9 +14101,19 @@
       "name": "Digital Customer Journey",
       "description": "Unify CRM, marketing, and service touchpoints to provide transparent, personalized customer interactions.",
       "owners": [
-        { "__typename": "Person", "id": "person-ceo", "firstName": "Sarah", "lastName": "Johnson" }
+        {
+          "__typename": "Person",
+          "id": "person-ceo",
+          "firstName": "Sarah",
+          "lastName": "Johnson"
+        }
       ],
-      "achievesGoals": [{ "id": "goal-improve-customer-nps", "score": 3 }],
+      "achievesGoals": [
+        {
+          "id": "goal-improve-customer-nps",
+          "score": 3
+        }
+      ],
       "partOfArchitectures": [
         {
           "__typename": "Architecture",
