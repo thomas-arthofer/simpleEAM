@@ -36,17 +36,17 @@ Deployment stabilization track
 
 ## Component Boundaries
 
-| Component | Responsibility | Communicates With |
-|-----------|----------------|-------------------|
-| Graph model storage | Persist explicit sovereignty requirements, achieved ratings, evidence text, and existing dependency relationships only. No inheritance logic in storage. | Neo4j GraphQL schema, import/export flows |
-| Sovereignty analysis service | Load graph neighborhood for one root or a batch of roots, traverse supported-by and hosted-on chains, compare requirement-to-achievement by dimension, and produce canonical findings. | Neo4j driver or GraphQL-backed repository, GraphQL query layer |
-| Sovereignty repository/query adapter | Encapsulate Cypher or repository reads needed for chain traversal so traversal rules are not embedded in UI or resolver glue. | Neo4j, analysis service |
-| GraphQL sovereignty API | Expose normalized analysis objects for detail views, diagram markers, and rollups. Keep schema additive so existing CRUD stays intact. | Analysis service, client |
-| Detail view UI | Render requirement summary, effective chain status, and violation list from backend DTOs. Never recompute scores or inheritance. | GraphQL sovereignty API |
-| Diagram marker adapter | Convert backend status payload into fill and ring markers for diagram elements already linked through `customData.databaseId` and `customData.elementType`. | GraphQL sovereignty API, diagram editor state |
-| Company/dashboard rollup | Aggregate backend-emitted statuses and counts for list views or overview cards. Do not infer from raw entity fields. | GraphQL sovereignty API |
-| Deployment profile contract | Define environment prerequisites, network assumptions, startup ordering, and health checks for Compose and Kubernetes. | compose.yml, k8s chart/docs, operators |
-| Verification harness | Run reproducible checks for local stack startup and for sovereignty-analysis regression cases. | Yarn scripts, Docker/K8s docs, server tests |
+| Component                            | Responsibility                                                                                                                                                                         | Communicates With                                              |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| Graph model storage                  | Persist explicit sovereignty requirements, achieved ratings, evidence text, and existing dependency relationships only. No inheritance logic in storage.                               | Neo4j GraphQL schema, import/export flows                      |
+| Sovereignty analysis service         | Load graph neighborhood for one root or a batch of roots, traverse supported-by and hosted-on chains, compare requirement-to-achievement by dimension, and produce canonical findings. | Neo4j driver or GraphQL-backed repository, GraphQL query layer |
+| Sovereignty repository/query adapter | Encapsulate Cypher or repository reads needed for chain traversal so traversal rules are not embedded in UI or resolver glue.                                                          | Neo4j, analysis service                                        |
+| GraphQL sovereignty API              | Expose normalized analysis objects for detail views, diagram markers, and rollups. Keep schema additive so existing CRUD stays intact.                                                 | Analysis service, client                                       |
+| Detail view UI                       | Render requirement summary, effective chain status, and violation list from backend DTOs. Never recompute scores or inheritance.                                                       | GraphQL sovereignty API                                        |
+| Diagram marker adapter               | Convert backend status payload into fill and ring markers for diagram elements already linked through `customData.databaseId` and `customData.elementType`.                            | GraphQL sovereignty API, diagram editor state                  |
+| Company/dashboard rollup             | Aggregate backend-emitted statuses and counts for list views or overview cards. Do not infer from raw entity fields.                                                                   | GraphQL sovereignty API                                        |
+| Deployment profile contract          | Define environment prerequisites, network assumptions, startup ordering, and health checks for Compose and Kubernetes.                                                                 | compose.yml, k8s chart/docs, operators                         |
+| Verification harness                 | Run reproducible checks for local stack startup and for sovereignty-analysis regression cases.                                                                                         | Yarn scripts, Docker/K8s docs, server tests                    |
 
 ## Data Flow
 
@@ -156,13 +156,22 @@ This model aligns with the concept note in [eam-konzept.md](eam-konzept.md) and 
 ```typescript
 interface SovereigntyAnalysisInput {
   companyId: string
-  rootType: 'businessCapability' | 'businessProcess' | 'dataObject' | 'application' | 'aiComponent' | 'infrastructure'
+  rootType:
+    | 'businessCapability'
+    | 'businessProcess'
+    | 'dataObject'
+    | 'application'
+    | 'aiComponent'
+    | 'infrastructure'
   rootId: string
 }
 
 interface SovereigntyAnalysisService {
   analyzeRoot(input: SovereigntyAnalysisInput): Promise<SovereigntyAnalysis>
-  analyzeMarkers(input: { companyId: string; nodes: Array<{ id: string; type: string }> }): Promise<SovereigntyMarker[]>
+  analyzeMarkers(input: {
+    companyId: string
+    nodes: Array<{ id: string; type: string }>
+  }): Promise<SovereigntyMarker[]>
 }
 ```
 
@@ -291,12 +300,12 @@ sovereigntyImpacts(rootType, rootId): [SovereigntyImpact!]!
 
 ## Scalability Considerations
 
-| Concern | At current brownfield scale | At larger tenant scale | Recommendation |
-|---------|-----------------------------|------------------------|----------------|
-| Chain traversal cost | Acceptable for single detail view reads if bounded by company and root | Batch diagram loads can become expensive | Provide dedicated batch marker query and limit traversal depth by supported relationship types |
-| UI consistency | Already fragile because logic is split | More surfaces will multiply drift | One backend engine only |
-| Recalculation timing | On-demand reads are enough for milestone start | Frequent dashboards may need caching later | Start with on-demand analysis; add persisted snapshots only after behavior stabilizes |
-| Deployment reproducibility | Currently blocked by implicit network assumptions | More contributors amplify setup churn | Codify Compose and Kubernetes profiles with validation steps |
+| Concern                    | At current brownfield scale                                            | At larger tenant scale                     | Recommendation                                                                                 |
+| -------------------------- | ---------------------------------------------------------------------- | ------------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| Chain traversal cost       | Acceptable for single detail view reads if bounded by company and root | Batch diagram loads can become expensive   | Provide dedicated batch marker query and limit traversal depth by supported relationship types |
+| UI consistency             | Already fragile because logic is split                                 | More surfaces will multiply drift          | One backend engine only                                                                        |
+| Recalculation timing       | On-demand reads are enough for milestone start                         | Frequent dashboards may need caching later | Start with on-demand analysis; add persisted snapshots only after behavior stabilizes          |
+| Deployment reproducibility | Currently blocked by implicit network assumptions                      | More contributors amplify setup churn      | Codify Compose and Kubernetes profiles with validation steps                                   |
 
 ## Brownfield Migration Notes
 

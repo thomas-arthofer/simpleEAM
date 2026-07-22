@@ -22,6 +22,7 @@ The research strongly supports keeping the existing stack for this milestone. Ne
 For local operations, Docker Compose with direct localhost ports should become the baseline path, while Traefik plus hostname-based TLS should be demoted to an optional parity profile. For Kubernetes, Helm remains the correct delivery mechanism, but docs must explicitly declare ingress, storage, DNS, TLS, asset sync, and image-tag prerequisites. For sovereignty, the recommended stack decision is architectural rather than infrastructural: introduce one canonical TypeScript evaluation service inside the existing server boundary and reuse it synchronously for detail reads and optionally asynchronously for recomputation.
 
 **Core technologies:**
+
 - Next.js 15 and React 19: frontend shell and runtime compatibility already aligned with the existing client.
 - Material UI 7 and Apollo Client: preserve current UI and GraphQL access patterns to minimize brownfield churn.
 - GraphQL server on Node.js: keeps sovereignty evaluation close to auth context and domain entities.
@@ -38,6 +39,7 @@ The milestone feature set is narrow by design. Table stakes are the capabilities
 The strongest in-scope differentiators are still EAM-native, but they must remain consumers of the same canonical findings model. Dual-status diagram markers and full finding lists are useful in this milestone because they improve remediation workflow without expanding the core semantics. Analytics, weighting models, business-process expansion beyond the agreed contract, and broader governance dashboards should remain deferred until the trust reset is complete.
 
 **Must have (table stakes):**
+
 - Explicit per-element sovereignty assessment with no inherited achieved fallback.
 - Chain validation from business requirement through dependent applications and infrastructure.
 - Explainable findings that name the violating element, dimension, expected value, actual value, and path.
@@ -46,10 +48,12 @@ The strongest in-scope differentiators are still EAM-native, but they must remai
 - Reproducible Docker and Kubernetes verification path for the feature.
 
 **Should have (competitive):**
+
 - Dual-status diagram markers that distinguish self-caused issues from downstream impact.
 - Full finding lists instead of only worst-score summaries.
 
 **Defer (v2+):**
+
 - Blast-radius prioritization and portfolio analytics.
 - Weight-based sovereignty scoring semantics.
 - Broader business-process expansion beyond the agreed milestone contract.
@@ -60,6 +64,7 @@ The strongest in-scope differentiators are still EAM-native, but they must remai
 The research is explicit that sovereignty evaluation should move out of the client and become a backend-owned analysis capability. Storage already exists for the needed requirement, achieved, and evidence fields; the problem is duplicated and diverging evaluation logic. The correct architecture is one server-side analysis boundary backed by a repository or traversal adapter, additive GraphQL analysis queries, and thin client consumers for detail views, diagram markers, and rollups. Setup stabilization should remain a separate deployment-contract track over the same service topology rather than leaking environment workarounds into domain logic.
 
 **Major components:**
+
 1. Graph model storage: persists requirements, achieved ratings, evidence, and dependency relationships without inheritance semantics.
 2. Sovereignty analysis service: traverses dependency chains, compares required versus explicit achieved values, classifies statuses, and emits canonical findings.
 3. Repository or traversal adapter: encapsulates graph loading so chain semantics stay testable and do not leak into UI or resolver glue.
@@ -82,6 +87,7 @@ The research is explicit that sovereignty evaluation should move out of the clie
 Based on the combined research and the milestone intent, the roadmap should stay with the two intended phases rather than introducing extra milestone slices. The important adjustment is to make each phase internally opinionated and gated by behavioral verification, because both tracks are brownfield trust repairs.
 
 ### Phase 1: Setup Stabilization for Docker and Kubernetes
+
 **Rationale:** This must come first because every later feature demonstration, regression check, and stakeholder validation depends on a reproducible runtime contract.
 **Delivers:** A supported localhost-first Docker Compose path, an optional Traefik parity profile, pinned runtime image tags, explicit Kubernetes prerequisite documentation, install and upgrade checklists, and clean-state plus dirty-state validation guidance.
 **Addresses:** Reproducible local and cluster validation from the feature research.
@@ -90,6 +96,7 @@ Based on the combined research and the milestone intent, the roadmap should stay
 **Planning note:** This phase is operationally well-understood and should not need a deep research-phase. It needs disciplined repository validation and documentation execution.
 
 ### Phase 2: Sovereignty Refactor to Explicit Chain Validation with UI Diagnostics
+
 **Rationale:** This phase depends on a stable runtime and should start only after the team can reproduce auth, graph, and UI flows consistently.
 **Delivers:** A semantic contract for sovereignty traversal, one backend-owned canonical evaluator, additive GraphQL analysis queries, explicit missing-value handling, migration inventory for newly gray elements, element detail diagnostics, and diagram markers that consume the same analysis payload.
 **Addresses:** Explicit per-element assessment, chain validation, explainable findings, missing-state visibility, and UI diagnostics from the feature research.
@@ -108,19 +115,21 @@ Based on the combined research and the milestone intent, the roadmap should stay
 ### Research Flags
 
 Phases likely needing deeper research during planning:
+
 - **Phase 2:** Chain traversal semantics, cycle handling, multi-parent behavior, business-process scope, and legacy score-field treatment need explicit planning-time decisions.
 
 Phases with standard patterns (skip research-phase):
+
 - **Phase 1:** Compose and Helm stabilization are implementation-heavy but based on established repository and platform patterns rather than open-ended domain research.
 
 ## Confidence Assessment
 
-| Area | Confidence | Notes |
-|------|------------|-------|
-| Stack | HIGH | Strong repository evidence and mature official guidance support the conservative keep-and-stabilize recommendation. |
-| Features | MEDIUM | Feature direction is clear from repository context and concept notes, but some prioritization is milestone-specific rather than externally benchmarked. |
-| Architecture | HIGH | The duplicated client-side logic and needed backend consolidation are directly evidenced by current repository structure and concept analysis. |
-| Pitfalls | HIGH | Risks are concrete, brownfield-specific, and repeatedly reinforced across runtime and sovereignty research. |
+| Area         | Confidence | Notes                                                                                                                                                   |
+| ------------ | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Stack        | HIGH       | Strong repository evidence and mature official guidance support the conservative keep-and-stabilize recommendation.                                     |
+| Features     | MEDIUM     | Feature direction is clear from repository context and concept notes, but some prioritization is milestone-specific rather than externally benchmarked. |
+| Architecture | HIGH       | The duplicated client-side logic and needed backend consolidation are directly evidenced by current repository structure and concept analysis.          |
+| Pitfalls     | HIGH       | Risks are concrete, brownfield-specific, and repeatedly reinforced across runtime and sovereignty research.                                             |
 
 **Overall confidence:** HIGH
 
@@ -134,13 +143,16 @@ Phases with standard patterns (skip research-phase):
 ## Sources
 
 ### Primary (HIGH confidence)
+
 - Repository sources: .planning/PROJECT.md, eam-konzept.md, compose.yml, env.template, README.md, k8s/README.md, server/src/graphql/schema.graphql, client/src/graphql/sovereigntyDetail.ts, client/src/components/sovereignty/utils.ts
 - Current platform guidance referenced in research: Next.js 15 upgrade guidance, Keycloak reverse proxy guidance, cert-manager guidance, kind local cluster guidance, Neo4j Docker operations guidance
 
 ### Secondary (MEDIUM confidence)
+
 - .planning/codebase/ARCHITECTURE.md and .planning/codebase/CONCERNS.md for existing brownfield risk framing
 - ai-server/temporal/sovereignty/activities.ts and related runtime wiring for current recomputation patterns
 
 ---
-*Research completed: 2026-07-22*
-*Ready for roadmap: yes*
+
+_Research completed: 2026-07-22_
+_Ready for roadmap: yes_

@@ -50,18 +50,19 @@ The concept in `eam-konzept.md` is the source document for the sovereignty redes
 
 ## Key Decisions
 
-| Decision | Rationale | Outcome |
-|----------|-----------|---------|
-| Plan this milestone as two ordered phases | The user explicitly prioritized setup stabilization before sovereignty refactoring | — Pending |
-| Treat setup stabilization as behavior plus documentation work | The repo docs are outdated, but success also requires the actual Docker path to become reproducible without manual hacks | — Pending |
-| Implement sovereignty as explicit per-element ratings with chain-based violation checks | Inherited ratings make missing assessments look compliant and prevent trustworthy diagnostics | — Pending |
-| Include UI and diagram diagnostics in the sovereignty phase | The user wants both element-detail visibility and optional diagram markers, not backend-only logic changes | — Pending |
+| Decision                                                                                | Rationale                                                                                                                | Outcome   |
+| --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | --------- |
+| Plan this milestone as two ordered phases                                               | The user explicitly prioritized setup stabilization before sovereignty refactoring                                       | — Pending |
+| Treat setup stabilization as behavior plus documentation work                           | The repo docs are outdated, but success also requires the actual Docker path to become reproducible without manual hacks | — Pending |
+| Implement sovereignty as explicit per-element ratings with chain-based violation checks | Inherited ratings make missing assessments look compliant and prevent trustworthy diagnostics                            | — Pending |
+| Include UI and diagram diagnostics in the sovereignty phase                             | The user wants both element-detail visibility and optional diagram markers, not backend-only logic changes               | — Pending |
 
 ## Evolution
 
 This document evolves at phase transitions and milestone boundaries.
 
 **After each phase transition** (via `/gsd-transition`):
+
 1. Requirements invalidated? -> Move to Out of Scope with reason
 2. Requirements validated? -> Move to Validated with phase reference
 3. New requirements emerged? -> Add to Active
@@ -69,10 +70,12 @@ This document evolves at phase transitions and milestone boundaries.
 5. "What This Is" still accurate? -> Update if drifted
 
 **After each milestone** (via `/gsd-complete-milestone`):
+
 1. Full review of all sections
 2. Core Value check - still the right priority?
 3. Audit Out of Scope - reasons still valid?
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-22 after initialization*
+
+_Last updated: 2026-07-22 after initialization_
