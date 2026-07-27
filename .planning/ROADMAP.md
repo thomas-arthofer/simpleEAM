@@ -14,6 +14,7 @@ This milestone restores trust in the platform in two ordered phases. Phase 1 mak
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Setup Stabilization & Deployment Clarity** - Make the supported Docker and Kubernetes paths reproducible and explicit. (completed 2026-07-27)
+- [x] **Phase 01.1: eam.example.com local domain setup** - Restore local Traefik/CA/DNS routing and verify end-to-end Keycloak login. (completed 2026-07-27, INSERTED)
 - [ ] **Phase 2: Canonical Sovereignty Evaluation & UX Diagnostics** - Deliver explicit chain-based sovereignty findings across backend, detail views, and diagrams.
 
 ## Phase Details
@@ -41,7 +42,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 Plans:
 
-- [ ] 01.1-PLAN.md — Restore local Traefik routing with network aliases (root-cause DNS fix), restore Optional Path documentation with login caveat, verify end-to-end Keycloak login
+- [x] 01.1-PLAN.md — Restore local Traefik routing with network aliases (root-cause DNS fix), restore Optional Path documentation with login caveat, verify end-to-end Keycloak login (completed 2026-07-27)
 
 ### Phase 2: Canonical Sovereignty Evaluation & UX Diagnostics
 

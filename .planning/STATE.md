@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 01.1
-current_phase_name: eam.example.com local domain setup
-status: executing
-stopped_at: "Phase 01.1 Task 1/2 verified end-to-end; Task 3 (browser login) blocked on developer action"
-last_updated: "2026-07-27T12:35:00.000Z"
+current_phase: 2
+current_phase_name: Canonical Sovereignty Evaluation & UX Diagnostics
+status: ready to plan
+stopped_at: "Phase 01.1 complete (all 3 tasks verified, incl. developer-confirmed E2E login); ready to plan Phase 2"
+last_updated: "2026-07-27T13:10:00.000Z"
 last_activity: 2026-07-27
-last_activity_desc: "Phase 01.1 execute-phase: verified local Traefik/CA/DNS restoration, fixed neo4j mem_limit regression, provisioned Keycloak admin credential; Task 3 human checkpoint pending"
+last_activity_desc: "Phase 01.1 complete: developer confirmed E2E Keycloak login via eam.example.com; documented Chrome per-origin cert-trust gotcha for api/room.example.com in docs/lokale-https-domains.md; 01.1-VALIDATION.md set to validated/nyquist_compliant true"
 progress:
-  total_phases: 2
-  completed_phases: 1
+  total_phases: 3
+  completed_phases: 2
   total_plans: 1
   completed_plans: 1
 ---
@@ -23,16 +23,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-22)
 
 **Core value:** Enterprise architecture data and sovereignty assessments must be trustworthy enough that operators can reproduce the platform and explain exactly where architectural obligations are or are not met.
-**Current focus:** Phase 01 — setup-stabilization-deployment-clarity
+**Current focus:** Phase 2 — canonical-sovereignty-evaluation-ux-diagnostics
 
 ## Current Position
 
-Phase: 01.1 — eam.example.com local domain setup
+Phase: 01.1 — eam.example.com local domain setup (complete)
 Plan: 01
-Status: Executing — Task 1 & 2 verified complete, Task 3 blocked on developer browser login checkpoint
-Last activity: 2026-07-27 — execute-phase run: verified compose config, container DNS, CA-signed TLS chain, HTTPS health checks (api/auth/eam.example.com), fixed a neo4j mem_limit regression (2g→4g) that crash-looped the stack, generated local CA, set Keycloak admin password. See 01.1-SUMMARY.md.
+Status: Complete — all 3 tasks verified, including developer-confirmed end-to-end Keycloak login
+Last activity: 2026-07-27 — developer confirmed login pass; documented the Chrome per-origin cert-trust follow-up (api.example.com/room.example.com ERR_CERT_AUTHORITY_INVALID on first GraphQL calls) in docs/lokale-https-domains.md. See 01.1-SUMMARY.md.
 
-Progress: [███████░░░] 67% (2/3 tasks verified; Task 3 needs developer action — see 01.1-SUMMARY.md "User Setup Required")
+Progress: [██████████] 100% (Phase 01.1 complete; next up: plan Phase 2)
 
 ## Performance Metrics
 
@@ -67,13 +67,12 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-- Phase 01.1 Task 3: developer must trust `local/certs/rootCA.pem` on host/browser, log in via `https://eam.example.com` as `admin` (password in `/tmp/eam-admin-pw.txt` on this machine), and confirm an authenticated GraphQL call succeeds. Then set `01.1-VALIDATION.md` to `status: validated`/`nyquist_compliant: true` and mark Phase 01.1 complete in ROADMAP.md/STATE.md.
+None yet.
 
 ### Blockers/Concerns
 
 - Phase 1 must define one supported localhost-first runtime path and keep any Traefik or HTTPS parity flow explicitly optional.
 - Phase 2 still needs a frozen semantic contract for traversal rules, cycle handling, and legacy field reconciliation during phase planning.
-- Phase 01.1 Task 3 (blocking human-verify checkpoint: end-to-end Keycloak SSO login via `https://eam.example.com`) cannot be completed by the executing agent — it requires trusting a CA in the host/browser trust store and an interactive browser login. All automatable prerequisites beneath it are verified working (see 01.1-SUMMARY.md).
 
 ### Roadmap Evolution
 
