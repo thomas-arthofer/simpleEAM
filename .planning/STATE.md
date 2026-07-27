@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 2
-current_phase_name: Canonical Sovereignty Evaluation & UX Diagnostics
+current_phase: 01.1
+current_phase_name: eam.example.com local domain setup
 status: planning
-stopped_at: Phase 1 context gathered
-last_updated: "2026-07-27T09:16:08.778Z"
+stopped_at: Phase 01.1 context gathered
+last_updated: "2026-07-27T10:07:19.734Z"
 last_activity: 2026-07-27
 last_activity_desc: Phase 01 complete, transitioned to Phase 2
 progress:
-  total_phases: 1
+  total_phases: 2
   completed_phases: 1
   total_plans: 1
   completed_plans: 1
@@ -27,7 +27,7 @@ See: .planning/PROJECT.md (updated 2026-07-22)
 
 ## Current Position
 
-Phase: 2 — Canonical Sovereignty Evaluation & UX Diagnostics
+Phase: 01.1 — eam.example.com local domain setup
 Plan: Not started
 Status: Ready to plan
 Last activity: 2026-07-27 — Phase 01 complete, transitioned to Phase 2
@@ -74,6 +74,10 @@ None yet.
 - Phase 1 must define one supported localhost-first runtime path and keep any Traefik or HTTPS parity flow explicitly optional.
 - Phase 2 still needs a frozen semantic contract for traversal rules, cycle handling, and legacy field reconciliation during phase planning.
 
+### Roadmap Evolution
+
+- Phase 01.1 inserted after Phase 1: eam.example.com local domain setup: analyze and restore the eam.example.com hostname routing from the previous local setup so the Docker Compose stack runs under eam.example.com (URGENT)
+
 ## Deferred Items
 
 | Category              | Item                                                                                              | Status         | Deferred At |
@@ -83,6 +87,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-22T14:13:56.551Z
-Stopped at: Phase 1 context gathered
-Resume file: /home/thomas/atos/simpleEAM/.planning/phases/01-setup-stabilization-deployment-clarity/01-CONTEXT.md
+Last session: 2026-07-27T10:07:19.726Z
+Stopped at: Phase 01.1 context gathered
+Resume file: .planning/phases/01.1-eam-example-com-local-domain-setup-analyze-and-restore-the-e/01.1-CONTEXT.md
