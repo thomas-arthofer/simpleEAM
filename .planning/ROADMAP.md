@@ -32,6 +32,17 @@ Decimal phases appear between their surrounding integers in numeric order.
    **Plans**: TBD
    **Mode:** mvp
 
+### Phase 01.1: eam.example.com local domain setup: analyze and restore the eam.example.com hostname routing from the previous local setup so the Docker Compose stack runs under eam.example.com (INSERTED)
+
+**Goal:** Restore `https://eam.example.com` local routing, most importantly Keycloak-backed SSO login, so it works end-to-end again. Narrow restoration only — Phase 1's localhost-first Supported Path stays the unchanged default.
+**Requirements**: TBD (urgent inserted phase; tracked as `GOAL-01.1` in plan/validation artifacts)
+**Depends on:** Phase 1
+**Plans:** 1 plan
+
+Plans:
+
+- [ ] 01.1-PLAN.md — Restore local Traefik routing with network aliases (root-cause DNS fix), restore Optional Path documentation with login caveat, verify end-to-end Keycloak login
+
 ### Phase 2: Canonical Sovereignty Evaluation & UX Diagnostics
 
 **Goal**: Architects can trust sovereignty assessments because each relevant element is judged from explicit evidence and the same explainable findings appear in detail views and diagrams.
