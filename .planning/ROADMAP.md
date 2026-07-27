@@ -57,3 +57,8 @@ Phases execute in numeric order: 1 -> 2
 | ---------------------------------------------------- | -------------- | ----------- | --------- |
 | 1. Setup Stabilization & Deployment Clarity          | 0/TBD          | Not started | -         |
 | 2. Canonical Sovereignty Evaluation & UX Diagnostics | 0/TBD          | Not started | -         |
+
+## Backlog (Accepted Blockers)
+
+- Phase 1: Helm-dependent Kubernetes runtime verification remains open and accepted into backlog.
+   - Required follow-up gates: `helm status <release> -n <namespace>`, `kubectl wait --for=condition=Ready ...`, `curl -fsS <GRAPHQL_HEALTH_URL>`.

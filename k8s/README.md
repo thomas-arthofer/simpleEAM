@@ -10,6 +10,70 @@ Deploy the full NextGen Enterprise Architecture Management stack on Kubernetes.
 - A StorageClass that supports `ReadWriteOnce` PVCs
 - (Optional) cert-manager for automatic TLS certificates
 
+## Prerequisite Matrix (before Helm)
+
+| Area | Mandatory for rollout | What must exist |
+| --- | --- | --- |
+| Ingress | Yes (any controller) | Reachable ingress class configured in cluster |
+| Storage | Yes | Default or explicit StorageClass for Neo4j, Keycloak, Temporal and analytics PVCs |
+| Network | Yes | Namespace egress and service-to-service communication allowed |
+| Secrets | Yes | Neo4j, Keycloak admin and Keycloak DB credentials provided via values or existing secrets |
+| DNS | Yes | Base domain and hostnames resolvable for intended exposure mode |
+| Traefik/HTTPS parity | Optional | Traefik running, DNS records/hosts, TLS issuer/certs |
+
+Traefik integration is optional. If Traefik is not available, deploy with your existing ingress controller and either disable TLS or provide controller-specific certificates.
+
+## Gate-based Rollout Order (fixed)
+
+Use this exact order to keep install and upgrade reproducible:
+
+1. Asset sync gate
+
+```bash
+./scripts/sync-k8s-asset-configmaps.sh \
+  --namespace "$NAMESPACE" \
+  --release "$HELM_RELEASE" \
+  --values k8s/my-values.yaml
+```
+
+2. Values preparation gate
+
+- Confirm `global.baseDomain`, `global.imagePullSecrets` and secret strategy (`existingSecret` vs inline values)
+- Optional analytics schema sync before Helm packaging or upgrade:
+
+```bash
+yarn sync:cube-schema
+```
+
+3. Helm install or upgrade gate
+
+```bash
+# fresh install
+helm install "$HELM_RELEASE" k8s -f k8s/my-values.yaml -n "$NAMESPACE" --create-namespace
+
+# or upgrade
+helm upgrade "$HELM_RELEASE" k8s -f k8s/my-values.yaml -n "$NAMESPACE"
+```
+
+4. Verification gates
+
+- Fast gate (required before long readiness wait): prerequisite smoke + release state
+
+```bash
+helm status "$HELM_RELEASE" -n "$NAMESPACE"
+```
+
+- Full runtime gate (after fast gate passes): pod readiness + endpoint check
+
+```bash
+kubectl wait --for=condition=Ready pod \
+  -l app.kubernetes.io/instance="$HELM_RELEASE" \
+  -n "$NAMESPACE" \
+  --timeout=300s
+
+curl -fsS "$GRAPHQL_HEALTH_URL"
+```
+
 ## Quick Start
 
 ```bash

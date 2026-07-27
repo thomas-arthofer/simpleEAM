@@ -17,7 +17,8 @@ fullnameOverride: ''
 # Global
 # ------------------------------------------------------------------------------
 global:
-  # Base domain, e.g. example.com
+  # Mandatory for ingress-based exposure: base domain for generated hostnames.
+  # For localhost-first workflows this can stay as placeholder until cluster rollout.
   baseDomain: example.com
 
   # Image registry where GHCR images are pulled from.
@@ -27,6 +28,7 @@ global:
   imageRepository: de-fue-cto-community
   imageTag: 'latest'
   imagePullPolicy: IfNotPresent
+  # Optional if registry is public; mandatory when pulling from private registries.
   # imagePullSecrets: []  # e.g. [{name: ghcr-pull-secret}]
   # GHCR images are private (org policy). Create a pull secret before installing:
   #   kubectl create secret docker-registry ghcr-pull-secret \
@@ -177,6 +179,7 @@ ingress:
   annotations: {}
   # annotations:
   #   cert-manager.io/cluster-issuer: letsencrypt-prod
+  # Optional parity toggle. Set to false when cluster TLS is not part of the rollout.
   tls: true
   # If tls is true, cert-manager (or pre-provisioned secrets) must provide certs.
   # Secret names are auto-derived as <release>-<service>-tls unless overridden below.
@@ -208,6 +211,7 @@ neo4j:
     username: neo4j
     # password: ""  # REQUIRED – set via --set neo4j.auth.password=<pw>
     password: ''
+    # Preferred for production: provide existing secret instead of inline values.
     existingSecret: '' # If set, use this Secret instead of creating one
     existingSecretKey: password
 
@@ -243,6 +247,7 @@ keycloak:
     username: admin
     # password: ""  # REQUIRED – set via --set keycloak.admin.password=<pw>
     password: ''
+    # Preferred for production: provide existing secret instead of inline values.
     existingSecret: ''
     existingSecretPasswordKey: adminPassword
 
@@ -268,6 +273,7 @@ keycloak:
     user: keycloak
     # password: ""  # REQUIRED – set via --set keycloak.db.password=<pw>
     password: ''
+    # Preferred for production: provide existing secret instead of inline values.
     existingSecret: ''
     existingSecretKey: password
 

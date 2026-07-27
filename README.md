@@ -67,26 +67,60 @@ cd nextgen-eam
 yarn install
 ```
 
-3. **Configure environment variables**
+3. **Supported Path (official default, localhost-first)**
+
+This path is the supported baseline for development and operations checks.
+It does not require Traefik, DNS, or TLS setup.
 
 ```bash
 cp env.template .env
-# Adjust variables as needed
-```
-
-4. **Start Docker services**
-
-```bash
 docker compose up -d
 ```
 
-5. **Optional: enable AI stack (`ai-server`, `ai-worker`)**
+Optional AI profile services can be started in the same stack:
+
+```bash
+docker compose --profile ai up -d
+```
+
+4. **Supported Path gate checks (single overall gate)**
+
+The minimum success gate is one collective check: every service started by your
+selected compose command must be running. This includes optional profile services
+when they were started, without separate optional per-service checks.
+
+```bash
+TOTAL=$(docker compose --profile ai config --services | wc -l)
+RUNNING=$(docker compose --profile ai ps --status running --services | wc -l)
+test "$RUNNING" -eq "$TOTAL"
+curl -fsS http://localhost:4000/health
+curl -fsS http://localhost:3000 > /dev/null
+```
+
+GraphQL Health and Client reachability are part of this gate.
+
+5. **Optional Path: Traefik/HTTPS parity (not required)**
+
+Use this only when you need ingress-like parity in local setups.
+Nicht erforderlich fuer Supported Path.
+
+Optional prerequisites:
+
+- Running Traefik instance with configured docker network
+- DNS/hosts entries for service hostnames
+- TLS/certificate resolver configured for your base domain
+
+Expected hostnames in this optional path:
+
+- `https://eam.<BASE_DOMAIN>` (Client)
+- `https://api.<BASE_DOMAIN>/graphql` (GraphQL)
+- `https://auth.<BASE_DOMAIN>` (Keycloak)
+
+Example optional start:
 
 ```bash
 COMPOSE_PROFILES=ai docker compose up -d
 ```
-
-AI model access is configured per company in the application data model (`Company.llmUrl`, `Company.llmModel`, `Company.llmKey`).
 
 6. **Start development server**
 
@@ -96,6 +130,8 @@ yarn dev
 ```
 
 The application is then available at: http://localhost:3000
+
+AI model access is configured per company in the application data model (`Company.llmUrl`, `Company.llmModel`, `Company.llmKey`).
 
 ## ☸️ Kubernetes Installation
 
