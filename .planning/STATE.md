@@ -4,11 +4,11 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 01.1
 current_phase_name: eam.example.com local domain setup
-status: planning
-stopped_at: Phase 01.1 context gathered
-last_updated: "2026-07-27T10:54:26.540Z"
+status: executing
+stopped_at: "Phase 01.1 Task 1/2 verified end-to-end; Task 3 (browser login) blocked on developer action"
+last_updated: "2026-07-27T12:35:00.000Z"
 last_activity: 2026-07-27
-last_activity_desc: Phase 01 complete, transitioned to Phase 2
+last_activity_desc: "Phase 01.1 execute-phase: verified local Traefik/CA/DNS restoration, fixed neo4j mem_limit regression, provisioned Keycloak admin credential; Task 3 human checkpoint pending"
 progress:
   total_phases: 2
   completed_phases: 1
@@ -29,10 +29,10 @@ See: .planning/PROJECT.md (updated 2026-07-22)
 
 Phase: 01.1 — eam.example.com local domain setup
 Plan: 01
-Status: Planned — ready to execute
-Last activity: 2026-07-27 — Phase 01 planned (01.1-PLAN.md, plan-checker PASS)
+Status: Executing — Task 1 & 2 verified complete, Task 3 blocked on developer browser login checkpoint
+Last activity: 2026-07-27 — execute-phase run: verified compose config, container DNS, CA-signed TLS chain, HTTPS health checks (api/auth/eam.example.com), fixed a neo4j mem_limit regression (2g→4g) that crash-looped the stack, generated local CA, set Keycloak admin password. See 01.1-SUMMARY.md.
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [███████░░░] 67% (2/3 tasks verified; Task 3 needs developer action — see 01.1-SUMMARY.md "User Setup Required")
 
 ## Performance Metrics
 
@@ -67,12 +67,13 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-None yet.
+- Phase 01.1 Task 3: developer must trust `local/certs/rootCA.pem` on host/browser, log in via `https://eam.example.com` as `admin` (password in `/tmp/eam-admin-pw.txt` on this machine), and confirm an authenticated GraphQL call succeeds. Then set `01.1-VALIDATION.md` to `status: validated`/`nyquist_compliant: true` and mark Phase 01.1 complete in ROADMAP.md/STATE.md.
 
 ### Blockers/Concerns
 
 - Phase 1 must define one supported localhost-first runtime path and keep any Traefik or HTTPS parity flow explicitly optional.
 - Phase 2 still needs a frozen semantic contract for traversal rules, cycle handling, and legacy field reconciliation during phase planning.
+- Phase 01.1 Task 3 (blocking human-verify checkpoint: end-to-end Keycloak SSO login via `https://eam.example.com`) cannot be completed by the executing agent — it requires trusting a CA in the host/browser trust store and an interactive browser login. All automatable prerequisites beneath it are verified working (see 01.1-SUMMARY.md).
 
 ### Roadmap Evolution
 

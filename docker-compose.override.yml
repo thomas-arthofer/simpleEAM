@@ -78,9 +78,14 @@ services:
 
   # --------------------------------------------------------------------------
   # RAM-Deckel. Ohne Limits kann vor allem ClickHouse den Host leerraeumen.
+  # neo4j braucht mindestens NEO4J_PAGECACHE_MEMORY + NEO4J_HEAP_MAX_SIZE aus
+  # .env (Default 1G + 2G) plus JVM-/Betriebssystem-Overhead - ein zu knapper
+  # mem_limit fuehrt zu einer Crash-Loop ("Invalid memory configuration -
+  # exceeds physical memory"), da Neo4j den Cgroup-Speicherdeckel des
+  # Containers pruft, nicht den des Hosts.
   # --------------------------------------------------------------------------
   neo4j:
-    mem_limit: 2g
+    mem_limit: 4g
 
   clickhouse:
     mem_limit: 1500m
