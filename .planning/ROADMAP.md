@@ -13,7 +13,7 @@ This milestone restores trust in the platform in two ordered phases. Phase 1 mak
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Setup Stabilization & Deployment Clarity** - Make the supported Docker and Kubernetes paths reproducible and explicit.
+- [x] **Phase 1: Setup Stabilization & Deployment Clarity** - Make the supported Docker and Kubernetes paths reproducible and explicit. (completed 2026-07-27)
 - [ ] **Phase 2: Canonical Sovereignty Evaluation & UX Diagnostics** - Deliver explicit chain-based sovereignty findings across backend, detail views, and diagrams.
 
 ## Phase Details
@@ -55,7 +55,7 @@ Phases execute in numeric order: 1 -> 2
 
 | Phase                                                | Plans Complete | Status      | Completed |
 | ---------------------------------------------------- | -------------- | ----------- | --------- |
-| 1. Setup Stabilization & Deployment Clarity          | 0/TBD          | Not started | -         |
+| 1. Setup Stabilization & Deployment Clarity          | 1/1 | Complete    | 2026-07-27 |
 | 2. Canonical Sovereignty Evaluation & UX Diagnostics | 0/TBD          | Not started | -         |
 
 ## Backlog (Accepted Blockers)

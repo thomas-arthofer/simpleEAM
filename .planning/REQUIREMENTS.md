@@ -9,11 +9,11 @@ Requirements for this milestone. Each requirement maps to exactly one roadmap ph
 
 ### Setup Stabilization
 
-- [ ] **SETUP-01**: Developer can start the baseline Docker Compose stack from a clean repository clone using the documented default path without router-level DNS hacks.
-- [ ] **SETUP-02**: The documented Docker setup clearly distinguishes the supported default local path from any optional Traefik or HTTPS parity path.
-- [ ] **SETUP-03**: The Docker setup documentation identifies required environment variables, optional services, and validation steps for confirming that the stack is usable after startup.
-- [ ] **SETUP-04**: Kubernetes deployment documentation lists required external dependencies and prerequisites, including ingress expectations, storage assumptions, and existing network requirements such as Traefik integration.
-- [ ] **SETUP-05**: Kubernetes install and upgrade documentation describes the required ordering for asset sync, Helm values preparation, and deployment verification.
+- [x] **SETUP-01**: Developer can start the baseline Docker Compose stack from a clean repository clone using the documented default path without router-level DNS hacks.
+- [x] **SETUP-02**: The documented Docker setup clearly distinguishes the supported default local path from any optional Traefik or HTTPS parity path.
+- [x] **SETUP-03**: The Docker setup documentation identifies required environment variables, optional services, and validation steps for confirming that the stack is usable after startup.
+- [x] **SETUP-04**: Kubernetes deployment documentation lists required external dependencies and prerequisites, including ingress expectations, storage assumptions, and existing network requirements such as Traefik integration.
+- [x] **SETUP-05**: Kubernetes install and upgrade documentation describes the required ordering for asset sync, Helm values preparation, and deployment verification.
 
 ### Sovereignty Evaluation
 
@@ -76,11 +76,11 @@ Requirements for this milestone. Each requirement maps to exactly one roadmap ph
 
 | Requirement | Phase   | Status  |
 | ----------- | ------- | ------- |
-| SETUP-01    | Phase 1 | Pending |
-| SETUP-02    | Phase 1 | Pending |
-| SETUP-03    | Phase 1 | Pending |
-| SETUP-04    | Phase 1 | Pending |
-| SETUP-05    | Phase 1 | Pending |
+| SETUP-01    | Phase 1 | Complete |
+| SETUP-02    | Phase 1 | Complete |
+| SETUP-03    | Phase 1 | Complete |
+| SETUP-04    | Phase 1 | Complete |
+| SETUP-05    | Phase 1 | Complete |
 | SOV-01      | Phase 2 | Pending |
 | SOV-02      | Phase 2 | Pending |
 | SOV-03      | Phase 2 | Pending |
