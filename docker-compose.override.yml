@@ -1,0 +1,97 @@
+# ============================================================================
+# Lokales Testbett-Override - additiv, compose.yml bleibt unveraendert.
+# Revert: einfach diese Datei loeschen (oder umbenennen).
+#
+# Zweck:
+#  1. Minimal-Traefik mit lokalem Wildcard-Cert (kein ACME)
+#  2. DNS-Aliase, damit Container die *.example.com-Namen intern aufloesen
+#  3. Lokale CA in die Node-Services, damit sie Keycloak per HTTPS trauen
+#  4. RAM-Deckel fuer die drei groessten Fresser
+# ============================================================================
+
+services:
+  # --------------------------------------------------------------------------
+  # Reverse Proxy. Terminiert TLS mit dem lokalen Wildcard-Zertifikat.
+  # Die Netzwerk-Aliase auf eam-network sind der Kern des Setups: dadurch
+  # aufloesen server/analytics-worker "auth.example.com" auf die Traefik-IP
+  # und benutzen damit EXAKT dieselbe URL wie der Browser. Das haelt den
+  # iss-Claim konsistent (server/src/auth/auth-jwks.ts:107).
+  # --------------------------------------------------------------------------
+  traefik:
+    # WICHTIG: mindestens v3.7. Aeltere Traefik-Versionen (v3.3) sprechen
+    # Docker-API 1.24, Docker >= 29 verlangt aber mindestens 1.40. Der
+    # Docker-Provider faellt dann komplett aus und es wird KEIN Router aus
+    # den Compose-Labels diskovert. DOCKER_API_VERSION hilft dagegen nicht,
+    # die Version ist im aelteren Traefik fest verdrahtet.
+    image: traefik:3.7.8
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8090:8080" # Dashboard: http://<VM-IP>:8090
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./local/traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./local/traefik/dynamic:/etc/traefik/dynamic:ro
+      - ./local/certs:/etc/traefik/certs:ro
+    networks:
+      traefik: {}
+      eam-network:
+        aliases:
+          - eam.example.com
+          - api.example.com
+          - auth.example.com
+          - room.example.com
+          - neo4j.example.com
+          - temporal.example.com
+
+  # --------------------------------------------------------------------------
+  # Node-Services: lokale CA einhaengen, sonst scheitert der JWKS-Abruf
+  # gegen https://auth.example.com mit UNABLE_TO_VERIFY_LEAF_SIGNATURE.
+  # --------------------------------------------------------------------------
+  server:
+    volumes:
+      - ./local/certs/rootCA.pem:/etc/ssl/local/rootCA.pem:ro
+    environment:
+      - NODE_EXTRA_CA_CERTS=/etc/ssl/local/rootCA.pem
+
+  analytics-worker:
+    volumes:
+      - ./local/certs/rootCA.pem:/etc/ssl/local/rootCA.pem:ro
+    environment:
+      - NODE_EXTRA_CA_CERTS=/etc/ssl/local/rootCA.pem
+
+  client:
+    volumes:
+      - ./local/certs/rootCA.pem:/etc/ssl/local/rootCA.pem:ro
+    environment:
+      - NODE_EXTRA_CA_CERTS=/etc/ssl/local/rootCA.pem
+
+  # --------------------------------------------------------------------------
+  # temporal-ui: Sonderfall. Das Label nutzt ${TEMPORAL_UI_CERTRESOLVER:-netcupdns},
+  # d.h. ein LEERER Wert in .env greift nicht - die :- Ersetzung schlaegt dann
+  # trotzdem auf "netcupdns" durch. Deshalb hier explizit neutralisieren.
+  # --------------------------------------------------------------------------
+  temporal-ui:
+    labels:
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME:-nextgen-eam}-temporal-ui.tls.certresolver="
+
+  # --------------------------------------------------------------------------
+  # RAM-Deckel. Ohne Limits kann vor allem ClickHouse den Host leerraeumen.
+  # --------------------------------------------------------------------------
+  neo4j:
+    mem_limit: 2g
+
+  clickhouse:
+    mem_limit: 1500m
+    environment:
+      - CLICKHOUSE_SKIP_USER_SETUP=0
+
+  keycloak:
+    mem_limit: 1200m
+
+  cube:
+    mem_limit: 768m
+
+  cubestore:
+    mem_limit: 512m

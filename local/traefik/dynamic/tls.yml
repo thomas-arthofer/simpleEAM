@@ -1,0 +1,14 @@
+# Dynamische Traefik-Konfiguration: lokales Wildcard-Zertifikat als Default.
+# Jeder Router mit tls=true und LEEREM certresolver bekommt dieses Zertifikat.
+
+tls:
+  stores:
+    default:
+      defaultCertificate:
+        certFile: /etc/traefik/certs/wildcard.crt
+        keyFile: /etc/traefik/certs/wildcard.key
+  certificates:
+    - certFile: /etc/traefik/certs/wildcard.crt
+      keyFile: /etc/traefik/certs/wildcard.key
+      stores:
+        - default

@@ -91,5 +91,8 @@ temp/
 k8s/assets/*
 k8s/values.*.yaml
 
+# Local Traefik testbed: generated CA/wildcard cert material (never commit private keys)
+local/certs/
+
 # Typoskript
 *.tsbuildinfo

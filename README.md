@@ -104,23 +104,68 @@ GraphQL Health and Client reachability are part of this gate.
 Use this only when you need ingress-like parity in local setups.
 Nicht erforderlich fuer Supported Path.
 
-Optional prerequisites:
-
-- Running Traefik instance with configured docker network
-- DNS/hosts entries for service hostnames
-- TLS/certificate resolver configured for your base domain
+> **Login caveat:** SSO login via the Supported (localhost) Path above does not currently work — Keycloak's `redirectUris`/`webOrigins` in `auth/src/realm-export.json` only reference `https://eam.<BASE_DOMAIN>/*`. The Optional Path below is the one that supports an end-to-end login today.
 
 Expected hostnames in this optional path:
 
 - `https://eam.<BASE_DOMAIN>` (Client)
 - `https://api.<BASE_DOMAIN>/graphql` (GraphQL)
 - `https://auth.<BASE_DOMAIN>` (Keycloak)
+- `https://neo4j.<BASE_DOMAIN>` (Neo4j Browser)
+- `https://room.<BASE_DOMAIN>` (Excalidraw room server)
+- `https://temporal.<BASE_DOMAIN>` (Temporal UI)
 
-Example optional start:
+Restoration steps (verified working setup, ported from a proven local Traefik + local-CA testbed):
 
-```bash
-COMPOSE_PROFILES=ai docker compose up -d
-```
+1. **Generate a local root CA + wildcard certificate once** (idempotent):
+   ```bash
+   ./local/make-local-ca.sh
+   ```
+   Then trust `local/certs/rootCA.pem` on your host and in each browser used for testing:
+   ```bash
+   sudo cp local/certs/rootCA.pem /usr/local/share/ca-certificates/simpleeam-local.crt
+   sudo update-ca-certificates
+   ```
+   Firefox uses its own certificate store and needs a separate manual import. Chrome/Chromium trust the CA per-origin rather than per-domain-suffix — see [docs/lokale-https-domains.md](docs/lokale-https-domains.md) for the exact gotcha and workaround.
+
+2. **Resolve all 6 `*.<BASE_DOMAIN>` hostnames** — pick one:
+   - **Option A — `/etc/hosts`** (single machine):
+     ```
+     127.0.0.1 eam.example.com api.example.com auth.example.com neo4j.example.com room.example.com temporal.example.com
+     ```
+     Add this as a new line; do not edit any existing, unrelated `/etc/hosts` entries.
+   - **Option B — firewall/router DNS**: point all 6 `*.<BASE_DOMAIN>` A-records at this host's LAN IP. Works automatically for both browser and container-side resolution, as long as your host's own DNS resolver is routable (not a loopback stub).
+
+3. **Ensure `.env` has empty cert-resolver values** for local use (already the default in `env.template`):
+   ```
+   TRAEFIK_CERTRESOLVER=
+   TEMPORAL_UI_CERTRESOLVER=
+   ```
+
+4. **Start the stack** — `docker-compose.override.yml` is automatically merged by Compose, no `-f` flag needed:
+   ```bash
+   docker compose up -d
+   ```
+   If you already run a shared Traefik instance for other local projects, don't start a second one on port 443 — instead attach the network aliases to your existing instance:
+   ```bash
+   docker network connect --alias eam.example.com --alias api.example.com --alias auth.example.com \
+     --alias neo4j.example.com --alias room.example.com --alias temporal.example.com \
+     eam-network <existing-traefik-container>
+   ```
+
+5. **Set the Keycloak realm admin password once** — `realm-export.json` creates the `admin` user without credentials:
+   ```bash
+   ./local/set-admin-password.sh
+   ```
+
+6. **Verify container-side DNS resolution** (the actual root-cause check — must not return a public IP):
+   ```bash
+   docker exec nextgen-eam-server-1 getent hosts auth.example.com
+   ```
+
+7. **Log in** at `https://eam.<BASE_DOMAIN>` with the admin password from step 5 (or another realm user) and confirm an authenticated GraphQL call succeeds.
+
+Deferred, explicitly out of scope for this Optional Path: adding a `localhost:3000` redirect URI to the dev realm, and automated `/etc/hosts` scripting.
 
 6. **Start development server**
 
