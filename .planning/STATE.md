@@ -4,16 +4,16 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 02.1
 current_phase_name: Fix diagram sovereignty marker sync gaps
-status: executing
-stopped_at: Completed 02.1-01-PLAN.md
-last_updated: "2026-07-30T16:39:24.028Z"
+status: verifying
+stopped_at: Completed 02.1-02-PLAN.md
+last_updated: "2026-07-30T16:43:42.477Z"
 last_activity: 2026-07-30
 last_activity_desc: Phase 02.1 execution started
 progress:
   total_phases: 4
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 9
-  completed_plans: 8
+  completed_plans: 9
 ---
 
 # Project State
@@ -29,10 +29,10 @@ See: .planning/PROJECT.md (updated 2026-07-22)
 
 Phase: 02.1 (Fix diagram sovereignty marker sync gaps) — EXECUTING
 Plan: 2 of 2
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-07-30 — Phase 02.1 execution started
 
-Progress: [█████████░] 89% (7/7 plans complete across phases; Phase 2: 5/5 plans complete)
+Progress: [██████████] 100% (7/7 plans complete across phases; Phase 2: 5/5 plans complete)
 
 ## Performance Metrics
 
@@ -62,6 +62,7 @@ Progress: [█████████░] 89% (7/7 plans complete across phases
 | Phase 2 P04 | n/a      | 2 tasks | 7 files |
 | Phase 2 P05 | 35min    | 2 tasks | 4 files |
 | Phase 02.1 P01 | 15min | 1 tasks | 1 files |
+| Phase 02.1 P02 | 20min | 1 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -77,6 +78,7 @@ Recent decisions affecting current work:
 - Phase 2: company-level sovereignty rollup (Temporal's last consumer) now derives from the same canonical evaluator as detail views/markers; GREY chains count toward (lower) the achieved score instead of being filtered out — SOV-05 complete.
 - Phase 2: diagram sovereignty markers (fill/ring) now consume the same canonical sovereigntyMarkers query as detail views, gated behind featureFlags.Sovereignty, with worse-status merging across multiple BusinessCapability/DataObject roots on one diagram.
 - [Phase 02.1]: D-01 implemented — F5/full-page reload scene restore now runs the full syncDiagramOnOpen pipeline (name/missing-element sync + syncSovereigntyMarkers), identical to handleOpenDiagram, instead of a markers-only shortcut.
+- [Phase ?]: D-02/D-03/D-04 implemented: sovereignty marker ellipses live-reposition in place on every onChange during a drag, scoped only to main elements with an existing complete fill/ring pair.
 
 ### Pending Todos
 
@@ -101,6 +103,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-30T16:39:24.014Z
-Stopped at: Completed 02.1-01-PLAN.md
+Last session: 2026-07-30T16:43:42.463Z
+Stopped at: Completed 02.1-02-PLAN.md
 Resume file: None
