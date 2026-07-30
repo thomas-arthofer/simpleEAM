@@ -57,6 +57,21 @@ export const SOVEREIGNTY_STATUS_COLORS: Record<SovereigntyStatus, string> = {
   GREEN: '#2E7D32',
 }
 
+// Worst-known-status precedence for merging marker results across multiple
+// BusinessCapability/DataObject roots on the same diagram (mirrors the
+// evaluator's "a RED finding anywhere below a node sets the ring" precedence,
+// eam-konzept.md §3 / D-05) — used only to reconcile per-root query results,
+// never to reclassify anything.
+const SOVEREIGNTY_STATUS_RANK: Record<SovereigntyStatus, number> = {
+  GREEN: 0,
+  GREY: 1,
+  YELLOW: 2,
+  RED: 3,
+}
+
+export const worseStatus = (a: SovereigntyStatus, b: SovereigntyStatus): SovereigntyStatus =>
+  SOVEREIGNTY_STATUS_RANK[b] > SOVEREIGNTY_STATUS_RANK[a] ? b : a
+
 // Only BusinessCapability/DataObject elements are valid sovereigntyMarkers
 // roots (02-02's rootType contract).
 const isMarkerRoot = (element: DiagramElement): boolean =>
@@ -65,9 +80,11 @@ const isMarkerRoot = (element: DiagramElement): boolean =>
 
 /**
  * Fetches sovereigntyMarkers for every BusinessCapability/DataObject root
- * found among the diagram's database elements, folding all returned markers
- * into a single Map keyed by nodeId. A diagram with no marker root returns an
- * empty Map without issuing any query.
+ * found among the diagram's database elements, merging results across roots
+ * (worse status always wins) into a single Map keyed by nodeId. A diagram
+ * with no marker root returns an empty Map without issuing any query. A
+ * failure fetching one root's markers never blocks the others — fail-closed
+ * per root, never throws out of this function.
  */
 export const fetchSovereigntyMarkersForDiagram = async (
   apolloClient: any,
@@ -84,32 +101,46 @@ export const fetchSovereigntyMarkersForDiagram = async (
   const nodes = databaseElements
     .filter(el => el.customData?.databaseId && el.customData?.elementType)
     .map(el => ({ id: el.customData!.databaseId, type: el.customData!.elementType }))
+    .slice(0, 500) // mirrors server's sovereigntyMarkerNodesSchema.max(500) cap
 
   for (const root of roots) {
     if (!root.customData?.databaseId || !root.customData?.elementType) continue
 
-    const { data } = await apolloClient.query({
-      query: GET_SOVEREIGNTY_MARKERS,
-      variables: {
-        companyId,
-        rootType: root.customData.elementType,
-        rootId: root.customData.databaseId,
-        nodes,
-      },
-      fetchPolicy: 'network-only',
-    })
-
-    const markers: Array<{
-      nodeId: string
-      selfStatus: SovereigntyStatus
-      downstreamStatus: SovereigntyStatus
-    }> = data?.sovereigntyMarkers ?? []
-
-    for (const marker of markers) {
-      result.set(marker.nodeId, {
-        selfStatus: marker.selfStatus,
-        downstreamStatus: marker.downstreamStatus,
+    try {
+      const { data } = await apolloClient.query({
+        query: GET_SOVEREIGNTY_MARKERS,
+        variables: {
+          companyId,
+          rootType: root.customData.elementType,
+          rootId: root.customData.databaseId,
+          nodes,
+        },
+        fetchPolicy: 'network-only',
       })
+
+      const markers: Array<{
+        nodeId: string
+        selfStatus: SovereigntyStatus
+        downstreamStatus: SovereigntyStatus
+      }> = data?.sovereigntyMarkers ?? []
+
+      for (const marker of markers) {
+        const existing = result.get(marker.nodeId)
+        result.set(marker.nodeId, {
+          selfStatus: existing
+            ? worseStatus(existing.selfStatus, marker.selfStatus)
+            : marker.selfStatus,
+          downstreamStatus: existing
+            ? worseStatus(existing.downstreamStatus, marker.downstreamStatus)
+            : marker.downstreamStatus,
+        })
+      }
+    } catch (err) {
+      console.warn(
+        `sovereigntyMarkers fetch failed for root ${root.customData.elementType}/${root.customData.databaseId}:`,
+        err
+      )
+      continue
     }
   }
 
@@ -201,9 +232,13 @@ const createMarkerEllipses = (
 
 /**
  * Applies fill/ring marker ellipses to every main database element that has
- * an entry in markerByNodeId. Never reads or writes the main element's own
- * strokeColor/backgroundColor/strokeWidth (UI-SPEC: never overwrite the
- * user's own chosen colors).
+ * an entry in markerByNodeId. Idempotent: a prior marker pair for the same
+ * main element is removed before the new pair is appended, so repeated calls
+ * (manual re-sync, reopening the diagram) replace the previous ellipses in
+ * place instead of accumulating duplicates — mirrors markMissingElements's
+ * "update in place based on current state, never accumulate" pattern. Never
+ * reads or writes the main element's own strokeColor/backgroundColor/
+ * strokeWidth (UI-SPEC: never overwrite the user's own chosen colors).
  */
 export const applySovereigntyMarkers = (
   elements: DiagramElement[],
@@ -213,15 +248,36 @@ export const applySovereigntyMarkers = (
     return elements
   }
 
-  const newMarkerEllipses: DiagramElement[] = []
+  const mainElementIdsToMark = new Set<string>()
   for (const element of elements) {
+    if (
+      element.customData?.isMainElement &&
+      element.customData?.databaseId &&
+      markerByNodeId.has(element.customData.databaseId)
+    ) {
+      mainElementIdsToMark.add(element.id)
+    }
+  }
+
+  // Drop any prior marker ellipses bound to a main element that is about to
+  // be re-marked below, so re-syncing replaces rather than accumulates.
+  const withoutStaleMarkers = elements.filter(element => {
+    const isMarkerEllipse =
+      element.customData?.sovereigntyMarker === 'fill' ||
+      element.customData?.sovereigntyMarker === 'ring'
+    if (!isMarkerEllipse || !element.customData?.mainElementId) return true
+    return !mainElementIdsToMark.has(element.customData.mainElementId)
+  })
+
+  const newMarkerEllipses: DiagramElement[] = []
+  for (const element of withoutStaleMarkers) {
     if (!element.customData?.isMainElement || !element.customData?.databaseId) continue
     const marker = markerByNodeId.get(element.customData.databaseId)
     if (!marker) continue
     newMarkerEllipses.push(...createMarkerEllipses(element, marker))
   }
 
-  return [...elements, ...newMarkerEllipses]
+  return [...withoutStaleMarkers, ...newMarkerEllipses]
 }
 
 /**
