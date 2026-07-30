@@ -56,13 +56,13 @@ Plans:
 3. Missing sovereignty evaluations remain visible as a gray or unknown state rather than appearing compliant by default.
 4. In an element detail view, a user can tell whether the current element is the cause of a sovereignty issue or is affected by a weaker element elsewhere in the chain.
 5. When diagram markers are enabled, added elements show canonical sovereignty status markers that distinguish local violations from downstream impact.
-   **Plans**: 4/5 plans executed
+   **Plans**: 5/5 plans executed
 
 - [x] 02-01-PLAN.md
 - [x] 02-02-PLAN.md
 - [x] 02-03-PLAN.md
 - [x] 02-04-PLAN.md
-- [ ] 02-05-PLAN.md
+- [x] 02-05-PLAN.md
    **Mode:** mvp
    **UI hint**: yes
 
@@ -74,7 +74,7 @@ Phases execute in numeric order: 1 -> 2
 | Phase                                                | Plans Complete | Status      | Completed  |
 | ---------------------------------------------------- | -------------- | ----------- | ---------- |
 | 1. Setup Stabilization & Deployment Clarity          | 1/1            | Complete    | 2026-07-27 |
-| 2. Canonical Sovereignty Evaluation & UX Diagnostics | 4/5 | In Progress|  |
+| 2. Canonical Sovereignty Evaluation & UX Diagnostics | 5/5 | In Progress|  |
 
 ## Backlog (Accepted Blockers)
 
