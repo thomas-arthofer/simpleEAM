@@ -56,7 +56,10 @@ Plans:
 3. Missing sovereignty evaluations remain visible as a gray or unknown state rather than appearing compliant by default.
 4. In an element detail view, a user can tell whether the current element is the cause of a sovereignty issue or is affected by a weaker element elsewhere in the chain.
 5. When diagram markers are enabled, added elements show canonical sovereignty status markers that distinguish local violations from downstream impact.
-   **Plans**: TBD
+   **Plans**:
+   - **Wave 1**: 02-01 — Core canonical sovereignty evaluator (SOV-01, SOV-02, SOV-03, SOV-04, SOV-05)
+   - **Wave 2** *(blocked on Wave 1 completion)*: 02-02 — batched `sovereigntyMarkers` query (SOV-05, SUX-03, SUX-04); 02-03 — element detail view rewrite (SUX-01, SUX-02)
+   - **Wave 3** *(blocked on Wave 2 completion)*: 02-04 — company-level rollup (SOV-05); 02-05 — diagram marker integration (SUX-03, SUX-04)
    **Mode:** mvp
    **UI hint**: yes
 
@@ -68,7 +71,7 @@ Phases execute in numeric order: 1 -> 2
 | Phase                                                | Plans Complete | Status      | Completed |
 | ---------------------------------------------------- | -------------- | ----------- | --------- |
 | 1. Setup Stabilization & Deployment Clarity          | 1/1 | Complete    | 2026-07-27 |
-| 2. Canonical Sovereignty Evaluation & UX Diagnostics | 0/TBD          | Not started | -         |
+| 2. Canonical Sovereignty Evaluation & UX Diagnostics | 0/5           | Planned     | -         |
 
 ## Backlog (Accepted Blockers)
 

@@ -4,15 +4,15 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 2
 current_phase_name: Canonical Sovereignty Evaluation & UX Diagnostics
-status: ready to plan
-stopped_at: Phase 2 UI-SPEC approved
-last_updated: "2026-07-30T08:38:40.409Z"
+status: ready to execute
+stopped_at: Phase 2 planned — 5 plans passed plan-checker (1 revision iteration)
+last_updated: "2026-07-30T09:00:00.000Z"
 last_activity: 2026-07-30
-last_activity_desc: see 02-CONTEXT.md and 02-DISCUSSION-LOG.md in .planning/phases/02-canonical-sovereignty-evaluation-ux-diagnostics/
+last_activity_desc: plan-phase 2 complete — see 02-01..02-05-PLAN.md in .planning/phases/02-canonical-sovereignty-evaluation-ux-diagnostics/
 progress:
   total_phases: 3
   completed_phases: 2
-  total_plans: 2
+  total_plans: 7
   completed_plans: 2
 ---
 
@@ -27,12 +27,12 @@ See: .planning/PROJECT.md (updated 2026-07-22)
 
 ## Current Position
 
-Phase: 2 — Canonical Sovereignty Evaluation & UX Diagnostics (context gathered)
-Plan: none yet
-Status: Ready to plan — CONTEXT.md and DISCUSSION-LOG.md re-confirmed interactively with the user (2026-07-30); all 4 gray areas (D-01..D-10) are now user-confirmed, no open `[AGENT ASSUMPTION]` items remain
-Last activity: 2026-07-30 — see 02-CONTEXT.md and 02-DISCUSSION-LOG.md in .planning/phases/02-canonical-sovereignty-evaluation-ux-diagnostics/
+Phase: 2 — Canonical Sovereignty Evaluation & UX Diagnostics (planned)
+Plan: 02-01, 02-02, 02-03, 02-04, 02-05 (5 plans, 3 waves) — 02-01-PLAN.md (wave 1); 02-02-PLAN.md, 02-03-PLAN.md (wave 2); 02-04-PLAN.md, 02-05-PLAN.md (wave 3)
+Status: Ready to execute — plan-checker PASSED after 1 revision iteration (resolver rootType dispatch + typeDefs.ts contradiction fixed in 02-01/02-02); all 9 requirement IDs (SOV-01..05, SUX-01..04) and all 10 CONTEXT.md decisions (D-01..D-10) are covered by plans
+Last activity: 2026-07-30 — see 02-01..02-05-PLAN.md in .planning/phases/02-canonical-sovereignty-evaluation-ux-diagnostics/
 
-Progress: [██████████] 100% Phase 01.1 complete; Phase 2 context gathered, next up: plan Phase 2
+Progress: [██████████] 100% Phase 01.1 complete; Phase 2 planned (5 plans), next up: execute Phase 2
 
 ## Performance Metrics
 
