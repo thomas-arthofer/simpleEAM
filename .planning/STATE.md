@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-07-22)
 
 Phase: 2 — Canonical Sovereignty Evaluation & UX Diagnostics (context gathered)
 Plan: none yet
-Status: Ready to plan — CONTEXT.md and DISCUSSION-LOG.md created; 4 gray areas decided autonomously (user unavailable) and flagged `[AGENT ASSUMPTION]` for review, especially D-08 (Suppliers out of chain scope)
+Status: Ready to plan — CONTEXT.md and DISCUSSION-LOG.md re-confirmed interactively with the user (2026-07-30); all 4 gray areas (D-01..D-10) are now user-confirmed, no open `[AGENT ASSUMPTION]` items remain
 Last activity: 2026-07-30 — see 02-CONTEXT.md and 02-DISCUSSION-LOG.md in .planning/phases/02-canonical-sovereignty-evaluation-ux-diagnostics/
 
 Progress: [██████████] 100% Phase 01.1 complete; Phase 2 context gathered, next up: plan Phase 2
@@ -72,7 +72,7 @@ None yet.
 ### Blockers/Concerns
 
 - Phase 1 must define one supported localhost-first runtime path and keep any Traefik or HTTPS parity flow explicitly optional.
-- Phase 2 semantic contract (traversal rules, cycle handling, legacy field reconciliation) is now drafted in `02-CONTEXT.md` (D-01..D-10), but was decided autonomously without user confirmation — review before/during planning, especially D-08 (Suppliers excluded from chain traversal).
+- Phase 2 semantic contract (traversal rules, cycle handling, legacy field reconciliation) is drafted in `02-CONTEXT.md` (D-01..D-10) and has been reviewed and confirmed by the user directly (2026-07-30) — no longer a blocker for planning.
 
 ### Roadmap Evolution
 
@@ -83,6 +83,7 @@ None yet.
 | Category              | Item                                                                                              | Status         | Deferred At |
 | --------------------- | ------------------------------------------------------------------------------------------------- | -------------- | ----------- |
 | Sovereignty Expansion | Blast-radius prioritization, business-process scope expansion, weighting, and portfolio analytics | Deferred to v2 | 2026-07-22  |
+| Sovereignty Expansion | Supplier participation in canonical sovereignty chain traversal (D-08) — Suppliers carry their own `sovereigntyAch*` fields and real `PROVIDED_BY`/`HOSTED_BY`/`SUPPORTED_BY`/`MAINTAINED_BY`/`DEVELOPED_BY`/`MANUFACTURED_BY` relationships but are excluded from Phase 2 chain traversal | Deferred to v2 (user-confirmed backlog item) | 2026-07-30 |
 | Runtime Tooling       | Helm-dependent K8s runtime verification gate for Phase 01 (`helm status`, `kubectl wait`, endpoint check) | Accepted backlog | 2026-07-27  |
 
 ## Session Continuity
