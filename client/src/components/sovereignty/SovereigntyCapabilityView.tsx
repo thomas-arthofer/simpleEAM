@@ -1,42 +1,212 @@
 'use client'
 
 import React from 'react'
-import { Alert, Box, Chip, CircularProgress, Paper, Tooltip, Typography } from '@mui/material'
+import { Alert, Box, Chip, CircularProgress, Paper, Typography } from '@mui/material'
 import { useQuery } from '@apollo/client'
 import { useTranslations } from 'next-intl'
 import { useCompanyContext } from '@/contexts/CompanyContext'
 import { useCompanyWhere } from '@/hooks/useCompanyWhere'
-import { GET_SOVEREIGNTY_CAPABILITY_DETAIL } from '@/graphql/sovereigntyDetail'
 import {
-  AchievedEntity,
-  collectAchievedDependencyTree,
-  computeAggregatedAchievedScore,
-  computeEntityAchivedScore,
-  computeEntityRequiredScore,
-  DependencyAIComponent,
-  DependencyApplication,
-  formatSovereigntyScore,
-  hasAnySovereigntyAchs,
-  hasAnySovereigntyReqs,
-  RequirementEntity,
-} from './utils'
-import { EntityRef } from './types'
+  GET_SOVEREIGNTY_ANALYSIS,
+  GET_SOVEREIGNTY_CAPABILITIES_LIST,
+} from '@/graphql/sovereigntyDetail'
+import { EntityRef, EntityType } from './types'
 
-interface CapabilityItem extends RequirementEntity {
-  supportedByApplications: AchievedEntity[]
-  supportedByAIComponents: AchievedEntity[]
+// Status taxonomy locked by eam-konzept.md §3 / 02-UI-SPEC.md Color table —
+// no new hex values, these are the exact theme colors specified there.
+const STATUS_COLORS: Record<string, string> = {
+  RED: '#D32F2F',
+  YELLOW: '#ED6C02',
+  GREY: '#9E9E9E',
+  GREEN: '#2E7D32',
 }
 
-function ScoreBox({ label, value, color }: { label: string; value: string; color?: string }) {
+// evaluator.ts's ViolatingElementType ('application' | 'aiComponent' |
+// 'infrastructure') to this app's EntityRef.type / i18n key casing.
+const VIOLATING_ELEMENT_TYPE_MAP: Record<string, EntityType> = {
+  application: 'application',
+  aiComponent: 'aicomponent',
+  infrastructure: 'infrastructure',
+}
+
+interface CapabilityListItem {
+  id: string
+  name: string
+}
+
+interface SovereigntyFinding {
+  violatingElementId: string
+  violatingElementType: string
+  violatingElementName: string
+  dimension: string
+  status: string
+  requiredLevel: string | null
+  actualLevel: string | null
+  chainPath: string[]
+}
+
+interface SovereigntyAnalysisResult {
+  rootId: string
+  rootType: string
+  selfStatus: string
+  downstreamStatus: string
+  findings: SovereigntyFinding[]
+}
+
+function StatusChip({ label, status }: { label: string; status: string }) {
   return (
-    <Box sx={{ textAlign: 'center', minWidth: 60 }}>
-      <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 0.25 }}>
-        {label}
-      </Typography>
-      <Typography variant="body2" sx={{ fontWeight: 700, color: color ?? 'text.primary' }}>
-        {value}
-      </Typography>
+    <Chip
+      label={`${label}: ${status}`}
+      size="small"
+      sx={{
+        bgcolor: STATUS_COLORS[status] ?? STATUS_COLORS.GREY,
+        color: '#fff',
+        fontWeight: 500,
+      }}
+    />
+  )
+}
+
+function FindingsPanel({
+  analysis,
+  onEntityClick,
+  t,
+}: {
+  analysis: SovereigntyAnalysisResult
+  onEntityClick: (ref: EntityRef) => void
+  t: (key: string, values?: Record<string, string | number>) => string
+}) {
+  if (analysis.downstreamStatus === 'GREEN') {
+    return (
+      <Alert severity="success" sx={{ mt: 1.5 }}>
+        <Typography variant="subtitle2">{t('greenEmptyHeading')}</Typography>
+        <Typography variant="body2">{t('greenEmptyBody')}</Typography>
+      </Alert>
+    )
+  }
+
+  if (analysis.downstreamStatus === 'GREY' && analysis.findings.length === 0) {
+    return (
+      <Alert severity="info" sx={{ mt: 1.5 }}>
+        <Typography variant="subtitle2">{t('greyEmptyHeading')}</Typography>
+        <Typography variant="body2">{t('greyEmptyBody')}</Typography>
+      </Alert>
+    )
+  }
+
+  return (
+    <Box
+      sx={{
+        maxHeight: 320,
+        overflowY: 'auto',
+        mt: 1.5,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 1,
+      }}
+    >
+      {analysis.findings.map((finding, index) => {
+        const entityType = VIOLATING_ELEMENT_TYPE_MAP[finding.violatingElementType]
+        const dimensionLabel = t(`dimensions.${finding.dimension}` as never)
+
+        return (
+          <Paper
+            key={`${finding.violatingElementId}-${finding.dimension}-${index}`}
+            variant="outlined"
+            sx={{
+              p: 1,
+              borderLeft: `4px solid ${STATUS_COLORS[finding.status] ?? STATUS_COLORS.GREY}`,
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+              <Chip
+                label={finding.violatingElementName}
+                size="small"
+                clickable
+                onClick={() =>
+                  entityType && onEntityClick({ id: finding.violatingElementId, type: entityType })
+                }
+              />
+              <Typography variant="caption" color="text.secondary">
+                {dimensionLabel}
+              </Typography>
+            </Box>
+            <Typography variant="body2" sx={{ mt: 0.5 }}>
+              {t('findingRow', {
+                required: finding.requiredLevel ?? '–',
+                actual: finding.actualLevel ?? '–',
+              })}
+            </Typography>
+            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.25 }}>
+              {t('chainContext', { chainPath: finding.chainPath.join(' → ') })}
+            </Typography>
+          </Paper>
+        )
+      })}
     </Box>
+  )
+}
+
+function CapabilityAnalysisCard({
+  capability,
+  onEntityClick,
+}: {
+  capability: CapabilityListItem
+  onEntityClick: (ref: EntityRef) => void
+}) {
+  const t = useTranslations('sovereigntyDetail')
+  const { selectedCompanyId } = useCompanyContext()
+
+  const { data, loading, error } = useQuery(GET_SOVEREIGNTY_ANALYSIS, {
+    variables: {
+      companyId: selectedCompanyId,
+      rootType: 'businessCapability',
+      rootId: capability.id,
+    },
+    skip: !selectedCompanyId,
+    fetchPolicy: 'cache-and-network',
+  })
+
+  const analysis: SovereigntyAnalysisResult | undefined = data?.sovereigntyAnalysis
+
+  return (
+    <Paper variant="outlined" sx={{ p: 1.5 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+        <Chip
+          label={capability.name}
+          onClick={() => onEntityClick({ id: capability.id, type: 'capability' })}
+          clickable
+          color="primary"
+          variant="outlined"
+        />
+        {analysis && (
+          <Box sx={{ ml: 'auto', display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+            <StatusChip label={t('selfStatusLabel')} status={analysis.selfStatus} />
+            <StatusChip label={t('downstreamStatusLabel')} status={analysis.downstreamStatus} />
+          </Box>
+        )}
+      </Box>
+
+      {loading && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', py: 2 }}>
+          <CircularProgress size={24} />
+        </Box>
+      )}
+
+      {error && (
+        <Alert severity="error" sx={{ mt: 1.5 }}>
+          {t('loadError')}
+        </Alert>
+      )}
+
+      {!loading && !error && analysis && (
+        <FindingsPanel
+          analysis={analysis}
+          onEntityClick={onEntityClick}
+          t={t as (key: string, values?: Record<string, string | number>) => string}
+        />
+      )}
+    </Paper>
   )
 }
 
@@ -50,14 +220,11 @@ export default function SovereigntyCapabilityView({
   const t = useTranslations('sovereigntyDetail')
   const { selectedCompanyId } = useCompanyContext()
   const companyWhere = useCompanyWhere('company')
-  const applicationWhere = useCompanyWhere('company')
-  const aiComponentWhere = useCompanyWhere('company')
-  const infrastructureWhere = useCompanyWhere('company')
 
-  const { data, loading, error } = useQuery(GET_SOVEREIGNTY_CAPABILITY_DETAIL, {
+  const { data, loading, error } = useQuery(GET_SOVEREIGNTY_CAPABILITIES_LIST, {
     skip: !selectedCompanyId,
     fetchPolicy: 'cache-and-network',
-    variables: { where: companyWhere, applicationWhere, aiComponentWhere, infrastructureWhere },
+    variables: { where: companyWhere },
   })
 
   if (!selectedCompanyId) {
@@ -76,12 +243,7 @@ export default function SovereigntyCapabilityView({
     return <Alert severity="error">{error.message}</Alert>
   }
 
-  const capabilities: CapabilityItem[] = data?.businessCapabilities ?? []
-  const allApplications: DependencyApplication[] = data?.applications ?? []
-  const allAIComponents: DependencyAIComponent[] = data?.aiComponents ?? []
-  const allInfrastructures: AchievedEntity[] = data?.infrastructures ?? []
-  const applicationIds = new Set(allApplications.map(app => app.id))
-  const aiComponentIds = new Set(allAIComponents.map(ai => ai.id))
+  const capabilities: CapabilityListItem[] = data?.businessCapabilities ?? []
 
   if (capabilities.length === 0) {
     return (
@@ -93,111 +255,13 @@ export default function SovereigntyCapabilityView({
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-      {capabilities.map(capability => {
-        const allAssociated: AchievedEntity[] = collectAchievedDependencyTree({
-          rootApplications: capability.supportedByApplications,
-          rootAIComponents: capability.supportedByAIComponents,
-          allApplications,
-          allAIComponents,
-          allInfrastructures,
-        })
-
-        const hasReqs = hasAnySovereigntyReqs(capability)
-        const hasAchs = allAssociated.length > 0 && allAssociated.some(hasAnySovereigntyAchs)
-
-        const expectedScore = hasReqs ? computeEntityRequiredScore(capability) : null
-        const achievedScore = hasAchs ? computeAggregatedAchievedScore(allAssociated) : null
-        const gap =
-          expectedScore !== null && achievedScore !== null ? achievedScore - expectedScore : null
-
-        const gapColor =
-          gap === null
-            ? undefined
-            : gap >= 0
-              ? 'success.main'
-              : gap >= -1
-                ? 'warning.main'
-                : 'error.main'
-
-        return (
-          <Paper key={capability.id} variant="outlined" sx={{ p: 1.5 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
-              <Chip
-                label={capability.name}
-                onClick={() => onEntityClick({ id: capability.id, type: 'capability' })}
-                clickable
-                color="primary"
-                variant="outlined"
-                sx={{ fontWeight: 600 }}
-              />
-              <Box sx={{ ml: 'auto', display: 'flex', gap: 2, alignItems: 'center' }}>
-                <ScoreBox
-                  label={t('expectedScore')}
-                  value={expectedScore !== null ? formatSovereigntyScore(expectedScore) : '–'}
-                />
-                <ScoreBox
-                  label={t('achievedScore')}
-                  value={achievedScore !== null ? formatSovereigntyScore(achievedScore) : '–'}
-                />
-                <ScoreBox
-                  label={t('gap')}
-                  value={gap !== null ? (gap >= 0 ? '+' : '') + formatSovereigntyScore(gap) : '–'}
-                  color={gapColor}
-                />
-              </Box>
-            </Box>
-
-            {allAssociated.length > 0 ? (
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 1 }}>
-                {allAssociated.map(entity => {
-                  const isApplication = applicationIds.has(entity.id)
-                  const isAIComponent = aiComponentIds.has(entity.id)
-                  const label = isApplication
-                    ? `${entity.name} (${t('entityTypes.application')})`
-                    : isAIComponent
-                      ? `${entity.name} (${t('entityTypes.aicomponent')})`
-                      : `${entity.name} (${t('entityTypes.infrastructure')})`
-
-                  return (
-                    <Tooltip
-                      key={entity.id}
-                      title={
-                        hasAnySovereigntyAchs(entity)
-                          ? `${t('achievedScore')}: ${formatSovereigntyScore(computeEntityAchivedScore(entity))}`
-                          : t('noSovereigntyData')
-                      }
-                      arrow
-                    >
-                      <Chip
-                        label={label}
-                        size="small"
-                        variant="outlined"
-                        color={isAIComponent ? 'secondary' : 'default'}
-                        onClick={
-                          isApplication
-                            ? () => onEntityClick({ id: entity.id, type: 'application' })
-                            : isAIComponent
-                              ? () => onEntityClick({ id: entity.id, type: 'aicomponent' })
-                              : () => onEntityClick({ id: entity.id, type: 'infrastructure' })
-                        }
-                        clickable
-                      />
-                    </Tooltip>
-                  )
-                })}
-              </Box>
-            ) : (
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{ mt: 0.75, display: 'block' }}
-              >
-                {t('noAssociatedElements')}
-              </Typography>
-            )}
-          </Paper>
-        )
-      })}
+      {capabilities.map(capability => (
+        <CapabilityAnalysisCard
+          key={capability.id}
+          capability={capability}
+          onEntityClick={onEntityClick}
+        />
+      ))}
     </Box>
   )
 }
