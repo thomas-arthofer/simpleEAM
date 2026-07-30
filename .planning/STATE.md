@@ -4,11 +4,11 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 2
 current_phase_name: Canonical Sovereignty Evaluation & UX Diagnostics
-status: phase complete — ready for verification
-stopped_at: Completed 02-05-PLAN.md — Phase 2 all 5 plans complete, ready for phase-level verification
-last_updated: "2026-07-30T11:51:28.302Z"
+status: human verification needed
+stopped_at: Phase 2 verified (5/5 must-haves) — status human_needed, 4 UAT items pending in 02-UAT.md
+last_updated: "2026-07-30T12:35:00.000Z"
 last_activity: 2026-07-30
-last_activity_desc: see 02-05-SUMMARY.md
+last_activity_desc: see 02-VERIFICATION.md and 02-UAT.md
 progress:
   total_phases: 3
   completed_phases: 2
@@ -27,10 +27,10 @@ See: .planning/PROJECT.md (updated 2026-07-22)
 
 ## Current Position
 
-Phase: 2 — Canonical Sovereignty Evaluation & UX Diagnostics (all plans complete — ready for phase-level verification)
-Plan: 05 of 5 (complete) — Phase 2 has no further plans; next step is phase-level verification/audit
-Status: 02-05 complete — client/src/graphql/sovereigntyMarkers.ts (GET_SOVEREIGNTY_MARKERS) and client/src/components/diagrams/utils/sovereigntyMarkers.ts (fetch/transform/gate/idempotent-render) added; syncDiagramOnOpen (databaseSyncUtils.ts) and both syncDiagramOnOpen call sites in DiagramHandlers.ts now gate diagram sovereignty markers behind featureFlags.Sovereignty (D-09, SUX-03/SUX-04 complete). All 5 of Phase 2's plans (02-01..02-05) now have SUMMARY.md on disk — Phase 2 is ready for phase-level verification.
-Last activity: 2026-07-30 — see 02-05-SUMMARY.md
+Phase: 2 — Canonical Sovereignty Evaluation & UX Diagnostics (all 5 plans executed and code-verified; 4 human UAT checks pending against a live Docker/Neo4j/Temporal stack)
+Plan: 05 of 5 (complete) — Phase 2 has no further plans; next step is running the 4 pending human verification items in 02-UAT.md, then re-running phase verification
+Status: gsd-verifier ran 02-VERIFICATION.md — 5/5 ROADMAP success criteria and all 9 requirements (SOV-01..05, SUX-01..04) code-verified (21/21 Jest tests, clean tsc/type-check across server/ai-server/client). Verdict: human_needed — 4 items require a live Docker/Neo4j/Temporal stack that was not running during execution (live GraphQL query, detail-view visual check, Temporal workflow parity, diagram marker visual check). Persisted as 02-UAT.md.
+Last activity: 2026-07-30 — see 02-VERIFICATION.md and 02-UAT.md
 
 Progress: [██████████] 100% (7/7 plans complete across phases; Phase 2: 5/5 plans complete)
 
