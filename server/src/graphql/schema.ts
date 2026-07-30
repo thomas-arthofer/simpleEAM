@@ -3,6 +3,7 @@ import { readFileSync } from 'fs'
 import { resolve } from 'path'
 import neo4jDriver from '../db/neo4j-client'
 import dotenv from 'dotenv'
+import { sovereigntyResolvers } from '../sovereignty/graphql/resolvers'
 
 // Load environment variables
 dotenv.config()
@@ -19,6 +20,7 @@ const jwksUrl = `${KEYCLOAK_URL}/realms/${KEYCLOAK_REALM}/protocol/openid-connec
 export const neoSchema = new Neo4jGraphQL({
   typeDefs,
   driver: neo4jDriver,
+  resolvers: sovereigntyResolvers,
   features: {
     authorization: {
       key: {

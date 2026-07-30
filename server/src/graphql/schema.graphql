@@ -2202,3 +2202,61 @@ enum AIComponentStatus {
   DEPRECATED
   RETIRED
 }
+
+"""
+Canonical sovereignty analysis (server/src/sovereignty/) — additive-only extension.
+Backed by a custom resolver (server/src/sovereignty/graphql/resolvers.ts), NOT by
+@neo4j/graphql's generated CRUD, so it runs outside the @authorization directive
+pipeline and re-implements the same JWT company/role check manually (see T-02-01
+in .planning/phases/02-canonical-sovereignty-evaluation-ux-diagnostics/02-01-PLAN.md).
+"""
+enum SovereigntyStatus {
+  RED
+  YELLOW
+  GREY
+  GREEN
+}
+
+"""
+Sovereignty evaluation dimension — mirrors SovereigntyDimension in
+server/src/sovereignty/types.ts.
+"""
+enum SovereigntyDimensionEnum {
+  STRATEGIC_AUTONOMY
+  RESILIENCE
+  SECURITY
+  CONTROL
+}
+
+"""
+A single sovereignty chain violation: names the violating element, dimension,
+required/actual maturity, and the chain path from the requirement root down to
+the violating element (SOV-04).
+"""
+type SovereigntyFinding {
+  violatingElementId: ID!
+  violatingElementType: String!
+  violatingElementName: String!
+  dimension: SovereigntyDimensionEnum!
+  status: SovereigntyStatus!
+  requiredLevel: SovereigntyMaturity
+  actualLevel: SovereigntyMaturity
+  chainPath: [String!]!
+}
+
+"""
+Canonical sovereignty analysis result for a BusinessCapability or DataObject
+root. `selfStatus` is always GREY for a root (D-05) — it owns no achieved
+rating of its own.
+"""
+type SovereigntyAnalysis {
+  rootId: ID!
+  rootType: String!
+  findings: [SovereigntyFinding!]!
+  selfStatus: SovereigntyStatus!
+  downstreamStatus: SovereigntyStatus!
+}
+
+type Query {
+  sovereigntyAnalysis(companyId: ID!, rootType: String!, rootId: ID!): SovereigntyAnalysis!
+}
