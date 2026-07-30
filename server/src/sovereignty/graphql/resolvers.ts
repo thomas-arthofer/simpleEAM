@@ -1,6 +1,7 @@
 import { loadFullSupportChain } from '../repository'
 import { analyzeBusinessCapability, analyzeDataObject } from '../evaluator'
 import { projectMarkers, resolveMarker } from '../markers'
+import { sovereigntyAnalysisArgsSchema, sovereigntyMarkerNodesSchema } from '../validation'
 import type { Finding, SovereigntyAnalysis, SovereigntyDimension } from '../types'
 import neo4jDriver from '../../db/neo4j-client'
 
@@ -92,22 +93,30 @@ export const sovereigntyResolvers = {
       args: SovereigntyAnalysisArgs,
       context: SovereigntyResolverContext
     ) => {
+      // Reject malformed rootType/companyId/rootId at the boundary (OWASP
+      // ASVS V5), before the JWT check and before any Cypher runs — never
+      // pass unvalidated strings into repository.ts's Cypher parameters
+      // (T-02-05).
+      const parsedArgs = sovereigntyAnalysisArgsSchema.parse(args)
+
       const { companyIds, roles } = decodeAuth(context.token)
       const isAdmin = roles.includes('admin')
 
-      if (!isAdmin && !companyIds.includes(args.companyId)) {
+      if (!isAdmin && !companyIds.includes(parsedArgs.companyId)) {
         throw new Error('Not authorized for this company')
-      }
-
-      if (args.rootType !== 'businessCapability' && args.rootType !== 'dataObject') {
-        throw new Error(`Unsupported rootType: ${args.rootType}`)
       }
 
       const session = neo4jDriver.session()
       try {
-        const chain = await loadFullSupportChain(session, companyIds, isAdmin, args.rootType, args.rootId)
+        const chain = await loadFullSupportChain(
+          session,
+          companyIds,
+          isAdmin,
+          parsedArgs.rootType,
+          parsedArgs.rootId
+        )
         if (!chain) {
-          throw new Error(`${args.rootType} not found`)
+          throw new Error(`${parsedArgs.rootType} not found`)
         }
         const analysis =
           chain.rootType === 'businessCapability'
@@ -124,22 +133,34 @@ export const sovereigntyResolvers = {
       args: SovereigntyMarkersArgs,
       context: SovereigntyResolverContext
     ) => {
+      // Same input-validation boundary as sovereigntyAnalysis, plus the
+      // 500-node cap on `nodes` that closes the unbounded-batch DoS/
+      // Information-Disclosure threat (T-02-04) — reject, never truncate.
+      const parsedArgs = sovereigntyAnalysisArgsSchema.parse({
+        companyId: args.companyId,
+        rootType: args.rootType,
+        rootId: args.rootId,
+      })
+      const nodes = sovereigntyMarkerNodesSchema.parse(args.nodes)
+
       const { companyIds, roles } = decodeAuth(context.token)
       const isAdmin = roles.includes('admin')
 
-      if (!isAdmin && !companyIds.includes(args.companyId)) {
+      if (!isAdmin && !companyIds.includes(parsedArgs.companyId)) {
         throw new Error('Not authorized for this company')
-      }
-
-      if (args.rootType !== 'businessCapability' && args.rootType !== 'dataObject') {
-        throw new Error(`Unsupported rootType: ${args.rootType}`)
       }
 
       const session = neo4jDriver.session()
       try {
-        const chain = await loadFullSupportChain(session, companyIds, isAdmin, args.rootType, args.rootId)
+        const chain = await loadFullSupportChain(
+          session,
+          companyIds,
+          isAdmin,
+          parsedArgs.rootType,
+          parsedArgs.rootId
+        )
         if (!chain) {
-          throw new Error(`${args.rootType} not found`)
+          throw new Error(`${parsedArgs.rootType} not found`)
         }
         const analysis =
           chain.rootType === 'businessCapability'
@@ -147,7 +168,7 @@ export const sovereigntyResolvers = {
             : analyzeDataObject(chain)
         const markers = projectMarkers(analysis)
 
-        return args.nodes.map(node => {
+        return nodes.map(node => {
           const marker = resolveMarker(markers, node.id)
           return {
             nodeId: node.id,
