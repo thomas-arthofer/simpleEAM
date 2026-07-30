@@ -1,7 +1,7 @@
 ---
 phase: 2
 slug: canonical-sovereignty-evaluation-ux-diagnostics
-status: draft
+status: approved
 shadcn_initialized: false
 preset: none
 created: 2026-07-30
@@ -124,7 +124,7 @@ No create/edit form exists in this phase's scope, so "Primary CTA" is the single
 > State coverage for the two new surfaces (detail-view diagnostics panel, diagram markers). Empty/error
 > COPY is defined above in Copywriting Contract; this section only tracks state coverage.
 
-Applicable state considerations resolved: 8 covered, 2 backstop, 0 unresolved.
+Applicable state considerations resolved: 8 covered, 2 backstop, 1 dismissed, 0 unresolved.
 
 | Category | Element(s) | Status | Resolution / Reason |
 |----------|------------|--------|---------------------|
@@ -138,6 +138,7 @@ Applicable state considerations resolved: 8 covered, 2 backstop, 0 unresolved.
 | long-text | Violating element name, chain path | ✅ covered | Reuses existing `Tooltip` + `Chip` truncation pattern already in `SovereigntyCapabilityView.tsx` |
 | overflow | Findings list with many rows (large fan-out chains, D-01/D-02) | 🧪 backstop | No fixture confirms the exact row-count threshold for scroll vs. pagination; executor should cap visible rows at a reasonable number (e.g. scrollable `Box` with `maxHeight`) and this must be verified against real seed-data volume per `PITFALLS.md` Pitfall 5, not assumed |
 | overflow | Diagram with many marker-bearing elements visible at once | 🧪 backstop | Visual density of 10–18px badges at typical diagram zoom levels is unverified against real diagrams; executor should sanity-check readability during Wave 0/verification rather than assume it holds at all zoom levels |
+| long-text | Diagram marker badges (fill/ring ellipses) | ⛔ dismissed | Not applicable — badges are pure colored shapes with no text content; nothing to truncate/wrap/reflow |
 
 <!-- Status vocabulary (locked by probe-core projectTruths):
      ✅ covered   → a plain truth string lifted into must_haves.truths
@@ -159,11 +160,11 @@ Applicable state considerations resolved: 8 covered, 2 backstop, 0 unresolved.
 
 ## Checker Sign-Off
 
-- [ ] Dimension 1 Copywriting: PASS
-- [ ] Dimension 2 Visuals: PASS
-- [ ] Dimension 3 Color: PASS
-- [ ] Dimension 4 Typography: PASS
-- [ ] Dimension 5 Spacing: PASS
-- [ ] Dimension 6 Registry Safety: PASS
+- [x] Dimension 1 Copywriting: PASS
+- [x] Dimension 2 Visuals: PASS
+- [x] Dimension 3 Color: PASS
+- [x] Dimension 4 Typography: PASS
+- [x] Dimension 5 Spacing: PASS
+- [x] Dimension 6 Registry Safety: PASS
 
-**Approval:** pending
+**Approval:** approved (2026-07-30, after 1 revision cycle — spacing token fix)
