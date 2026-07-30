@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 2
 current_phase_name: Canonical Sovereignty Evaluation & UX Diagnostics
 status: ready to execute
-stopped_at: Phase 2 planned — 5 plans passed plan-checker (1 revision iteration)
-last_updated: "2026-07-30T09:00:00.000Z"
+stopped_at: Completed 02-01-PLAN.md
+last_updated: "2026-07-30T10:56:08.141Z"
 last_activity: 2026-07-30
-last_activity_desc: plan-phase 2 complete — see 02-01..02-05-PLAN.md in .planning/phases/02-canonical-sovereignty-evaluation-ux-diagnostics/
+last_activity_desc: see 02-01..02-05-PLAN.md in .planning/phases/02-canonical-sovereignty-evaluation-ux-diagnostics/
 progress:
   total_phases: 3
   completed_phases: 2
   total_plans: 7
-  completed_plans: 2
+  completed_plans: 3
 ---
 
 # Project State
@@ -27,12 +27,12 @@ See: .planning/PROJECT.md (updated 2026-07-22)
 
 ## Current Position
 
-Phase: 2 — Canonical Sovereignty Evaluation & UX Diagnostics (planned)
-Plan: 02-01, 02-02, 02-03, 02-04, 02-05 (5 plans, 3 waves) — 02-01-PLAN.md (wave 1); 02-02-PLAN.md, 02-03-PLAN.md (wave 2); 02-04-PLAN.md, 02-05-PLAN.md (wave 3)
-Status: Ready to execute — plan-checker PASSED after 1 revision iteration (resolver rootType dispatch + typeDefs.ts contradiction fixed in 02-01/02-02); all 9 requirement IDs (SOV-01..05, SUX-01..04) and all 10 CONTEXT.md decisions (D-01..D-10) are covered by plans
-Last activity: 2026-07-30 — see 02-01..02-05-PLAN.md in .planning/phases/02-canonical-sovereignty-evaluation-ux-diagnostics/
+Phase: 2 — Canonical Sovereignty Evaluation & UX Diagnostics (executing)
+Plan: 02-01 complete; 02-02, 02-03 (wave 2), 02-04, 02-05 (wave 3) remaining — 02-01-PLAN.md (wave 1) done
+Status: Executing — 02-01 (canonical sovereignty evaluation engine + full chain semantics) complete with 2/2 tasks committed, 10/10 tests passing, tsc clean; next up: wave 2 (02-02, 02-03)
+Last activity: 2026-07-30 — completed 02-01-PLAN.md, see 02-01-SUMMARY.md in .planning/phases/02-canonical-sovereignty-evaluation-ux-diagnostics/
 
-Progress: [██████████] 100% Phase 01.1 complete; Phase 2 planned (5 plans), next up: execute Phase 2
+Progress: [████░░░░░░] 43% Phase 01.1 complete; Phase 2 in progress (1/5 plans complete), next up: wave 2 of Phase 2
 
 ## Performance Metrics
 
@@ -54,6 +54,12 @@ Progress: [██████████] 100% Phase 01.1 complete; Phase 2 pla
 - Last 5 plans: none
 - Trend: Stable
 
+**Per-Plan Metrics:**
+
+| Plan | Duration | Tasks | Files |
+|------|----------|-------|-------|
+| Phase 02 P01 | 35min | 2 tasks | 10 files |
+
 ## Accumulated Context
 
 ### Decisions
@@ -64,6 +70,8 @@ Recent decisions affecting current work:
 - Phase 1: Setup stabilization precedes sovereignty work because runtime reproducibility is required for later verification.
 - Phase 2: Sovereignty evaluation will use explicit per-element evidence with chain-based findings rather than inherited achieved values.
 - Phase 2: Detail views and diagram markers must consume the same canonical sovereignty result.
+- [Phase ?]: type Query (not extend type Query) required for the first custom Query field on a @neo4j/graphql schema with no other explicit Query block
+- [Phase ?]: Cycle safety uses a per-branch visited Set (fresh per top-level entry, one shared copy per node's children) satisfying both D-01 multi-parent independence and D-03 cycle safety
 
 ### Pending Todos
 
@@ -88,6 +96,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-30T08:38:40.401Z
-Stopped at: Phase 2 UI-SPEC approved
-Resume file: .planning/phases/02-canonical-sovereignty-evaluation-ux-diagnostics/02-UI-SPEC.md
+Last session: 2026-07-30T10:56:08.128Z
+Stopped at: Completed 02-01-PLAN.md
+Resume file: None

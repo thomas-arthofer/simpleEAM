@@ -17,11 +17,11 @@ Requirements for this milestone. Each requirement maps to exactly one roadmap ph
 
 ### Sovereignty Evaluation
 
-- [ ] **SOV-01**: Each relevant application or infrastructure element is evaluated using its own explicit sovereignty achievement attributes instead of inherited achievement values.
-- [ ] **SOV-02**: The system detects sovereignty violations along dependency chains by comparing higher-level requirements to lower-level achieved values for each sovereignty dimension.
-- [ ] **SOV-03**: The system classifies missing sovereignty evaluations as a visible gray or unknown state instead of treating them as compliant by default.
-- [ ] **SOV-04**: The system returns explainable sovereignty findings that identify the violating element, affected dimension, required value, actual value, and chain context.
-- [ ] **SOV-05**: The sovereignty calculation logic is consistent across backend evaluation, background recomputation, and user-visible diagnostics.
+- [x] **SOV-01**: Each relevant application or infrastructure element is evaluated using its own explicit sovereignty achievement attributes instead of inherited achievement values.
+- [x] **SOV-02**: The system detects sovereignty violations along dependency chains by comparing higher-level requirements to lower-level achieved values for each sovereignty dimension.
+- [x] **SOV-03**: The system classifies missing sovereignty evaluations as a visible gray or unknown state instead of treating them as compliant by default.
+- [x] **SOV-04**: The system returns explainable sovereignty findings that identify the violating element, affected dimension, required value, actual value, and chain context.
+- [x] **SOV-05**: The sovereignty calculation logic is consistent across backend evaluation, background recomputation, and user-visible diagnostics.
 
 ### Sovereignty UX
 
@@ -81,11 +81,11 @@ Requirements for this milestone. Each requirement maps to exactly one roadmap ph
 | SETUP-03    | Phase 1 | Complete |
 | SETUP-04    | Phase 1 | Complete |
 | SETUP-05    | Phase 1 | Complete |
-| SOV-01      | Phase 2 | Pending |
-| SOV-02      | Phase 2 | Pending |
-| SOV-03      | Phase 2 | Pending |
-| SOV-04      | Phase 2 | Pending |
-| SOV-05      | Phase 2 | Pending |
+| SOV-01      | Phase 2 | Complete |
+| SOV-02      | Phase 2 | Complete |
+| SOV-03      | Phase 2 | Complete |
+| SOV-04      | Phase 2 | Complete |
+| SOV-05      | Phase 2 | Complete |
 | SUX-01      | Phase 2 | Pending |
 | SUX-02      | Phase 2 | Pending |
 | SUX-03      | Phase 2 | Pending |
