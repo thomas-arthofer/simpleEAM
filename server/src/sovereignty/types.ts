@@ -69,30 +69,65 @@ export interface AchievedLevels {
   readonly control: SovereigntyMaturityLevel | null
 }
 
+/**
+ * Infrastructure supports multiple parents (D-01): every `parentInfrastructure`
+ * edge is walked independently by the evaluator, never collapsed into a single
+ * "worst of" result. `parentInfrastructure` may cycle back to an ancestor id in
+ * pathological data (D-03) — the evaluator's visited-set guard, not this type,
+ * is what makes that safe to traverse.
+ */
 export interface InfrastructureNode {
   readonly id: string
   readonly name: string
   readonly type: 'infrastructure'
   readonly achieved: AchievedLevels
+  readonly parentInfrastructure: readonly InfrastructureNode[]
 }
 
+/**
+ * Composite Applications (D-02): a container's own achieved values are always
+ * classified independently of its `components`, and the container is never
+ * hidden even when every component is fully compliant.
+ */
 export interface ApplicationNode {
   readonly id: string
   readonly name: string
   readonly type: 'application'
   readonly achieved: AchievedLevels
   readonly hostedOn: readonly InfrastructureNode[]
+  readonly components: readonly ApplicationNode[]
+}
+
+export interface AIComponentNode {
+  readonly id: string
+  readonly name: string
+  readonly type: 'aiComponent'
+  readonly achieved: AchievedLevels
+  readonly hostedOn: readonly InfrastructureNode[]
 }
 
 /**
- * A BusinessCapability's own requirements plus a single hop of supporting
- * Applications and the Infrastructure each is directly hosted on. Task 2
- * expands this with multi-parent Infrastructure, composite Applications,
- * AIComponents, and cycle-safe traversal.
+ * Shape shared by every requirement root (BusinessCapability, DataObject):
+ * its own requirements plus the Application/AIComponent entities it directly
+ * supports. `analyzeBusinessCapability` and `analyzeDataObject` both walk
+ * this same shape through the same classifier (RESEARCH.md Anti-Pattern 3).
  */
-export interface BusinessCapabilityChain {
+export interface SupportChain {
   readonly rootId: string
-  readonly rootType: 'businessCapability'
   readonly required: RequirementLevels
   readonly supportingApplications: readonly ApplicationNode[]
+  readonly supportingAIComponents: readonly AIComponentNode[]
+}
+
+export interface BusinessCapabilityChain extends SupportChain {
+  readonly rootType: 'businessCapability'
+}
+
+/**
+ * A DataObject's own requirements plus the Applications that use it or serve
+ * as one of its data sources, and the AIComponents trained with it (D-08 —
+ * Application/AIComponent/Infrastructure only, no Supplier).
+ */
+export interface DataObjectChain extends SupportChain {
+  readonly rootType: 'dataObject'
 }

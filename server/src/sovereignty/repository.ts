@@ -1,50 +1,430 @@
 import type { Session } from 'neo4j-driver'
 import type {
+  AIComponentNode,
   ApplicationNode,
   BusinessCapabilityChain,
+  DataObjectChain,
   InfrastructureNode,
   RequirementLevels,
   SovereigntyMaturityLevel,
+  SovereigntyRootType,
 } from './types'
-
-interface CapabilityChainRow {
-  capabilityId: string | null
-  reqStrategicAutonomy: string | null
-  reqResilience: string | null
-  reqSecurity: string | null
-  reqControl: string | null
-  appId: string | null
-  appName: string | null
-  appStrategicAutonomy: string | null
-  appResilience: string | null
-  appSecurity: string | null
-  appControl: string | null
-  infraId: string | null
-  infraName: string | null
-  infraStrategicAutonomy: string | null
-  infraResilience: string | null
-  infraSecurity: string | null
-  infraControl: string | null
-}
 
 function toMaturityLevel(value: string | null | undefined): SovereigntyMaturityLevel | null {
   return (value as SovereigntyMaturityLevel | null | undefined) ?? null
 }
 
+function nonNullIds(ids: readonly (string | null)[]): string[] {
+  return ids.filter((id): id is string => Boolean(id))
+}
+
+interface AchievedRow {
+  id: string
+  name: string | null
+  strategicAutonomy: string | null
+  resilience: string | null
+  security: string | null
+  control: string | null
+}
+
 /**
- * Loads a BusinessCapability's own sovereignty requirements plus a single hop
- * of supporting Applications and the Infrastructure each is directly hosted
- * on (no multi-parent, no composite `components` walk, no AIComponent — see
- * Task 2 for the full-chain expansion).
+ * Per-fetch memoization: once a node has been built for a given id, every
+ * further reference to that id (e.g. a diamond-shaped multi-parent edge)
+ * reuses the same object rather than re-querying Neo4j. `inFlight` guards
+ * against genuine cycles in the underlying graph data (a Infrastructure that
+ * is its own transitive parent, etc.) — while an id is `inFlight` a repeat
+ * visit to it stops immediately instead of recursing forever (T-02-03 /
+ * D-03). This is a build-time guard only; the evaluator applies its own
+ * independent, per-path visited-set guard when it later walks the returned
+ * (possibly cyclic) object graph.
+ */
+interface NodeCache {
+  readonly applications: Map<string, ApplicationNode>
+  readonly infrastructures: Map<string, InfrastructureNode>
+  readonly aiComponents: Map<string, AIComponentNode>
+}
+
+function createNodeCache(): NodeCache {
+  return { applications: new Map(), infrastructures: new Map(), aiComponents: new Map() }
+}
+
+async function fetchInfrastructure(
+  session: Session,
+  infraId: string,
+  cache: NodeCache,
+  inFlight: Set<string>
+): Promise<InfrastructureNode | null> {
+  const cached = cache.infrastructures.get(infraId)
+  if (cached) return cached
+  if (inFlight.has(infraId)) return null
+  inFlight.add(infraId)
+
+  const result = await session.run(
+    `
+    MATCH (infra:Infrastructure {id: $infraId})
+    OPTIONAL MATCH (infra)-[:HAS_PARENT_INFRASTRUCTURE]->(parent:Infrastructure)
+    RETURN
+      infra.id AS id,
+      infra.name AS name,
+      infra.sovereigntyAchStrategicAutonomy AS strategicAutonomy,
+      infra.sovereigntyAchResilience AS resilience,
+      infra.sovereigntyAchSecurity AS security,
+      infra.sovereigntyAchControl AS control,
+      collect(DISTINCT parent.id) AS parentIds
+    `,
+    { infraId }
+  )
+
+  if (result.records.length === 0) {
+    inFlight.delete(infraId)
+    return null
+  }
+
+  const row = result.records[0].toObject() as AchievedRow & { parentIds: (string | null)[] }
+
+  const node: InfrastructureNode = {
+    id: row.id,
+    name: row.name ?? row.id,
+    type: 'infrastructure',
+    achieved: {
+      strategicAutonomy: toMaturityLevel(row.strategicAutonomy),
+      resilience: toMaturityLevel(row.resilience),
+      security: toMaturityLevel(row.security),
+      control: toMaturityLevel(row.control),
+    },
+    parentInfrastructure: [],
+  }
+  cache.infrastructures.set(infraId, node)
+
+  const parentInfrastructure: InfrastructureNode[] = []
+  for (const parentId of nonNullIds(row.parentIds)) {
+    const parent = await fetchInfrastructure(session, parentId, cache, inFlight)
+    if (parent) parentInfrastructure.push(parent)
+  }
+  ;(node as unknown as { parentInfrastructure: InfrastructureNode[] }).parentInfrastructure = parentInfrastructure
+
+  inFlight.delete(infraId)
+  return node
+}
+
+async function fetchAIComponent(
+  session: Session,
+  aiComponentId: string,
+  cache: NodeCache,
+  inFlight: Set<string>
+): Promise<AIComponentNode | null> {
+  const cached = cache.aiComponents.get(aiComponentId)
+  if (cached) return cached
+  if (inFlight.has(aiComponentId)) return null
+  inFlight.add(aiComponentId)
+
+  const result = await session.run(
+    `
+    MATCH (ai:AIComponent {id: $aiComponentId})
+    OPTIONAL MATCH (ai)-[:HOSTED_ON]->(infra:Infrastructure)
+    RETURN
+      ai.id AS id,
+      ai.name AS name,
+      ai.sovereigntyAchStrategicAutonomy AS strategicAutonomy,
+      ai.sovereigntyAchResilience AS resilience,
+      ai.sovereigntyAchSecurity AS security,
+      ai.sovereigntyAchControl AS control,
+      collect(DISTINCT infra.id) AS infraIds
+    `,
+    { aiComponentId }
+  )
+
+  if (result.records.length === 0) {
+    inFlight.delete(aiComponentId)
+    return null
+  }
+
+  const row = result.records[0].toObject() as AchievedRow & { infraIds: (string | null)[] }
+
+  const node: AIComponentNode = {
+    id: row.id,
+    name: row.name ?? row.id,
+    type: 'aiComponent',
+    achieved: {
+      strategicAutonomy: toMaturityLevel(row.strategicAutonomy),
+      resilience: toMaturityLevel(row.resilience),
+      security: toMaturityLevel(row.security),
+      control: toMaturityLevel(row.control),
+    },
+    hostedOn: [],
+  }
+  cache.aiComponents.set(aiComponentId, node)
+
+  const hostedOn: InfrastructureNode[] = []
+  for (const infraId of nonNullIds(row.infraIds)) {
+    const infra = await fetchInfrastructure(session, infraId, cache, inFlight)
+    if (infra) hostedOn.push(infra)
+  }
+  ;(node as unknown as { hostedOn: InfrastructureNode[] }).hostedOn = hostedOn
+
+  inFlight.delete(aiComponentId)
+  return node
+}
+
+async function fetchApplication(
+  session: Session,
+  appId: string,
+  cache: NodeCache,
+  inFlight: Set<string>
+): Promise<ApplicationNode | null> {
+  const cached = cache.applications.get(appId)
+  if (cached) return cached
+  if (inFlight.has(appId)) return null
+  inFlight.add(appId)
+
+  const result = await session.run(
+    `
+    MATCH (app:Application {id: $appId})
+    OPTIONAL MATCH (app)-[:HOSTED_ON]->(infra:Infrastructure)
+    OPTIONAL MATCH (app)<-[:HAS_PARENT_APPLICATION]-(component:Application)
+    RETURN
+      app.id AS id,
+      app.name AS name,
+      app.sovereigntyAchStrategicAutonomy AS strategicAutonomy,
+      app.sovereigntyAchResilience AS resilience,
+      app.sovereigntyAchSecurity AS security,
+      app.sovereigntyAchControl AS control,
+      collect(DISTINCT infra.id) AS infraIds,
+      collect(DISTINCT component.id) AS componentIds
+    `,
+    { appId }
+  )
+
+  if (result.records.length === 0) {
+    inFlight.delete(appId)
+    return null
+  }
+
+  const row = result.records[0].toObject() as AchievedRow & {
+    infraIds: (string | null)[]
+    componentIds: (string | null)[]
+  }
+
+  const node: ApplicationNode = {
+    id: row.id,
+    name: row.name ?? row.id,
+    type: 'application',
+    achieved: {
+      strategicAutonomy: toMaturityLevel(row.strategicAutonomy),
+      resilience: toMaturityLevel(row.resilience),
+      security: toMaturityLevel(row.security),
+      control: toMaturityLevel(row.control),
+    },
+    hostedOn: [],
+    components: [],
+  }
+  cache.applications.set(appId, node)
+
+  const hostedOn: InfrastructureNode[] = []
+  for (const infraId of nonNullIds(row.infraIds)) {
+    const infra = await fetchInfrastructure(session, infraId, cache, inFlight)
+    if (infra) hostedOn.push(infra)
+  }
+  const components: ApplicationNode[] = []
+  for (const componentId of nonNullIds(row.componentIds)) {
+    const component = await fetchApplication(session, componentId, cache, inFlight)
+    if (component) components.push(component)
+  }
+  ;(node as unknown as { hostedOn: InfrastructureNode[] }).hostedOn = hostedOn
+  ;(node as unknown as { components: ApplicationNode[] }).components = components
+
+  inFlight.delete(appId)
+  return node
+}
+
+/**
+ * Loads a BusinessCapability's own requirements plus its full support chain:
+ * supporting Applications (recursively expanded through `components` and
+ * `hostedOn`, including multi-parent `parentInfrastructure`) and supporting
+ * AIComponents. Returns `null` when the capability does not exist or is not
+ * owned by a company in `companyIds` (and the caller is not admin).
+ */
+async function loadBusinessCapabilitySupportChain(
+  session: Session,
+  companyIds: readonly string[],
+  isAdmin: boolean,
+  rootId: string
+): Promise<BusinessCapabilityChain | null> {
+  const result = await session.run(
+    `
+    MATCH (cap:BusinessCapability {id: $rootId})-[:OWNED_BY]->(c:Company)
+    WHERE $isAdmin OR c.id IN $companyIds
+    WITH DISTINCT cap
+    OPTIONAL MATCH (cap)<-[:SUPPORTS]-(app:Application)
+    OPTIONAL MATCH (cap)<-[:SUPPORTS]-(aiComponent:AIComponent)
+    RETURN
+      cap.id AS id,
+      cap.sovereigntyReqStrategicAutonomy AS reqStrategicAutonomy,
+      cap.sovereigntyReqResilience AS reqResilience,
+      cap.sovereigntyReqSecurity AS reqSecurity,
+      cap.sovereigntyReqControl AS reqControl,
+      collect(DISTINCT app.id) AS appIds,
+      collect(DISTINCT aiComponent.id) AS aiComponentIds
+    `,
+    { rootId, companyIds: [...companyIds], isAdmin }
+  )
+
+  if (result.records.length === 0) return null
+
+  const row = result.records[0].toObject() as {
+    id: string | null
+    reqStrategicAutonomy: string | null
+    reqResilience: string | null
+    reqSecurity: string | null
+    reqControl: string | null
+    appIds: (string | null)[]
+    aiComponentIds: (string | null)[]
+  }
+  if (!row.id) return null
+
+  const required: RequirementLevels = {
+    strategicAutonomy: toMaturityLevel(row.reqStrategicAutonomy),
+    resilience: toMaturityLevel(row.reqResilience),
+    security: toMaturityLevel(row.reqSecurity),
+    control: toMaturityLevel(row.reqControl),
+  }
+
+  const cache = createNodeCache()
+  const inFlight = new Set<string>()
+
+  const supportingApplications: ApplicationNode[] = []
+  for (const appId of nonNullIds(row.appIds)) {
+    const app = await fetchApplication(session, appId, cache, inFlight)
+    if (app) supportingApplications.push(app)
+  }
+
+  const supportingAIComponents: AIComponentNode[] = []
+  for (const aiComponentId of nonNullIds(row.aiComponentIds)) {
+    const aiComponent = await fetchAIComponent(session, aiComponentId, cache, inFlight)
+    if (aiComponent) supportingAIComponents.push(aiComponent)
+  }
+
+  return {
+    rootId: row.id,
+    rootType: 'businessCapability',
+    required,
+    supportingApplications,
+    supportingAIComponents,
+  }
+}
+
+/**
+ * Loads a DataObject's own requirements plus its full support chain:
+ * Applications that use it (`usedByApplications`) or serve as one of its
+ * data sources (`dataSources`), and AIComponents trained with it
+ * (`usedForTrainingAI`) — D-08: Application/AIComponent/Infrastructure only,
+ * no Supplier. Returns `null` when the DataObject does not exist or is not
+ * owned by a company in `companyIds` (and the caller is not admin).
+ */
+async function loadDataObjectSupportChain(
+  session: Session,
+  companyIds: readonly string[],
+  isAdmin: boolean,
+  rootId: string
+): Promise<DataObjectChain | null> {
+  const result = await session.run(
+    `
+    MATCH (obj:DataObject {id: $rootId})-[:OWNED_BY]->(c:Company)
+    WHERE $isAdmin OR c.id IN $companyIds
+    WITH DISTINCT obj
+    OPTIONAL MATCH (obj)<-[:USES]-(usedByApp:Application)
+    OPTIONAL MATCH (obj)-[:DATA_SOURCE]->(sourceApp:Application)
+    OPTIONAL MATCH (obj)<-[:TRAINED_WITH]-(aiComponent:AIComponent)
+    RETURN
+      obj.id AS id,
+      obj.sovereigntyReqStrategicAutonomy AS reqStrategicAutonomy,
+      obj.sovereigntyReqResilience AS reqResilience,
+      obj.sovereigntyReqSecurity AS reqSecurity,
+      obj.sovereigntyReqControl AS reqControl,
+      collect(DISTINCT usedByApp.id) AS usedByAppIds,
+      collect(DISTINCT sourceApp.id) AS sourceAppIds,
+      collect(DISTINCT aiComponent.id) AS aiComponentIds
+    `,
+    { rootId, companyIds: [...companyIds], isAdmin }
+  )
+
+  if (result.records.length === 0) return null
+
+  const row = result.records[0].toObject() as {
+    id: string | null
+    reqStrategicAutonomy: string | null
+    reqResilience: string | null
+    reqSecurity: string | null
+    reqControl: string | null
+    usedByAppIds: (string | null)[]
+    sourceAppIds: (string | null)[]
+    aiComponentIds: (string | null)[]
+  }
+  if (!row.id) return null
+
+  const required: RequirementLevels = {
+    strategicAutonomy: toMaturityLevel(row.reqStrategicAutonomy),
+    resilience: toMaturityLevel(row.reqResilience),
+    security: toMaturityLevel(row.reqSecurity),
+    control: toMaturityLevel(row.reqControl),
+  }
+
+  const cache = createNodeCache()
+  const inFlight = new Set<string>()
+
+  const appIds = new Set([...nonNullIds(row.usedByAppIds), ...nonNullIds(row.sourceAppIds)])
+  const supportingApplications: ApplicationNode[] = []
+  for (const appId of appIds) {
+    const app = await fetchApplication(session, appId, cache, inFlight)
+    if (app) supportingApplications.push(app)
+  }
+
+  const supportingAIComponents: AIComponentNode[] = []
+  for (const aiComponentId of nonNullIds(row.aiComponentIds)) {
+    const aiComponent = await fetchAIComponent(session, aiComponentId, cache, inFlight)
+    if (aiComponent) supportingAIComponents.push(aiComponent)
+  }
+
+  return {
+    rootId: row.id,
+    rootType: 'dataObject',
+    required,
+    supportingApplications,
+    supportingAIComponents,
+  }
+}
+
+/**
+ * Loads a requirement root's (`BusinessCapability` or `DataObject`) own
+ * requirements plus its full support chain, dispatching on `rootType`. This
+ * is the only chain loader `resolvers.ts` calls — the single hop this module
+ * used to expose directly (`loadBusinessCapabilityChain`, Task 1) is now an
+ * internal delegate built on the same per-node fetch helpers.
  *
  * The `$isAdmin OR c.id IN $companyIds` filter mirrors the `@authorization`
  * filter block every other type in schema.graphql already has, since this
  * custom resolver bypasses that directive entirely. This is defense-in-depth
  * only — the resolver performs the authoritative JWT company/role check
  * before this function is ever called (T-02-01).
- *
- * Returns `null` when the capability does not exist or is not owned by a
- * company in `companyIds` (and the caller is not admin).
+ */
+export async function loadFullSupportChain(
+  session: Session,
+  companyIds: readonly string[],
+  isAdmin: boolean,
+  rootType: SovereigntyRootType,
+  rootId: string
+): Promise<BusinessCapabilityChain | DataObjectChain | null> {
+  if (rootType === 'businessCapability') {
+    return loadBusinessCapabilitySupportChain(session, companyIds, isAdmin, rootId)
+  }
+  return loadDataObjectSupportChain(session, companyIds, isAdmin, rootId)
+}
+
+/**
+ * Task 1's single-hop entry point, retained as a thin delegate to
+ * `loadFullSupportChain` per the Task 2 plan ("may remain in repository.ts
+ * as an internal helper if loadFullSupportChain is implemented by extending
+ * it"). `resolvers.ts` no longer calls this directly.
  */
 export async function loadBusinessCapabilityChain(
   session: Session,
@@ -52,101 +432,6 @@ export async function loadBusinessCapabilityChain(
   isAdmin: boolean,
   capabilityId: string
 ): Promise<BusinessCapabilityChain | null> {
-  const result = await session.run(
-    `
-    MATCH (cap:BusinessCapability {id: $capabilityId})-[:OWNED_BY]->(c:Company)
-    WHERE $isAdmin OR c.id IN $companyIds
-    WITH DISTINCT cap
-    OPTIONAL MATCH (cap)<-[:SUPPORTS]-(app:Application)
-    OPTIONAL MATCH (app)-[:HOSTED_ON]->(infra:Infrastructure)
-    RETURN
-      cap.id AS capabilityId,
-      cap.sovereigntyReqStrategicAutonomy AS reqStrategicAutonomy,
-      cap.sovereigntyReqResilience AS reqResilience,
-      cap.sovereigntyReqSecurity AS reqSecurity,
-      cap.sovereigntyReqControl AS reqControl,
-      app.id AS appId,
-      app.name AS appName,
-      app.sovereigntyAchStrategicAutonomy AS appStrategicAutonomy,
-      app.sovereigntyAchResilience AS appResilience,
-      app.sovereigntyAchSecurity AS appSecurity,
-      app.sovereigntyAchControl AS appControl,
-      infra.id AS infraId,
-      infra.name AS infraName,
-      infra.sovereigntyAchStrategicAutonomy AS infraStrategicAutonomy,
-      infra.sovereigntyAchResilience AS infraResilience,
-      infra.sovereigntyAchSecurity AS infraSecurity,
-      infra.sovereigntyAchControl AS infraControl
-    `,
-    { capabilityId, companyIds: [...companyIds], isAdmin }
-  )
-
-  if (result.records.length === 0) {
-    return null
-  }
-
-  const rows = result.records.map(record => record.toObject() as CapabilityChainRow)
-  const first = rows[0]
-  if (!first.capabilityId) {
-    return null
-  }
-
-  const required: RequirementLevels = {
-    strategicAutonomy: toMaturityLevel(first.reqStrategicAutonomy),
-    resilience: toMaturityLevel(first.reqResilience),
-    security: toMaturityLevel(first.reqSecurity),
-    control: toMaturityLevel(first.reqControl),
-  }
-
-  const applications = new Map<string, ApplicationNode>()
-  const infrastructureByApp = new Map<string, Map<string, InfrastructureNode>>()
-
-  for (const row of rows) {
-    if (!row.appId) continue
-
-    if (!applications.has(row.appId)) {
-      applications.set(row.appId, {
-        id: row.appId,
-        name: row.appName ?? row.appId,
-        type: 'application',
-        achieved: {
-          strategicAutonomy: toMaturityLevel(row.appStrategicAutonomy),
-          resilience: toMaturityLevel(row.appResilience),
-          security: toMaturityLevel(row.appSecurity),
-          control: toMaturityLevel(row.appControl),
-        },
-        hostedOn: [],
-      })
-      infrastructureByApp.set(row.appId, new Map())
-    }
-
-    if (row.infraId) {
-      const infraMap = infrastructureByApp.get(row.appId)!
-      if (!infraMap.has(row.infraId)) {
-        infraMap.set(row.infraId, {
-          id: row.infraId,
-          name: row.infraName ?? row.infraId,
-          type: 'infrastructure',
-          achieved: {
-            strategicAutonomy: toMaturityLevel(row.infraStrategicAutonomy),
-            resilience: toMaturityLevel(row.infraResilience),
-            security: toMaturityLevel(row.infraSecurity),
-            control: toMaturityLevel(row.infraControl),
-          },
-        })
-      }
-    }
-  }
-
-  const supportingApplications: ApplicationNode[] = Array.from(applications.values()).map(app => ({
-    ...app,
-    hostedOn: Array.from(infrastructureByApp.get(app.id)?.values() ?? []),
-  }))
-
-  return {
-    rootId: first.capabilityId,
-    rootType: 'businessCapability',
-    required,
-    supportingApplications,
-  }
+  const chain = await loadFullSupportChain(session, companyIds, isAdmin, 'businessCapability', capabilityId)
+  return chain && chain.rootType === 'businessCapability' ? chain : null
 }

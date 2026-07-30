@@ -1,5 +1,5 @@
-import { loadBusinessCapabilityChain } from '../repository'
-import { analyzeBusinessCapability } from '../evaluator'
+import { loadFullSupportChain } from '../repository'
+import { analyzeBusinessCapability, analyzeDataObject } from '../evaluator'
 import type { Finding, SovereigntyAnalysis, SovereigntyDimension } from '../types'
 import neo4jDriver from '../../db/neo4j-client'
 
@@ -86,17 +86,21 @@ export const sovereigntyResolvers = {
         throw new Error('Not authorized for this company')
       }
 
-      if (args.rootType !== 'businessCapability') {
+      if (args.rootType !== 'businessCapability' && args.rootType !== 'dataObject') {
         throw new Error(`Unsupported rootType: ${args.rootType}`)
       }
 
       const session = neo4jDriver.session()
       try {
-        const chain = await loadBusinessCapabilityChain(session, companyIds, isAdmin, args.rootId)
+        const chain = await loadFullSupportChain(session, companyIds, isAdmin, args.rootType, args.rootId)
         if (!chain) {
-          throw new Error('BusinessCapability not found')
+          throw new Error(`${args.rootType} not found`)
         }
-        return toGraphQLAnalysis(analyzeBusinessCapability(chain))
+        const analysis =
+          chain.rootType === 'businessCapability'
+            ? analyzeBusinessCapability(chain)
+            : analyzeDataObject(chain)
+        return toGraphQLAnalysis(analysis)
       } finally {
         await session.close()
       }
