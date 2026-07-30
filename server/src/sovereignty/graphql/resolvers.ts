@@ -1,7 +1,8 @@
 import { loadFullSupportChain } from '../repository'
 import { analyzeBusinessCapability, analyzeDataObject } from '../evaluator'
+import { analyzeCompanyRollup } from '../companyRollup'
 import { projectMarkers, resolveMarker } from '../markers'
-import { sovereigntyAnalysisArgsSchema, sovereigntyMarkerNodesSchema } from '../validation'
+import { sovereigntyAnalysisArgsSchema, sovereigntyCompanyRollupArgsSchema, sovereigntyMarkerNodesSchema } from '../validation'
 import type { Finding, SovereigntyAnalysis, SovereigntyDimension } from '../types'
 import neo4jDriver from '../../db/neo4j-client'
 
@@ -13,6 +14,10 @@ interface SovereigntyAnalysisArgs {
   companyId: string
   rootType: string
   rootId: string
+}
+
+interface SovereigntyCompanyRollupArgs {
+  companyId: string
 }
 
 interface SovereigntyMarkerNodeArg {
@@ -176,6 +181,31 @@ export const sovereigntyResolvers = {
             downstreamStatus: marker.downstreamStatus,
           }
         })
+      } finally {
+        await session.close()
+      }
+    },
+
+    sovereigntyCompanyRollup: async (
+      _parent: unknown,
+      args: SovereigntyCompanyRollupArgs,
+      context: SovereigntyResolverContext
+    ) => {
+      // Same input-validation boundary as sovereigntyAnalysis (T-02-05) —
+      // reject a malformed companyId before the JWT check and before any
+      // Cypher runs.
+      const parsedArgs = sovereigntyCompanyRollupArgsSchema.parse(args)
+
+      const { companyIds, roles } = decodeAuth(context.token)
+      const isAdmin = roles.includes('admin')
+
+      if (!isAdmin && !companyIds.includes(parsedArgs.companyId)) {
+        throw new Error('Not authorized for this company')
+      }
+
+      const session = neo4jDriver.session()
+      try {
+        return await analyzeCompanyRollup(session, parsedArgs.companyId)
       } finally {
         await session.close()
       }

@@ -22,6 +22,15 @@ export const sovereigntyAnalysisArgsSchema = z.object({
 })
 
 /**
+ * Args for `Query.sovereigntyCompanyRollup` (Task 1, 02-04). Same
+ * validate-before-Cypher boundary as `sovereigntyAnalysisArgsSchema`
+ * (T-02-05) — `companyId` is never passed to `companyRollup.ts` unvalidated.
+ */
+export const sovereigntyCompanyRollupArgsSchema = z.object({
+  companyId: z.string().trim().min(1),
+})
+
+/**
  * The `sovereigntyMarkers` batch input. Capped at 500 nodes and REJECTED
  * (not silently truncated) when oversized — this directly closes the
  * "unbounded batch marker query = DoS/Information Disclosure" threat named

@@ -2298,3 +2298,27 @@ extend type Query {
     nodes: [SovereigntyMarkerNodeInput!]!
   ): [SovereigntyMarker!]!
 }
+
+"""
+Company-level sovereignty rollup (SOV-05): the same 4 legacy Company score
+fields, but computed by batching the canonical evaluator
+(`analyzeBusinessCapability`/`analyzeDataObject`) across every
+BusinessCapability/DataObject the company owns, rather than a separate
+MATURITY_SCORE-averaging formula (D-06). `null` fields mean the company has
+zero graded requirement/achieved data anywhere, not a new invented default.
+"""
+type SovereigntyCompanyRollup {
+  expectedSovereigntyScore: Float
+  achievedSovereigntyScore: Float
+  sovereigntyGap: Float
+  sovereigntyScorePercent: Float
+}
+
+extend type Query {
+  """
+  Company-scoped canonical sovereignty rollup, the single call site the
+  Temporal `sovereigntyScoreWorkflow` now delegates to instead of computing
+  scores itself (SOV-05).
+  """
+  sovereigntyCompanyRollup(companyId: ID!): SovereigntyCompanyRollup!
+}
