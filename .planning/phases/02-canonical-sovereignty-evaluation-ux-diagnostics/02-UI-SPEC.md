@@ -34,6 +34,8 @@ created: 2026-07-30
 - `onEntityClick({ id, type })` navigation pattern already wired to [SovereigntyEntityDialog.tsx](client/src/components/sovereignty/SovereigntyEntityDialog.tsx) — reuse verbatim for "jump from finding to violating element" (the concept doc's "Ein Klick führt vom Symptom zur Ursache").
 - `CircularProgress` centered loading state, `Alert severity="error"` / `Alert severity="info"` — already the loading/error/no-company-selected pattern in the same file.
 
+**Primary visual anchor:** the status header chips (self/downstream) are the primary focal point of the sovereignty tab — they communicate the overall compliance state at a glance. The findings list is secondary, providing supporting detail only once the header has been read. Diagram markers mirror this same hierarchy: the fill badge (self status) is the primary focal point at the element, and the ring badge (downstream chain status) is secondary/supporting.
+
 ---
 
 ## Spacing Scale
@@ -44,11 +46,12 @@ Declared values (MUI `theme.spacing()` base unit = 8px, unchanged/no override in
 |-------|-----------------|-----|-------|
 | xs | 0.5 | 4px | Icon-to-label gaps inside a finding row |
 | sm | 1 | 8px | Compact spacing between stacked findings, chip internal gaps |
-| md | 1.5–2 | 12–16px | Default card/row padding (`Paper sx={{ p: 1.5 }}`, matches existing `SovereigntyCapabilityView`) |
+| md-tight | 1.5 | 12px | **Documented exception** — matches the pre-existing `SovereigntyCapabilityView.tsx` `Paper sx={{ p: 1.5 }}` card padding; reused verbatim, not a new value introduced by this phase |
+| md | 2 | 16px | Default card/row padding for the new sovereignty diagnostics surfaces (finding rows, status header) |
 | lg | 3 | 24px | Section separation inside the sovereignty tab (status header → findings list) |
 | xl | 4 | 32px | Not used in this phase's surfaces (no full-page layout) |
 
-Exceptions: none.
+Exceptions: `md-tight` (12px) is the single documented exception to the standard 8-point scale ({4, 8, 16, 24, 32, 48, 64}). It is not a new value this phase introduces — it inherits the existing `SovereigntyCapabilityView.tsx` card padding as-is. All new surfaces built in this phase use `md` (16px) or another scale value; `md-tight` is only used where it already exists in the reused component.
 
 ---
 
@@ -61,7 +64,7 @@ Exceptions: none.
 | Heading | 16px | 500 | 1.6 | `subtitle2` — status header, "Findings" section title (matches existing `sovereignty.tab` label weight) |
 | Display | n/a | n/a | n/a | **Not used** — this phase has no page-level/hero content; the "display" role does not apply to a dialog tab and a diagram overlay |
 
-Two weights only, per project convention: **400 (regular)** for values/body copy, **500 (medium)** for section headings and chip labels (matches `Chip sx={{ fontWeight: 600 }}` used today only for the primary capability chip — keep that one exception, do not spread 600 further).
+Two weights only, per project convention: **400 (regular)** for values/body copy, **500 (medium)** for section headings and chip labels. The pre-existing `Chip sx={{ fontWeight: 600 }}` capability chip in [SovereigntyCapabilityView.tsx](client/src/components/sovereignty/SovereigntyCapabilityView.tsx) is **legacy styling that predates this phase and is out of scope** for this typography contract — it is not to be replicated in any new sovereignty diagnostics surface, and it does not count as a third active weight. The active contract for this phase's new surfaces (detail-view diagnostics panel, diagram markers) remains strictly 400/500.
 
 ---
 
