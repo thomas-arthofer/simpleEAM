@@ -27,8 +27,8 @@ Requirements for this milestone. Each requirement maps to exactly one roadmap ph
 
 - [ ] **SUX-01**: When a user opens an element view, the UI shows whether that element's sovereignty rating satisfies the relevant higher-level requirements.
 - [ ] **SUX-02**: When sovereignty issues exist, the element view distinguishes whether the current element is the cause of the issue or is affected by an issue lower in the chain.
-- [ ] **SUX-03**: When a user adds elements to a diagram, the diagram can optionally display sovereignty status markers that reflect the canonical evaluation result.
-- [ ] **SUX-04**: Diagram sovereignty markers distinguish local violations from downstream impact using separate visual states rather than a single blended status.
+- [x] **SUX-03**: When a user adds elements to a diagram, the diagram can optionally display sovereignty status markers that reflect the canonical evaluation result.
+- [x] **SUX-04**: Diagram sovereignty markers distinguish local violations from downstream impact using separate visual states rather than a single blended status.
 
 ## User Stories
 
@@ -88,8 +88,8 @@ Requirements for this milestone. Each requirement maps to exactly one roadmap ph
 | SOV-05      | Phase 2 | Complete |
 | SUX-01      | Phase 2 | Pending |
 | SUX-02      | Phase 2 | Pending |
-| SUX-03      | Phase 2 | Pending |
-| SUX-04      | Phase 2 | Pending |
+| SUX-03      | Phase 2 | Complete |
+| SUX-04      | Phase 2 | Complete |
 
 **Coverage:**
 

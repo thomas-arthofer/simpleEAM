@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 2
-current_phase_name: Canonical Sovereignty Evaluation & UX Diagnostics
 status: ready to execute
-stopped_at: Completed 02-01-PLAN.md
-last_updated: "2026-07-30T10:56:08.141Z"
+stopped_at: Completed 02-02-PLAN.md
+last_updated: "2026-07-30T11:08:36.230Z"
 last_activity: 2026-07-30
-last_activity_desc: see 02-01..02-05-PLAN.md in .planning/phases/02-canonical-sovereignty-evaluation-ux-diagnostics/
+last_activity_desc: completed 02-02-PLAN.md, see 02-02-SUMMARY.md in .planning/phases/02-canonical-sovereignty-evaluation-ux-diagnostics/
 progress:
   total_phases: 3
   completed_phases: 2
   total_plans: 7
-  completed_plans: 3
+  completed_plans: 4
+current_phase_name: Canonical Sovereignty Evaluation & UX Diagnostics
 ---
 
 # Project State
@@ -28,11 +28,11 @@ See: .planning/PROJECT.md (updated 2026-07-22)
 ## Current Position
 
 Phase: 2 — Canonical Sovereignty Evaluation & UX Diagnostics (executing)
-Plan: 02-01 complete; 02-02, 02-03 (wave 2), 02-04, 02-05 (wave 3) remaining — 02-01-PLAN.md (wave 1) done
-Status: Executing — 02-01 (canonical sovereignty evaluation engine + full chain semantics) complete with 2/2 tasks committed, 10/10 tests passing, tsc clean; next up: wave 2 (02-02, 02-03)
-Last activity: 2026-07-30 — completed 02-01-PLAN.md, see 02-01-SUMMARY.md in .planning/phases/02-canonical-sovereignty-evaluation-ux-diagnostics/
+Plan: 02-01, 02-02 complete; 02-03 (wave 2 remaining), 02-04, 02-05 (wave 3) remaining — 02-01-PLAN.md, 02-02-PLAN.md (wave 1 + wave 2 half) done
+Status: Executing — 02-02 (D-05 marker projection, batch sovereigntyMarkers query, zod validation hardening, SOV-05 resolver/module parity) complete with 2/2 tasks committed, 19/19 sovereignty tests passing, tsc clean; next up: 02-03 (remainder of wave 2)
+Last activity: 2026-07-30 — completed 02-02-PLAN.md, see 02-02-SUMMARY.md in .planning/phases/02-canonical-sovereignty-evaluation-ux-diagnostics/
 
-Progress: [████░░░░░░] 43% Phase 01.1 complete; Phase 2 in progress (1/5 plans complete), next up: wave 2 of Phase 2
+Progress: [██████░░░░] 57% Phase 01.1 complete; Phase 2 in progress (2/5 plans complete), next up: 02-03 (wave 2)
 
 ## Performance Metrics
 
@@ -59,6 +59,7 @@ Progress: [████░░░░░░] 43% Phase 01.1 complete; Phase 2 in p
 | Plan | Duration | Tasks | Files |
 |------|----------|-------|-------|
 | Phase 02 P01 | 35min | 2 tasks | 10 files |
+| Phase 02 P02 | 25min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -72,6 +73,7 @@ Recent decisions affecting current work:
 - Phase 2: Detail views and diagram markers must consume the same canonical sovereignty result.
 - [Phase ?]: type Query (not extend type Query) required for the first custom Query field on a @neo4j/graphql schema with no other explicit Query block
 - [Phase ?]: Cycle safety uses a per-branch visited Set (fresh per top-level entry, one shared copy per node's children) satisfying both D-01 multi-parent independence and D-03 cycle safety
+- [Phase ?]: Phase 2: sovereigntyMarkers reuses one shared sovereigntyAnalysisArgsSchema (companyId/rootType/rootId) across both sovereignty resolvers, closing T-02-04/T-02-05
 
 ### Pending Todos
 
@@ -96,6 +98,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-30T10:56:08.128Z
-Stopped at: Completed 02-01-PLAN.md
+Last session: 2026-07-30T11:08:36.220Z
+Stopped at: Completed 02-02-PLAN.md
 Resume file: None
