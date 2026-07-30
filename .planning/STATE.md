@@ -5,10 +5,10 @@ milestone_name: milestone
 current_phase: 2
 current_phase_name: Canonical Sovereignty Evaluation & UX Diagnostics
 status: ready to plan
-stopped_at: "Phase 01.1 complete (all 3 tasks verified, incl. developer-confirmed E2E login); ready to plan Phase 2"
-last_updated: "2026-07-27T13:10:00.000Z"
-last_activity: 2026-07-27
-last_activity_desc: "Phase 01.1 complete: developer confirmed E2E Keycloak login via eam.example.com; documented Chrome per-origin cert-trust gotcha for api/room.example.com in docs/lokale-https-domains.md; 01.1-VALIDATION.md set to validated/nyquist_compliant true"
+stopped_at: "Phase 2 context gathered"
+last_updated: "2026-07-30T07:10:39.791Z"
+last_activity: 2026-07-30
+last_activity_desc: "Phase 2 CONTEXT.md and DISCUSSION-LOG.md created via discuss-phase (user unavailable, decisions made autonomously and flagged for review); ready to plan Phase 2."
 progress:
   total_phases: 3
   completed_phases: 2
@@ -27,12 +27,12 @@ See: .planning/PROJECT.md (updated 2026-07-22)
 
 ## Current Position
 
-Phase: 01.1 — eam.example.com local domain setup (complete)
-Plan: 01
-Status: Complete — all 3 tasks verified, including developer-confirmed end-to-end Keycloak login
-Last activity: 2026-07-27 — developer confirmed login pass; documented the Chrome per-origin cert-trust follow-up (api.example.com/room.example.com ERR_CERT_AUTHORITY_INVALID on first GraphQL calls) in docs/lokale-https-domains.md. See 01.1-SUMMARY.md.
+Phase: 2 — Canonical Sovereignty Evaluation & UX Diagnostics (context gathered)
+Plan: none yet
+Status: Ready to plan — CONTEXT.md and DISCUSSION-LOG.md created; 4 gray areas decided autonomously (user unavailable) and flagged `[AGENT ASSUMPTION]` for review, especially D-08 (Suppliers out of chain scope)
+Last activity: 2026-07-30 — see 02-CONTEXT.md and 02-DISCUSSION-LOG.md in .planning/phases/02-canonical-sovereignty-evaluation-ux-diagnostics/
 
-Progress: [██████████] 100% (Phase 01.1 complete; next up: plan Phase 2)
+Progress: [██████████] 100% Phase 01.1 complete; Phase 2 context gathered, next up: plan Phase 2
 
 ## Performance Metrics
 
@@ -72,7 +72,7 @@ None yet.
 ### Blockers/Concerns
 
 - Phase 1 must define one supported localhost-first runtime path and keep any Traefik or HTTPS parity flow explicitly optional.
-- Phase 2 still needs a frozen semantic contract for traversal rules, cycle handling, and legacy field reconciliation during phase planning.
+- Phase 2 semantic contract (traversal rules, cycle handling, legacy field reconciliation) is now drafted in `02-CONTEXT.md` (D-01..D-10), but was decided autonomously without user confirmation — review before/during planning, especially D-08 (Suppliers excluded from chain traversal).
 
 ### Roadmap Evolution
 
@@ -87,6 +87,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-27T10:07:19.726Z
-Stopped at: Phase 01.1 context gathered
-Resume file: .planning/phases/01.1-eam-example-com-local-domain-setup-analyze-and-restore-the-e/01.1-CONTEXT.md
+Last session: 2026-07-30T07:10:39.780Z
+Stopped at: Phase 2 context gathered
+Resume file: .planning/phases/02-canonical-sovereignty-evaluation-ux-diagnostics/02-CONTEXT.md
