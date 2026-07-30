@@ -2260,3 +2260,41 @@ type SovereigntyAnalysis {
 type Query {
   sovereigntyAnalysis(companyId: ID!, rootType: String!, rootId: ID!): SovereigntyAnalysis!
 }
+
+"""
+D-05 two-marker (fill/ring) projection for a single on-diagram element:
+`selfStatus` is the element's own achieved-vs-required comparison,
+`downstreamStatus` is the worst status found anywhere below it in its
+support chain.
+"""
+type SovereigntyMarker {
+  nodeId: ID!
+  selfStatus: SovereigntyStatus!
+  downstreamStatus: SovereigntyStatus!
+}
+
+"""
+One on-diagram element the client wants a marker for, identified by its
+database id and entity type (`customData.databaseId`/`elementType`).
+"""
+input SovereigntyMarkerNodeInput {
+  id: ID!
+  type: String!
+}
+
+extend type Query {
+  """
+  Batched, company-scoped marker query built directly on the canonical
+  sovereignty evaluator (SOV-05): runs one `sovereigntyAnalysis`-equivalent
+  evaluation for `rootType`/`rootId`, then returns a self/downstream status
+  pair for every requested node id, defaulting to GREEN/GREEN for any
+  requested id with no finding anywhere in its chain. `nodes` is capped
+  server-side to guard against unbounded batch requests (T-02-04).
+  """
+  sovereigntyMarkers(
+    companyId: ID!
+    rootType: String!
+    rootId: ID!
+    nodes: [SovereigntyMarkerNodeInput!]!
+  ): [SovereigntyMarker!]!
+}

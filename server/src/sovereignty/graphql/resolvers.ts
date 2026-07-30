@@ -1,5 +1,6 @@
 import { loadFullSupportChain } from '../repository'
 import { analyzeBusinessCapability, analyzeDataObject } from '../evaluator'
+import { projectMarkers, resolveMarker } from '../markers'
 import type { Finding, SovereigntyAnalysis, SovereigntyDimension } from '../types'
 import neo4jDriver from '../../db/neo4j-client'
 
@@ -11,6 +12,18 @@ interface SovereigntyAnalysisArgs {
   companyId: string
   rootType: string
   rootId: string
+}
+
+interface SovereigntyMarkerNodeArg {
+  id: string
+  type: string
+}
+
+interface SovereigntyMarkersArgs {
+  companyId: string
+  rootType: string
+  rootId: string
+  nodes: SovereigntyMarkerNodeArg[]
 }
 
 interface DecodedAuth {
@@ -101,6 +114,47 @@ export const sovereigntyResolvers = {
             ? analyzeBusinessCapability(chain)
             : analyzeDataObject(chain)
         return toGraphQLAnalysis(analysis)
+      } finally {
+        await session.close()
+      }
+    },
+
+    sovereigntyMarkers: async (
+      _parent: unknown,
+      args: SovereigntyMarkersArgs,
+      context: SovereigntyResolverContext
+    ) => {
+      const { companyIds, roles } = decodeAuth(context.token)
+      const isAdmin = roles.includes('admin')
+
+      if (!isAdmin && !companyIds.includes(args.companyId)) {
+        throw new Error('Not authorized for this company')
+      }
+
+      if (args.rootType !== 'businessCapability' && args.rootType !== 'dataObject') {
+        throw new Error(`Unsupported rootType: ${args.rootType}`)
+      }
+
+      const session = neo4jDriver.session()
+      try {
+        const chain = await loadFullSupportChain(session, companyIds, isAdmin, args.rootType, args.rootId)
+        if (!chain) {
+          throw new Error(`${args.rootType} not found`)
+        }
+        const analysis =
+          chain.rootType === 'businessCapability'
+            ? analyzeBusinessCapability(chain)
+            : analyzeDataObject(chain)
+        const markers = projectMarkers(analysis)
+
+        return args.nodes.map(node => {
+          const marker = resolveMarker(markers, node.id)
+          return {
+            nodeId: node.id,
+            selfStatus: marker.selfStatus,
+            downstreamStatus: marker.downstreamStatus,
+          }
+        })
       } finally {
         await session.close()
       }
