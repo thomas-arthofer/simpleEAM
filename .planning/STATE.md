@@ -4,11 +4,11 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 02.1
 current_phase_name: Fix diagram sovereignty marker sync gaps
-status: verifying
-stopped_at: Completed 02.1-02-PLAN.md
-last_updated: "2026-07-30T16:43:42.477Z"
+status: human verification needed
+stopped_at: Phase 02.1 verified (6/8 must-haves; 2 pending human UAT)
+last_updated: "2026-07-30T16:50:00.000Z"
 last_activity: 2026-07-30
-last_activity_desc: Phase 02.1 execution started
+last_activity_desc: see 02.1-VERIFICATION.md and 02.1-UAT.md
 progress:
   total_phases: 4
   completed_phases: 4
@@ -27,10 +27,10 @@ See: .planning/PROJECT.md (updated 2026-07-22)
 
 ## Current Position
 
-Phase: 02.1 (Fix diagram sovereignty marker sync gaps) — EXECUTING
-Plan: 2 of 2
-Status: Phase complete — ready for verification
-Last activity: 2026-07-30 — Phase 02.1 execution started
+Phase: 02.1 (Fix diagram sovereignty marker sync gaps) — both plans executed and code-verified; 2 human UAT checks pending against a live Docker/Neo4j stack
+Plan: 2 of 2 (complete)
+Status: gsd-verifier ran 02.1-VERIFICATION.md — 6/8 must-haves verified (D-01 through D-04 all confirmed implemented exactly as decided; `yarn type-check` clean). Verdict: human_needed — 2 items require a live browser + Docker/Neo4j stack (F5 reload marker re-appearance with Network-tab confirmation; live drag-tracking of marker ellipses with undo/collaboration checks). Persisted as 02.1-UAT.md.
+Last activity: 2026-07-30 — see 02.1-VERIFICATION.md and 02.1-UAT.md
 
 Progress: [██████████] 100% (7/7 plans complete across phases; Phase 2: 5/5 plans complete)
 
