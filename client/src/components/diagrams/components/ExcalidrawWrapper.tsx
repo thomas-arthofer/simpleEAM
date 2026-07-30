@@ -14,6 +14,7 @@ import { FullCustomContextMenu } from './FullCustomContextMenu'
 import ElementFormDialog from '../dialogs/ElementFormDialog'
 import { ExcalidrawElement } from '../types/relationshipTypes'
 import { useAuth } from '@/lib/auth'
+import { repositionAllMarkerEllipses } from '../utils/sovereigntyMarkers'
 
 // Dynamic import of Excalidraw to avoid server-side rendering
 const ExcalidrawWrapper = dynamic(
@@ -179,9 +180,23 @@ const ExcalidrawWrapper = dynamic(
             return // Exit early - don't call onChange, don't broadcast, don't do anything
           }
 
+          // D-02/D-03: live-reposition sovereignty marker ellipses in place on
+          // every onChange (incl. drag) for main elements that currently carry
+          // a fill/ring pair (D-04). No-op (changed: false, same elements
+          // reference) for the common case of an element/diagram with no
+          // markers attached.
+          const { elements: repositionedElements, changed } = repositionAllMarkerEllipses(elements)
+          if (changed) {
+            if (suppressOnChangeRef) {
+              suppressOnChangeRef.current = true
+            }
+            apiRef.current?.updateScene({ elements: repositionedElements }, false)
+          }
+          const effectiveElements = changed ? repositionedElements : elements
+
           // Call original onChange handler
           if (onChange) {
-            onChange(elements, appState)
+            onChange(effectiveElements, appState)
           }
 
           // Don't broadcast if we're receiving an update from collaborators (prevents loops)
@@ -196,7 +211,7 @@ const ExcalidrawWrapper = dynamic(
 
           // Broadcast changes if collaborating - use the function directly from the hook
           if (isCollaborating && broadcastSceneUpdate) {
-            broadcastSceneUpdate(elements, appState)
+            broadcastSceneUpdate(effectiveElements, appState)
           }
         },
         [
@@ -206,6 +221,7 @@ const ExcalidrawWrapper = dynamic(
           isLoadingRef,
           isReceivingUpdateRef,
           suppressOnChangeRef,
+          apiRef,
         ]
       )
 

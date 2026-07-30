@@ -249,24 +249,31 @@ export const applySovereigntyMarkers = (
   }
 
   const mainElementIdsToMark = new Set<string>()
+  const presentMainElementIds = new Set<string>()
   for (const element of elements) {
-    if (
-      element.customData?.isMainElement &&
-      element.customData?.databaseId &&
-      markerByNodeId.has(element.customData.databaseId)
-    ) {
+    if (!element.customData?.isMainElement || !element.customData?.databaseId) continue
+    presentMainElementIds.add(element.id)
+    if (markerByNodeId.has(element.customData.databaseId)) {
       mainElementIdsToMark.add(element.id)
     }
   }
 
-  // Drop any prior marker ellipses bound to a main element that is about to
-  // be re-marked below, so re-syncing replaces rather than accumulates.
+  // Drop any prior marker ellipse that is either (a) bound to a main element
+  // about to be re-marked below (avoids duplicate accumulation on re-sync),
+  // or (b) orphaned because its main element no longer exists on the canvas
+  // at all (deleted/removed) — without (b), ellipses for removed elements
+  // were left behind forever since nothing else ever targets them for
+  // cleanup. A marker whose main element is still present but simply has no
+  // fresh entry this round (e.g. a transient per-root fetch failure) is left
+  // untouched, matching the existing fail-safe behavior.
   const withoutStaleMarkers = elements.filter(element => {
     const isMarkerEllipse =
       element.customData?.sovereigntyMarker === 'fill' ||
       element.customData?.sovereigntyMarker === 'ring'
     if (!isMarkerEllipse || !element.customData?.mainElementId) return true
-    return !mainElementIdsToMark.has(element.customData.mainElementId)
+    const mainElementId = element.customData.mainElementId
+    const isOrphaned = !presentMainElementIds.has(mainElementId)
+    return !isOrphaned && !mainElementIdsToMark.has(mainElementId)
   })
 
   const newMarkerEllipses: DiagramElement[] = []
@@ -278,6 +285,112 @@ export const applySovereigntyMarkers = (
   }
 
   return [...withoutStaleMarkers, ...newMarkerEllipses]
+}
+
+/**
+ * Recomputes a main element's fill/ring marker ellipse positions using the
+ * exact same top-right-anchor geometry as createMarkerEllipses, and returns
+ * mutated copies (same id, updated x/y/version/versionNonce/updated) — or
+ * null if the recomputed position is unchanged. Drag-time only (D-02/D-03):
+ * createMarkerEllipses/applySovereigntyMarkers remain the sync-time
+ * (initial/resync) path and are unaffected by this function.
+ */
+export const repositionMarkerEllipses = (
+  mainElement: DiagramElement,
+  fillEllipse: DiagramElement,
+  ringEllipse: DiagramElement
+): { fillEllipse: DiagramElement; ringEllipse: DiagramElement } | null => {
+  const x = mainElement.x ?? 0
+  const y = mainElement.y ?? 0
+  const width = mainElement.width ?? 0
+
+  const fillSize = 10
+  const ringSize = 18
+
+  const fillX = x + width - fillSize / 2
+  const fillY = y - fillSize / 2
+  const ringX = fillX - (ringSize - fillSize) / 2
+  const ringY = fillY - (ringSize - fillSize) / 2
+
+  if (
+    fillX === fillEllipse.x &&
+    fillY === fillEllipse.y &&
+    ringX === ringEllipse.x &&
+    ringY === ringEllipse.y
+  ) {
+    return null
+  }
+
+  return {
+    fillEllipse: {
+      ...fillEllipse,
+      x: fillX,
+      y: fillY,
+      version: (fillEllipse.version ?? 1) + 1,
+      versionNonce: Math.floor(Math.random() * 1000000),
+      updated: Date.now(),
+    },
+    ringEllipse: {
+      ...ringEllipse,
+      x: ringX,
+      y: ringY,
+      version: (ringEllipse.version ?? 1) + 1,
+      versionNonce: Math.floor(Math.random() * 1000000),
+      updated: Date.now(),
+    },
+  }
+}
+
+/**
+ * Scans elements once for main database elements that currently carry a
+ * complete fill+ring marker pair (D-04 — elements without a full existing
+ * pair are skipped entirely, no partial-pair handling) and repositions each
+ * pair in place via repositionMarkerEllipses. Returns the original elements
+ * reference with changed: false when nothing needed repositioning (the
+ * common no-markers-on-this-diagram case incurs no extra array allocation,
+ * per D-04's perf requirement), or a new array with the repositioned pairs
+ * substituted in place (matched by id; every other element, including the
+ * main element itself, is left untouched) otherwise.
+ */
+export const repositionAllMarkerEllipses = (
+  elements: DiagramElement[]
+): { elements: DiagramElement[]; changed: boolean } => {
+  const markersByMainId = new Map<string, { fill?: DiagramElement; ring?: DiagramElement }>()
+
+  for (const element of elements) {
+    const markerType = element.customData?.sovereigntyMarker
+    const mainElementId = element.customData?.mainElementId
+    if ((markerType !== 'fill' && markerType !== 'ring') || !mainElementId) continue
+
+    const entry = markersByMainId.get(mainElementId) ?? {}
+    if (markerType === 'fill') {
+      entry.fill = element
+    } else {
+      entry.ring = element
+    }
+    markersByMainId.set(mainElementId, entry)
+  }
+
+  const repositionedById = new Map<string, DiagramElement>()
+
+  for (const element of elements) {
+    if (!element.customData?.isMainElement || !element.customData?.databaseId) continue
+    const pair = markersByMainId.get(element.id)
+    if (!pair?.fill || !pair?.ring) continue
+
+    const repositioned = repositionMarkerEllipses(element, pair.fill, pair.ring)
+    if (!repositioned) continue
+
+    repositionedById.set(repositioned.fillEllipse.id, repositioned.fillEllipse)
+    repositionedById.set(repositioned.ringEllipse.id, repositioned.ringEllipse)
+  }
+
+  if (repositionedById.size === 0) {
+    return { elements, changed: false }
+  }
+
+  const newElements = elements.map(element => repositionedById.get(element.id) ?? element)
+  return { elements: newElements, changed: true }
 }
 
 /**
