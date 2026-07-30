@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 2
-status: ready to execute
-stopped_at: Completed 02-02-PLAN.md
-last_updated: "2026-07-30T11:08:36.230Z"
+status: in progress
+stopped_at: Completed 02-03-PLAN.md (sovereignty detail views rewritten on canonical findings model)
+last_updated: "2026-07-30T11:26:00.031Z"
 last_activity: 2026-07-30
-last_activity_desc: completed 02-02-PLAN.md, see 02-02-SUMMARY.md in .planning/phases/02-canonical-sovereignty-evaluation-ux-diagnostics/
+last_activity_desc: Phase 2 Plan 03 complete — SovereigntyCapabilityView and SovereigntyDataView rewritten on canonical sovereigntyAnalysis findings; legacy inheritance-based utils.ts deleted. See 02-03-SUMMARY.md.
 progress:
   total_phases: 3
   completed_phases: 2
   total_plans: 7
-  completed_plans: 4
+  completed_plans: 5
 current_phase_name: Canonical Sovereignty Evaluation & UX Diagnostics
 ---
 
@@ -27,12 +27,12 @@ See: .planning/PROJECT.md (updated 2026-07-22)
 
 ## Current Position
 
-Phase: 2 — Canonical Sovereignty Evaluation & UX Diagnostics (executing)
-Plan: 02-01, 02-02 complete; 02-03 (wave 2 remaining), 02-04, 02-05 (wave 3) remaining — 02-01-PLAN.md, 02-02-PLAN.md (wave 1 + wave 2 half) done
-Status: Executing — 02-02 (D-05 marker projection, batch sovereigntyMarkers query, zod validation hardening, SOV-05 resolver/module parity) complete with 2/2 tasks committed, 19/19 sovereignty tests passing, tsc clean; next up: 02-03 (remainder of wave 2)
-Last activity: 2026-07-30 — completed 02-02-PLAN.md, see 02-02-SUMMARY.md in .planning/phases/02-canonical-sovereignty-evaluation-ux-diagnostics/
+Phase: 2 — Canonical Sovereignty Evaluation & UX Diagnostics (in progress)
+Plan: 03 (complete) — next up: 02-04-PLAN.md
+Status: 02-03 complete — SovereigntyCapabilityView.tsx and SovereigntyDataView.tsx rewritten to consume the canonical `sovereigntyAnalysis` findings model; legacy `utils.ts` inheritance helper deleted
+Last activity: 2026-07-30 — see 02-03-SUMMARY.md
 
-Progress: [██████░░░░] 57% Phase 01.1 complete; Phase 2 in progress (2/5 plans complete), next up: 02-03 (wave 2)
+Progress: [███████░░░] 71% (5/7 plans complete across phases; Phase 2: 3/5 plans complete)
 
 ## Performance Metrics
 
@@ -46,7 +46,7 @@ Progress: [██████░░░░] 57% Phase 01.1 complete; Phase 2 in p
 
 | Phase | Plans | Total | Avg/Plan |
 | ----- | ----- | ----- | -------- |
-| 01 | 1 | - | - |
+| 01    | 1     | -     | -        |
 | 2     | 0     | 0 min | 0 min    |
 
 **Recent Trend:**
@@ -58,8 +58,7 @@ Progress: [██████░░░░] 57% Phase 01.1 complete; Phase 2 in p
 
 | Plan | Duration | Tasks | Files |
 |------|----------|-------|-------|
-| Phase 02 P01 | 35min | 2 tasks | 10 files |
-| Phase 02 P02 | 25min | 2 tasks | 6 files |
+| Phase 2 P03 | 45min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -71,9 +70,7 @@ Recent decisions affecting current work:
 - Phase 1: Setup stabilization precedes sovereignty work because runtime reproducibility is required for later verification.
 - Phase 2: Sovereignty evaluation will use explicit per-element evidence with chain-based findings rather than inherited achieved values.
 - Phase 2: Detail views and diagram markers must consume the same canonical sovereignty result.
-- [Phase ?]: type Query (not extend type Query) required for the first custom Query field on a @neo4j/graphql schema with no other explicit Query block
-- [Phase ?]: Cycle safety uses a per-branch visited Set (fresh per top-level entry, one shared copy per node's children) satisfying both D-01 multi-parent independence and D-03 cycle safety
-- [Phase ?]: Phase 2: sovereigntyMarkers reuses one shared sovereigntyAnalysisArgsSchema (companyId/rootType/rootId) across both sovereignty resolvers, closing T-02-04/T-02-05
+- Phase 2: sovereignty detail views rewritten to query canonical sovereigntyAnalysis; legacy inheritance-based utils.ts deleted with zero remaining consumers.
 
 ### Pending Todos
 
@@ -82,7 +79,7 @@ None yet.
 ### Blockers/Concerns
 
 - Phase 1 must define one supported localhost-first runtime path and keep any Traefik or HTTPS parity flow explicitly optional.
-- Phase 2 semantic contract (traversal rules, cycle handling, legacy field reconciliation) is drafted in `02-CONTEXT.md` (D-01..D-10) and has been reviewed and confirmed by the user directly (2026-07-30) — no longer a blocker for planning.
+- Phase 2 still needs a frozen semantic contract for traversal rules, cycle handling, and legacy field reconciliation during phase planning.
 
 ### Roadmap Evolution
 
@@ -90,14 +87,13 @@ None yet.
 
 ## Deferred Items
 
-| Category              | Item                                                                                              | Status         | Deferred At |
-| --------------------- | ------------------------------------------------------------------------------------------------- | -------------- | ----------- |
-| Sovereignty Expansion | Blast-radius prioritization, business-process scope expansion, weighting, and portfolio analytics | Deferred to v2 | 2026-07-22  |
-| Sovereignty Expansion | Supplier participation in canonical sovereignty chain traversal (D-08) — Suppliers carry their own `sovereigntyAch*` fields and real `PROVIDED_BY`/`HOSTED_BY`/`SUPPORTED_BY`/`MAINTAINED_BY`/`DEVELOPED_BY`/`MANUFACTURED_BY` relationships but are excluded from Phase 2 chain traversal | Deferred to v2 (user-confirmed backlog item) | 2026-07-30 |
+| Category              | Item                                                                                                      | Status           | Deferred At |
+| --------------------- | --------------------------------------------------------------------------------------------------------- | ---------------- | ----------- |
+| Sovereignty Expansion | Blast-radius prioritization, business-process scope expansion, weighting, and portfolio analytics         | Deferred to v2   | 2026-07-22  |
 | Runtime Tooling       | Helm-dependent K8s runtime verification gate for Phase 01 (`helm status`, `kubectl wait`, endpoint check) | Accepted backlog | 2026-07-27  |
 
 ## Session Continuity
 
-Last session: 2026-07-30T11:08:36.220Z
-Stopped at: Completed 02-02-PLAN.md
+Last session: 2026-07-30T11:26:00.016Z
+Stopped at: Completed 02-03-PLAN.md (sovereignty detail views rewritten on canonical findings model)
 Resume file: None

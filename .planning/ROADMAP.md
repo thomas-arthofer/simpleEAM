@@ -56,20 +56,13 @@ Plans:
 3. Missing sovereignty evaluations remain visible as a gray or unknown state rather than appearing compliant by default.
 4. In an element detail view, a user can tell whether the current element is the cause of a sovereignty issue or is affected by a weaker element elsewhere in the chain.
 5. When diagram markers are enabled, added elements show canonical sovereignty status markers that distinguish local violations from downstream impact.
-   **Plans**:
+   **Plans**: 3/5 plans executed
 
 - [x] 02-01-PLAN.md
-
-2/5 plans executed
-
 - [x] 02-02-PLAN.md
-- [ ] 02-03-PLAN.md
+- [x] 02-03-PLAN.md
 - [ ] 02-04-PLAN.md
 - [ ] 02-05-PLAN.md
-   1/5 plans executed
-
-   - **Wave 2** *(blocked on Wave 1 completion)*: 02-02 — batched `sovereigntyMarkers` query (SOV-05, SUX-03, SUX-04); 02-03 — element detail view rewrite (SUX-01, SUX-02)
-   - **Wave 3** *(blocked on Wave 2 completion)*: 02-04 — company-level rollup (SOV-05); 02-05 — diagram marker integration (SUX-03, SUX-04)
    **Mode:** mvp
    **UI hint**: yes
 
@@ -78,12 +71,12 @@ Plans:
 **Execution Order:**
 Phases execute in numeric order: 1 -> 2
 
-| Phase                                                | Plans Complete | Status      | Completed |
-| ---------------------------------------------------- | -------------- | ----------- | --------- |
-| 1. Setup Stabilization & Deployment Clarity          | 1/1 | Complete    | 2026-07-27 |
-| 2. Canonical Sovereignty Evaluation & UX Diagnostics | 2/5 | In Progress|  |
+| Phase                                                | Plans Complete | Status      | Completed  |
+| ---------------------------------------------------- | -------------- | ----------- | ---------- |
+| 1. Setup Stabilization & Deployment Clarity          | 1/1            | Complete    | 2026-07-27 |
+| 2. Canonical Sovereignty Evaluation & UX Diagnostics | 3/5 | In Progress|  |
 
 ## Backlog (Accepted Blockers)
 
 - Phase 1: Helm-dependent Kubernetes runtime verification remains open and accepted into backlog.
-   - Required follow-up gates: `helm status <release> -n <namespace>`, `kubectl wait --for=condition=Ready ...`, `curl -fsS <GRAPHQL_HEALTH_URL>`.
+  - Required follow-up gates: `helm status <release> -n <namespace>`, `kubectl wait --for=condition=Ready ...`, `curl -fsS <GRAPHQL_HEALTH_URL>`.
