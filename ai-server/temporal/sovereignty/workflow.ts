@@ -2,17 +2,9 @@ import { proxyActivities } from '@temporalio/workflow'
 import type { SovereigntyScoreWorkflowInput, SovereigntyScores } from '../../src/types/agents'
 
 type SovereigntyActivities = {
-  fetchSovereigntyReqEntities: (input: {
-    companyId: string
-    accessToken: string
-  }) => Promise<Record<string, string | number | null | undefined>[]>
-  fetchSovereigntyAchEntities: (input: {
-    companyId: string
-    accessToken: string
-  }) => Promise<Record<string, string | number | null | undefined>[]>
   computeSovereigntyScores: (input: {
-    reqEntities: Record<string, string | number | null | undefined>[]
-    achEntities: Record<string, string | number | null | undefined>[]
+    companyId: string
+    accessToken: string
   }) => Promise<SovereigntyScores>
   updateCompanySovereigntyScores: (input: {
     companyId: string
@@ -24,8 +16,6 @@ type SovereigntyActivities = {
 }
 
 const {
-  fetchSovereigntyReqEntities,
-  fetchSovereigntyAchEntities,
   computeSovereigntyScores,
   updateCompanySovereigntyScores,
   markSovereigntyCalculating,
@@ -41,15 +31,10 @@ export async function sovereigntyScoreWorkflow(
   await markSovereigntyCalculating({ companyId: input.companyId, accessToken: input.accessToken })
 
   try {
-    const reqEntities = await fetchSovereigntyReqEntities({
+    const scores = await computeSovereigntyScores({
       companyId: input.companyId,
       accessToken: input.accessToken,
     })
-    const achEntities = await fetchSovereigntyAchEntities({
-      companyId: input.companyId,
-      accessToken: input.accessToken,
-    })
-    const scores = await computeSovereigntyScores({ reqEntities, achEntities })
     await updateCompanySovereigntyScores({
       companyId: input.companyId,
       scores,
