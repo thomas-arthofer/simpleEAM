@@ -5,13 +5,13 @@ milestone_name: milestone
 current_phase: 2
 current_phase_name: Canonical Sovereignty Evaluation & UX Diagnostics
 status: human verification needed
-stopped_at: Phase 2 verified (5/5 must-haves) — status human_needed, 4 UAT items pending in 02-UAT.md
-last_updated: "2026-07-30T12:35:00.000Z"
+stopped_at: Phase 02.1 context gathered
+last_updated: "2026-07-30T16:17:04.133Z"
 last_activity: 2026-07-30
 last_activity_desc: see 02-VERIFICATION.md and 02-UAT.md
 progress:
-  total_phases: 3
-  completed_phases: 2
+  total_phases: 4
+  completed_phases: 3
   total_plans: 7
   completed_plans: 7
 ---
@@ -60,7 +60,7 @@ Progress: [██████████] 100% (7/7 plans complete across phase
 | ----------- | -------- | ------- | ------- |
 | Phase 2 P03 | 45min    | 3 tasks | 6 files |
 | Phase 2 P04 | n/a      | 2 tasks | 7 files |
-| Phase 2 P05 | 35min | 2 tasks | 4 files |
+| Phase 2 P05 | 35min    | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -88,6 +88,7 @@ None yet.
 ### Roadmap Evolution
 
 - Phase 01.1 inserted after Phase 1: eam.example.com local domain setup: analyze and restore the eam.example.com hostname routing from the previous local setup so the Docker Compose stack runs under eam.example.com (URGENT)
+- Phase 2.1 inserted after Phase 2: Two sovereignty-marker UAT findings: (1) F5 full-page reload restores the diagram via DiagramState.ts's localStorage scene-restore path, which never calls syncDiagramOnOpen/syncSovereigntyMarkers -- markers only appear via handleOpenDiagram (cross-page nav) or manual Ctrl+R sync; (2) marker fill/ring ellipses are positioned once at sync time and do not live-track a main element being dragged afterward. (URGENT)
 
 ## Deferred Items
 
@@ -98,6 +99,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-30T11:51:28.293Z
-Stopped at: Completed 02-05-PLAN.md — Phase 2 all 5 plans complete, ready for phase-level verification
-Resume file: None
+Last session: 2026-07-30T16:17:04.117Z
+Stopped at: Phase 02.1 context gathered
+Resume file: .planning/phases/02.1-fix-diagram-sovereignty-marker-sync-gaps-f5-reload-bypasses-/02.1-CONTEXT.md
