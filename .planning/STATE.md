@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 2
+current_phase_name: Canonical Sovereignty Evaluation & UX Diagnostics
 status: in progress
-stopped_at: Completed 02-03-PLAN.md (sovereignty detail views rewritten on canonical findings model)
-last_updated: "2026-07-30T11:26:00.031Z"
+stopped_at: Completed 02-04-PLAN.md
+last_updated: "2026-07-30T11:39:41.359Z"
 last_activity: 2026-07-30
-last_activity_desc: Phase 2 Plan 03 complete — SovereigntyCapabilityView and SovereigntyDataView rewritten on canonical sovereigntyAnalysis findings; legacy inheritance-based utils.ts deleted. See 02-03-SUMMARY.md.
+last_activity_desc: see 02-04-SUMMARY.md
 progress:
   total_phases: 3
   completed_phases: 2
   total_plans: 7
-  completed_plans: 5
-current_phase_name: Canonical Sovereignty Evaluation & UX Diagnostics
+  completed_plans: 6
 ---
 
 # Project State
@@ -28,11 +28,11 @@ See: .planning/PROJECT.md (updated 2026-07-22)
 ## Current Position
 
 Phase: 2 — Canonical Sovereignty Evaluation & UX Diagnostics (in progress)
-Plan: 03 (complete) — next up: 02-04-PLAN.md
-Status: 02-03 complete — SovereigntyCapabilityView.tsx and SovereigntyDataView.tsx rewritten to consume the canonical `sovereigntyAnalysis` findings model; legacy `utils.ts` inheritance helper deleted
-Last activity: 2026-07-30 — see 02-03-SUMMARY.md
+Plan: 04 (complete) — next up: 02-05-PLAN.md
+Status: 02-04 complete — server/src/sovereignty/companyRollup.ts (analyzeCompanyRollup) and the sovereigntyCompanyRollup GraphQL query added; ai-server/temporal/sovereignty/activities.ts + workflow.ts rewired to delegate computeSovereigntyScores to it, retiring the standalone MATURITY_SCORE-averaging formula (SOV-05 complete)
+Last activity: 2026-07-30 — see 02-04-SUMMARY.md
 
-Progress: [███████░░░] 71% (5/7 plans complete across phases; Phase 2: 3/5 plans complete)
+Progress: [█████████░] 86% (6/7 plans complete across phases; Phase 2: 4/5 plans complete)
 
 ## Performance Metrics
 
@@ -56,9 +56,10 @@ Progress: [███████░░░] 71% (5/7 plans complete across phases
 
 **Per-Plan Metrics:**
 
-| Plan | Duration | Tasks | Files |
-|------|----------|-------|-------|
-| Phase 2 P03 | 45min | 3 tasks | 6 files |
+| Plan        | Duration | Tasks   | Files   |
+| ----------- | -------- | ------- | ------- |
+| Phase 2 P03 | 45min    | 3 tasks | 6 files |
+| Phase 2 P04 | n/a      | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -71,6 +72,7 @@ Recent decisions affecting current work:
 - Phase 2: Sovereignty evaluation will use explicit per-element evidence with chain-based findings rather than inherited achieved values.
 - Phase 2: Detail views and diagram markers must consume the same canonical sovereignty result.
 - Phase 2: sovereignty detail views rewritten to query canonical sovereigntyAnalysis; legacy inheritance-based utils.ts deleted with zero remaining consumers.
+- Phase 2: company-level sovereignty rollup (Temporal's last consumer) now derives from the same canonical evaluator as detail views/markers; GREY chains count toward (lower) the achieved score instead of being filtered out — SOV-05 complete.
 
 ### Pending Todos
 
@@ -94,6 +96,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-30T11:26:00.016Z
-Stopped at: Completed 02-03-PLAN.md (sovereignty detail views rewritten on canonical findings model)
+Last session: 2026-07-30T11:39:41.344Z
+Stopped at: Completed 02-04-PLAN.md
 Resume file: None
