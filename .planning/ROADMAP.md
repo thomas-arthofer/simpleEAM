@@ -80,3 +80,15 @@ Phases execute in numeric order: 1 -> 2
 
 - Phase 1: Helm-dependent Kubernetes runtime verification remains open and accepted into backlog.
   - Required follow-up gates: `helm status <release> -n <namespace>`, `kubectl wait --for=condition=Ready ...`, `curl -fsS <GRAPHQL_HEALTH_URL>`.
+
+### Phase 02.1: Fix diagram sovereignty marker sync gaps: F5 reload bypasses sovereignty sync entirely (localStorage scene-restore path in DiagramState.ts never calls syncDiagramOnOpen/syncSovereigntyMarkers, unlike handleOpenDiagram), and marker ellipses do not update in realtime when the user drags a main element (positions are computed once at sync time, not live-bound to the element) (INSERTED)
+
+**Goal:** A raw browser F5/full-page reload restores sovereignty markers identically to opening the diagram via the Open dialog, and dragging a single main element keeps its fill/ring markers visually attached in real time instead of leaving them behind.
+**Requirements**: SOV-RELOAD-SYNC, SOV-MARKER-DRAG (urgent bugfix; not tracked in REQUIREMENTS.md)
+**Depends on:** Phase 2
+**Plans:** 2 plans
+
+Plans:
+
+- [ ] 02.1-01-PLAN.md — Run the full syncDiagramOnOpen pipeline on F5/full-page-reload scene restore (D-01)
+- [ ] 02.1-02-PLAN.md — Live-reposition marker ellipses in place on every onChange during a drag (D-02/D-03/D-04)
