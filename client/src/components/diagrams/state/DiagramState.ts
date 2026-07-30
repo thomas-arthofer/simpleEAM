@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { useCompanyContext } from '@/contexts/CompanyContext'
 import { useSearchParams } from 'next/navigation'
+import { useApolloClient } from '@apollo/client'
+import { useFeatureFlags } from '@/lib/feature-flags'
 import { DialogStates, NotificationState } from '../types/DiagramTypes'
 import { isViewer } from '@/lib/auth'
 import {
@@ -8,6 +10,7 @@ import {
   loadPersistedDiagram,
   loadViewportStateFromStorage,
 } from '../utils/DiagramStorageUtils'
+import { syncDiagramOnOpen } from '../utils/databaseSyncUtils'
 
 // Custom Hook für den Diagram State
 export const useDiagramState = () => {
@@ -25,6 +28,10 @@ export const useDiagramState = () => {
 
   // Aktuell ausgewählte Company zur Validierung des gespeicherten Diagramms
   const { selectedCompanyId } = useCompanyContext()
+
+  // Apollo client + feature flags needed to run the same sync pipeline handleOpenDiagram uses
+  const apolloClient = useApolloClient()
+  const { featureFlags } = useFeatureFlags()
 
   // Track if scene has been restored to prevent multiple restorations
   const sceneRestoredRef = useRef(false)
@@ -128,7 +135,7 @@ export const useDiagramState = () => {
       }
 
       // Use setTimeout to ensure proper timing in Docker containers
-      const restoreTimeout = setTimeout(() => {
+      const restoreTimeout = setTimeout(async () => {
         try {
           // Always try to restore scene if we have data, regardless of element count
           if (currentScene && (currentScene.elements || currentScene.appState)) {
@@ -139,7 +146,23 @@ export const useDiagramState = () => {
             const shouldRestore = hasElements || !currentElements || currentElements.length === 0
 
             if (shouldRestore) {
-              const restoredScene = restoreSceneData(currentScene)
+              // Run the same sync pipeline handleOpenDiagram uses, so F5/full-page reload
+              // never bypasses sovereignty marker sync (D-01). Fail soft: a sync error must
+              // never block local scene restoration.
+              let syncedScene = currentScene
+              try {
+                syncedScene = await syncDiagramOnOpen(apolloClient, currentScene, {
+                  enabled: featureFlags.Sovereignty,
+                  companyId: selectedCompanyId,
+                })
+              } catch (syncError) {
+                console.warn(
+                  'Database sync failed during scene restore, using local data:',
+                  syncError
+                )
+              }
+
+              const restoredScene = restoreSceneData(syncedScene)
 
               // Load and apply viewport state if available
               const savedViewportState = loadViewportStateFromStorage()
