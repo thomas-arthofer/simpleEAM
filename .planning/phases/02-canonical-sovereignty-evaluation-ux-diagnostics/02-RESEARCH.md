@@ -375,17 +375,15 @@ export const getSchema = async () => {
 
 **If this table is empty:** N/A — see rows above.
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Exact merge mechanism for custom resolvers onto `@neo4j/graphql`'s generated schema**
+1. **Exact merge mechanism for custom resolvers onto `@neo4j/graphql`'s generated schema** — **RESOLVED** by 02-01/02-02 planning: approach (a) was chosen. `server/src/graphql/schema.ts` passes a `resolvers` map directly into the existing `new Neo4jGraphQL({ typeDefs, driver, resolvers, features })` constructor call — no `@graphql-tools/schema` `mergeSchemas` layer is introduced. `Query.sovereigntyAnalysis` and `Query.sovereigntyMarkers` are plain resolver functions in `server/src/sovereignty/graphql/resolvers.ts`, dispatching on `args.rootType` (`'businessCapability'` vs `'dataObject'`) to call `loadFullSupportChain` + `analyzeBusinessCapability`/`analyzeDataObject` — one loader, one dispatch point, reused identically by both queries.
    - What we know: Neo4j officially supports a `resolvers` argument directly on `new Neo4jGraphQL({...})` for custom/computed fields [CITED], and `@graphql-tools/schema`/`graphql-tools` are already installed for schema-merging.
-   - What's unclear: Whether the simplest path is (a) passing `resolvers` straight into the existing `Neo4jGraphQL` constructor call with `extend type Query { ... }` added to `schema.graphql`, or (b) a separate merged schema via `@graphql-tools/schema`. Both are viable; (a) is likely simpler since it needs zero new merge-library calls.
-   - Recommendation: Wave 0 spike — add one trivial custom query field end-to-end (schema → resolver → codegen → client fetch) using approach (a) first; fall back to (b) only if (a) proves awkward for the object-type return shape needed.
+   - What's unclear: ~~Whether the simplest path is (a) passing `resolvers` straight into the existing `Neo4jGraphQL` constructor call with `extend type Query { ... }` added to `schema.graphql`, or (b) a separate merged schema via `@graphql-tools/schema`.~~ Resolved — (a) was simpler and needed zero new merge-library calls; approach (b) was not needed.
 
-2. **Company-level rollup scoping under D-06**
+2. **Company-level rollup scoping under D-06** — **RESOLVED** by 02-04 planning: a distinct `server/src/sovereignty/companyRollup.ts` batch-aggregation module was added, iterating a company's owned BusinessCapabilities/DataObjects and calling 02-01's `analyzeBusinessCapability`/`analyzeDataObject` for each, then aggregating with the same `Math.max`/`Math.min` shape as the retired Temporal formula (but mapping GREY to a defined score instead of filtering it out). This is exposed as a new `sovereigntyCompanyRollup` GraphQL query and called by `ai-server/temporal/sovereignty/activities.ts` via the existing `graphqlRequest` helper — no third aggregation implementation exists in `ai-server` itself.
    - What we know: The Temporal workflow computes scores per company by fetching ALL requirement/achieved entities company-wide (`fetchSovereigntyReqEntities`/`fetchSovereigntyAchEntities` in `activities.ts`), not per-chain.
-   - What's unclear: Whether the canonical module's "analyze one root" contract needs a distinct "analyze whole company" entry point (batch-analyze every BusinessCapability + DataObject root and aggregate), or whether the Temporal workflow should just call `sovereigntyAnalysis` once per root and aggregate client-side (in `ai-server`) using the shared classification but company-side aggregation code.
-   - Recommendation: Planner should decide during task breakdown whether `server/src/sovereignty/` exposes a `analyzeCompany(companyId)` batch function reused by both a GraphQL rollup query and the Temporal activity, to avoid a third aggregation implementation appearing in `ai-server` itself.
+   - What's unclear: ~~Whether the canonical module's "analyze one root" contract needs a distinct "analyze whole company" entry point... or whether the Temporal workflow should just call `sovereigntyAnalysis` once per root and aggregate client-side.~~ Resolved — a distinct `companyRollup.ts` batch entry point was added (per the recommendation), reused by both the GraphQL rollup query and the Temporal activity.
 
 ## Environment Availability
 
