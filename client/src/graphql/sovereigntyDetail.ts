@@ -1,192 +1,45 @@
 import { gql } from '@apollo/client/core'
 
-export const GET_SOVEREIGNTY_CAPABILITY_DETAIL = gql`
-  query GetSovereigntyCapabilityDetail(
-    $where: BusinessCapabilityWhere
-    $applicationWhere: ApplicationWhere
-    $aiComponentWhere: AIComponentWhere
-    $infrastructureWhere: InfrastructureWhere
-  ) {
+// Lightweight list queries — only what's needed to enumerate the roots the
+// canonical GET_SOVEREIGNTY_ANALYSIS query is then run against per-element.
+export const GET_SOVEREIGNTY_CAPABILITIES_LIST = gql`
+  query GetSovereigntyCapabilitiesList($where: BusinessCapabilityWhere) {
     businessCapabilities(where: $where) {
       id
       name
-      sovereigntyReqStrategicAutonomy
-      sovereigntyReqResilience
-      sovereigntyReqSecurity
-      sovereigntyReqControl
-      sovereigntyReqWeight
-      supportedByApplications {
-        id
-        name
-        sovereigntyAchStrategicAutonomy
-        sovereigntyAchResilience
-        sovereigntyAchSecurity
-        sovereigntyAchControl
-      }
-      supportedByAIComponents {
-        id
-        name
-        sovereigntyAchStrategicAutonomy
-        sovereigntyAchResilience
-        sovereigntyAchSecurity
-        sovereigntyAchControl
-      }
-    }
-    applications(where: $applicationWhere) {
-      id
-      name
-      sovereigntyAchStrategicAutonomy
-      sovereigntyAchResilience
-      sovereigntyAchSecurity
-      sovereigntyAchControl
-      components {
-        id
-      }
-      hostedOn {
-        id
-        name
-        sovereigntyAchStrategicAutonomy
-        sovereigntyAchResilience
-        sovereigntyAchSecurity
-        sovereigntyAchControl
-        parentInfrastructure {
-          id
-          name
-          sovereigntyAchStrategicAutonomy
-          sovereigntyAchResilience
-          sovereigntyAchSecurity
-          sovereigntyAchControl
-        }
-      }
-    }
-    aiComponents(where: $aiComponentWhere) {
-      id
-      name
-      sovereigntyAchStrategicAutonomy
-      sovereigntyAchResilience
-      sovereigntyAchSecurity
-      sovereigntyAchControl
-      usedByApplications {
-        id
-      }
-      hostedOn {
-        id
-        name
-        sovereigntyAchStrategicAutonomy
-        sovereigntyAchResilience
-        sovereigntyAchSecurity
-        sovereigntyAchControl
-        parentInfrastructure {
-          id
-          name
-          sovereigntyAchStrategicAutonomy
-          sovereigntyAchResilience
-          sovereigntyAchSecurity
-          sovereigntyAchControl
-        }
-      }
-    }
-    infrastructures(where: $infrastructureWhere) {
-      id
-      name
-      sovereigntyAchStrategicAutonomy
-      sovereigntyAchResilience
-      sovereigntyAchSecurity
-      sovereigntyAchControl
-      parentInfrastructure {
-        id
-      }
     }
   }
 `
 
-export const GET_SOVEREIGNTY_DATA_DETAIL = gql`
-  query GetSovereigntyDataDetail(
-    $where: DataObjectWhere
-    $applicationWhere: ApplicationWhere
-    $aiComponentWhere: AIComponentWhere
-    $infrastructureWhere: InfrastructureWhere
-  ) {
+export const GET_SOVEREIGNTY_DATA_OBJECTS_LIST = gql`
+  query GetSovereigntyDataObjectsList($where: DataObjectWhere) {
     dataObjects(where: $where) {
       id
       name
-      sovereigntyReqStrategicAutonomy
-      sovereigntyReqResilience
-      sovereigntyReqSecurity
-      sovereigntyReqControl
-      sovereigntyReqWeight
-      usedByApplications {
-        id
-        name
-        sovereigntyAchStrategicAutonomy
-        sovereigntyAchResilience
-        sovereigntyAchSecurity
-        sovereigntyAchControl
-      }
     }
-    applications(where: $applicationWhere) {
-      id
-      name
-      sovereigntyAchStrategicAutonomy
-      sovereigntyAchResilience
-      sovereigntyAchSecurity
-      sovereigntyAchControl
-      components {
-        id
-      }
-      hostedOn {
-        id
-        name
-        sovereigntyAchStrategicAutonomy
-        sovereigntyAchResilience
-        sovereigntyAchSecurity
-        sovereigntyAchControl
-        parentInfrastructure {
-          id
-          name
-          sovereigntyAchStrategicAutonomy
-          sovereigntyAchResilience
-          sovereigntyAchSecurity
-          sovereigntyAchControl
-        }
-      }
-    }
-    aiComponents(where: $aiComponentWhere) {
-      id
-      name
-      sovereigntyAchStrategicAutonomy
-      sovereigntyAchResilience
-      sovereigntyAchSecurity
-      sovereigntyAchControl
-      usedByApplications {
-        id
-      }
-      hostedOn {
-        id
-        name
-        sovereigntyAchStrategicAutonomy
-        sovereigntyAchResilience
-        sovereigntyAchSecurity
-        sovereigntyAchControl
-        parentInfrastructure {
-          id
-          name
-          sovereigntyAchStrategicAutonomy
-          sovereigntyAchResilience
-          sovereigntyAchSecurity
-          sovereigntyAchControl
-        }
-      }
-    }
-    infrastructures(where: $infrastructureWhere) {
-      id
-      name
-      sovereigntyAchStrategicAutonomy
-      sovereigntyAchResilience
-      sovereigntyAchSecurity
-      sovereigntyAchControl
-      parentInfrastructure {
-        id
+  }
+`
+
+// Canonical sovereignty findings query (02-01/02-02). Replaces the two
+// raw-entity-tree queries this file previously exposed — both detail views
+// now consume this single, evaluator-backed field instead of computing an
+// inherited/aggregated score client-side (D-07).
+export const GET_SOVEREIGNTY_ANALYSIS = gql`
+  query GetSovereigntyAnalysis($companyId: ID!, $rootType: String!, $rootId: ID!) {
+    sovereigntyAnalysis(companyId: $companyId, rootType: $rootType, rootId: $rootId) {
+      rootId
+      rootType
+      selfStatus
+      downstreamStatus
+      findings {
+        violatingElementId
+        violatingElementType
+        violatingElementName
+        dimension
+        status
+        requiredLevel
+        actualLevel
+        chainPath
       }
     }
   }

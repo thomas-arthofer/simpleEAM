@@ -4089,6 +4089,21 @@
     "noCapabilities": "Keine Fähigkeiten für das ausgewählte Unternehmen gefunden.",
     "noDataObjects": "Keine Datenobjekte für das ausgewählte Unternehmen gefunden.",
     "noCompanySelected": "Bitte wählen Sie ein Unternehmen aus, um Souveränitätsdetails zu sehen.",
-    "featureDisabled": "Das Souveränitätsmerkmal ist nicht aktiviert."
+    "featureDisabled": "Das Souveränitätsmerkmal ist nicht aktiviert.",
+    "selfStatusLabel": "Eigenstatus",
+    "downstreamStatusLabel": "Kettenstatus",
+    "greenEmptyHeading": "Keine Verstöße gefunden",
+    "greenEmptyBody": "Alle geforderten Souveränitätsdimensionen sind für dieses Element und seine Kette erfüllt.",
+    "greyEmptyHeading": "Keine Bewertung vorhanden",
+    "greyEmptyBody": "Für dieses Element wurde noch keine Souveränitätsbewertung erfasst. Eine fehlende Bewertung gilt nicht als erfüllt.",
+    "findingRow": "gefordert: {required} → vorhanden: {actual}",
+    "chainContext": "Kette: {chainPath}",
+    "loadError": "Souveränitätsdaten konnten nicht geladen werden.",
+    "dimensions": {
+      "STRATEGIC_AUTONOMY": "Strategische Autonomie",
+      "RESILIENCE": "Resilienz",
+      "SECURITY": "Sicherheit",
+      "CONTROL": "Kontrolle"
+    }
   }
 }
