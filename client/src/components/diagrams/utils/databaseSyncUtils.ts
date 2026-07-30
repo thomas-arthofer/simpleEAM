@@ -7,6 +7,7 @@ import {
   ensureTextContainerBindings,
 } from './textContainerUtils'
 import { updateCanvasElementName } from './architectureElements'
+import { syncSovereigntyMarkers } from './sovereigntyMarkers'
 
 interface DiagramElement {
   id: string
@@ -640,7 +641,11 @@ export const syncDiagramOnOpenSimple = async (
 /**
  * Synchronizes diagram elements when opening
  */
-export const syncDiagramOnOpen = async (apolloClient: any, diagramData: any): Promise<any> => {
+export const syncDiagramOnOpen = async (
+  apolloClient: any,
+  diagramData: any,
+  sovereigntyOptions?: { enabled: boolean; companyId: string | null }
+): Promise<any> => {
   if (!diagramData.elements || !Array.isArray(diagramData.elements)) {
     return diagramData
   }
@@ -649,7 +654,12 @@ export const syncDiagramOnOpen = async (apolloClient: any, diagramData: any): Pr
   debugElementStructure(diagramData.elements)
 
   // Use simple synchronization without name comparison
-  const updatedElements = await syncDiagramOnOpenSimple(apolloClient, diagramData.elements)
+  let updatedElements = await syncDiagramOnOpenSimple(apolloClient, diagramData.elements)
+
+  // D-09: only issues a sovereigntyMarkers query/render when explicitly gated in
+  if (sovereigntyOptions) {
+    updatedElements = await syncSovereigntyMarkers(apolloClient, updatedElements, sovereigntyOptions)
+  }
 
   return {
     ...diagramData,

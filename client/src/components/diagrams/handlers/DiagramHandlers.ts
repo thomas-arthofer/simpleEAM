@@ -1,6 +1,7 @@
 import { useCallback, useRef } from 'react'
 import { useCompanyContext } from '@/contexts/CompanyContext'
 import { useApolloClient } from '@apollo/client'
+import { useFeatureFlags } from '@/lib/feature-flags'
 import { NotificationState } from '../types/DiagramTypes'
 import {
   syncDiagramOnOpen,
@@ -40,6 +41,7 @@ export const useDiagramHandlers = (
 ) => {
   const apolloClient = useApolloClient()
   const { selectedCompanyId } = useCompanyContext()
+  const { featureFlags } = useFeatureFlags()
 
   // Ref to track if we're currently saving to prevent onChange from setting hasUnsavedChanges
   const isSavingRef = useRef(false)
@@ -244,7 +246,10 @@ export const useDiagramHandlers = (
         // Try to sync from database with Docker-safe error handling
         let syncedDiagramData
         try {
-          syncedDiagramData = await syncDiagramOnOpen(apolloClient, optimizedDiagramData)
+          syncedDiagramData = await syncDiagramOnOpen(apolloClient, optimizedDiagramData, {
+            enabled: featureFlags.Sovereignty,
+            companyId: selectedCompanyId,
+          })
         } catch (syncError) {
           console.warn('Database sync failed, using local data:', syncError)
           syncedDiagramData = optimizedDiagramData
@@ -444,6 +449,7 @@ export const useDiagramHandlers = (
       setLastSavedScene,
       setNotification,
       selectedCompanyId,
+      featureFlags.Sovereignty,
     ]
   )
 
@@ -1005,7 +1011,10 @@ export const useDiagramHandlers = (
       }
 
       // Use syncDiagramOnOpen for manual synchronization (loads fresh data from database)
-      const syncedDiagramData = await syncDiagramOnOpen(apolloClient, sceneData)
+      const syncedDiagramData = await syncDiagramOnOpen(apolloClient, sceneData, {
+        enabled: featureFlags.Sovereignty,
+        companyId: selectedCompanyId,
+      })
 
       // Clear any missing element markers if no missing elements found
       const cleanedElements = clearMissingElementMarkers(syncedDiagramData.elements)
@@ -1035,7 +1044,7 @@ export const useDiagramHandlers = (
         severity: 'error',
       })
     }
-  }, [apolloClient, excalidrawAPI, setNotification])
+  }, [apolloClient, excalidrawAPI, setNotification, featureFlags.Sovereignty, selectedCompanyId])
 
   return {
     handleNewDiagram,
