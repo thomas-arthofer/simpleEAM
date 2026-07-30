@@ -2,18 +2,18 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 2
-current_phase_name: Canonical Sovereignty Evaluation & UX Diagnostics
-status: human verification needed
-stopped_at: Phase 02.1 context gathered
-last_updated: "2026-07-30T16:17:04.133Z"
+current_phase: 02.1
+current_phase_name: Fix diagram sovereignty marker sync gaps
+status: executing
+stopped_at: Completed 02.1-01-PLAN.md
+last_updated: "2026-07-30T16:39:24.028Z"
 last_activity: 2026-07-30
-last_activity_desc: see 02-VERIFICATION.md and 02-UAT.md
+last_activity_desc: Phase 02.1 execution started
 progress:
   total_phases: 4
   completed_phases: 3
-  total_plans: 7
-  completed_plans: 7
+  total_plans: 9
+  completed_plans: 8
 ---
 
 # Project State
@@ -23,16 +23,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-22)
 
 **Core value:** Enterprise architecture data and sovereignty assessments must be trustworthy enough that operators can reproduce the platform and explain exactly where architectural obligations are or are not met.
-**Current focus:** Phase 2 — canonical-sovereignty-evaluation-ux-diagnostics
+**Current focus:** Phase 02.1 — Fix diagram sovereignty marker sync gaps
 
 ## Current Position
 
-Phase: 2 — Canonical Sovereignty Evaluation & UX Diagnostics (all 5 plans executed and code-verified; 4 human UAT checks pending against a live Docker/Neo4j/Temporal stack)
-Plan: 05 of 5 (complete) — Phase 2 has no further plans; next step is running the 4 pending human verification items in 02-UAT.md, then re-running phase verification
-Status: gsd-verifier ran 02-VERIFICATION.md — 5/5 ROADMAP success criteria and all 9 requirements (SOV-01..05, SUX-01..04) code-verified (21/21 Jest tests, clean tsc/type-check across server/ai-server/client). Verdict: human_needed — 4 items require a live Docker/Neo4j/Temporal stack that was not running during execution (live GraphQL query, detail-view visual check, Temporal workflow parity, diagram marker visual check). Persisted as 02-UAT.md.
-Last activity: 2026-07-30 — see 02-VERIFICATION.md and 02-UAT.md
+Phase: 02.1 (Fix diagram sovereignty marker sync gaps) — EXECUTING
+Plan: 2 of 2
+Status: Ready to execute
+Last activity: 2026-07-30 — Phase 02.1 execution started
 
-Progress: [██████████] 100% (7/7 plans complete across phases; Phase 2: 5/5 plans complete)
+Progress: [█████████░] 89% (7/7 plans complete across phases; Phase 2: 5/5 plans complete)
 
 ## Performance Metrics
 
@@ -61,6 +61,7 @@ Progress: [██████████] 100% (7/7 plans complete across phase
 | Phase 2 P03 | 45min    | 3 tasks | 6 files |
 | Phase 2 P04 | n/a      | 2 tasks | 7 files |
 | Phase 2 P05 | 35min    | 2 tasks | 4 files |
+| Phase 02.1 P01 | 15min | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -75,6 +76,7 @@ Recent decisions affecting current work:
 - Phase 2: sovereignty detail views rewritten to query canonical sovereigntyAnalysis; legacy inheritance-based utils.ts deleted with zero remaining consumers.
 - Phase 2: company-level sovereignty rollup (Temporal's last consumer) now derives from the same canonical evaluator as detail views/markers; GREY chains count toward (lower) the achieved score instead of being filtered out — SOV-05 complete.
 - Phase 2: diagram sovereignty markers (fill/ring) now consume the same canonical sovereigntyMarkers query as detail views, gated behind featureFlags.Sovereignty, with worse-status merging across multiple BusinessCapability/DataObject roots on one diagram.
+- [Phase 02.1]: D-01 implemented — F5/full-page reload scene restore now runs the full syncDiagramOnOpen pipeline (name/missing-element sync + syncSovereigntyMarkers), identical to handleOpenDiagram, instead of a markers-only shortcut.
 
 ### Pending Todos
 
@@ -99,6 +101,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-30T16:17:04.117Z
-Stopped at: Phase 02.1 context gathered
-Resume file: .planning/phases/02.1-fix-diagram-sovereignty-marker-sync-gaps-f5-reload-bypasses-/02.1-CONTEXT.md
+Last session: 2026-07-30T16:39:24.014Z
+Stopped at: Completed 02.1-01-PLAN.md
+Resume file: None
