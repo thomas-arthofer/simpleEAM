@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 02.3
-current_phase_name: "Business capability requirement-chain consistency: compare parent vs child BusinessCapability required levels"
-status: planning
-stopped_at: Completed 02.2-02-PLAN.md — Phase 02.2 fully executed (2/2 plans)
-last_updated: "2026-07-31T12:00:00.000Z"
+current_phase: 02.2
+current_phase_name: "Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable"
+status: human_needed
+stopped_at: 02.2-VERIFICATION.md verdict human_needed — code complete, 6 manual UAT checks pending (see 02.2-UAT.md)
+last_updated: "2026-07-31T12:30:00.000Z"
 last_activity: 2026-07-31
-last_activity_desc: Phase 02.2 complete (2/2 plans), transitioned to Phase 02.3 (not yet planned — run /gsd-plan-phase 02.3)
+last_activity_desc: Phase 02.2 code-complete and source-verified (7/7 must-haves), but VERIFICATION.md verdict is human_needed — 02.2-UAT.md created with 6 pending manual browser checks; phase NOT marked complete until UAT passes
 progress:
   total_phases: 6
   completed_phases: 5
@@ -23,14 +23,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-22)
 
 **Core value:** Enterprise architecture data and sovereignty assessments must be trustworthy enough that operators can reproduce the platform and explain exactly where architectural obligations are or are not met.
-**Current focus:** Phase 02.3 — Business capability requirement-chain consistency (not yet planned)
+**Current focus:** Phase 02.2 — awaiting manual UAT (02.2-UAT.md) before Phase 02.3 can be planned
 
 ## Current Position
 
-Phase: 02.2 — Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable — COMPLETE (2/2 plans)
-Plan: 02.2-02 complete (2/2 plans in phase; Phase 02.2 fully executed)
-Status: Phase 02.2 fully executed — manual QA pending on both delete pathways (see 02.2-01-SUMMARY.md, 02.2-02-SUMMARY.md); next up: Phase 02.3 (run /gsd-plan-phase 02.3 to break down)
-Last activity: 2026-07-31 — Completed 02.2-02-PLAN.md (atomic context-menu delete cleanup + D-01 lifecycle-gap triage)
+Phase: 02.2 — Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable — CODE COMPLETE, VERIFICATION: human_needed (2/2 plans executed, 0 gaps at source level)
+Plan: 02.2-02 complete (2/2 plans in phase; Phase 02.2 fully executed at code level)
+Status: 02.2-VERIFICATION.md verdict is human_needed — all 4 must-haves source-verified with zero gaps, but 6 runtime behaviors (non-selectability, reposition, auto-add-on-drop, both delete/undo pathways, duplicate/copy/paste) require a live browser session. See 02.2-UAT.md for the exact checklist. Do NOT advance to Phase 02.3 planning until UAT passes and this file is updated to reflect true completion.
+Last activity: 2026-07-31 — gsd-verifier ran goal-backward verification of Phase 02.2 → human_needed; created 02.2-VERIFICATION.md and 02.2-UAT.md
 
 Progress: [██████████] 100% (11/11 plans complete across phases)
 
