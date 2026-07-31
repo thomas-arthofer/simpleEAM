@@ -5,12 +5,12 @@ milestone_name: milestone
 current_phase: 02.2
 current_phase_name: "Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable"
 status: planning
-stopped_at: Completed 02.1-02-PLAN.md
-last_updated: "2026-07-31T06:35:03.195Z"
+stopped_at: Phase 02.2 context gathered
+last_updated: "2026-07-31T08:37:06.617Z"
 last_activity: 2026-07-31
 last_activity_desc: Phase 02.1 complete, transitioned to Phase 02.2
 progress:
-  total_phases: 5
+  total_phases: 6
   completed_phases: 4
   total_plans: 9
   completed_plans: 9
@@ -48,7 +48,7 @@ Progress: [██████████] 100% (7/7 plans complete across phase
 | ----- | ----- | ----- | -------- |
 | 01    | 1     | -     | -        |
 | 2     | 0     | 0 min | 0 min    |
-| 02.1 | 2 | - | - |
+| 02.1  | 2     | -     | -        |
 
 **Recent Trend:**
 
@@ -57,13 +57,13 @@ Progress: [██████████] 100% (7/7 plans complete across phase
 
 **Per-Plan Metrics:**
 
-| Plan        | Duration | Tasks   | Files   |
-| ----------- | -------- | ------- | ------- |
-| Phase 2 P03 | 45min    | 3 tasks | 6 files |
-| Phase 2 P04 | n/a      | 2 tasks | 7 files |
-| Phase 2 P05 | 35min    | 2 tasks | 4 files |
-| Phase 02.1 P01 | 15min | 1 tasks | 1 files |
-| Phase 02.1 P02 | 20min | 1 tasks | 2 files |
+| Plan           | Duration | Tasks   | Files   |
+| -------------- | -------- | ------- | ------- |
+| Phase 2 P03    | 45min    | 3 tasks | 6 files |
+| Phase 2 P04    | n/a      | 2 tasks | 7 files |
+| Phase 2 P05    | 35min    | 2 tasks | 4 files |
+| Phase 02.1 P01 | 15min    | 1 tasks | 1 files |
+| Phase 02.1 P02 | 20min    | 1 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -95,6 +95,7 @@ None yet.
 - Phase 01.1 inserted after Phase 1: eam.example.com local domain setup: analyze and restore the eam.example.com hostname routing from the previous local setup so the Docker Compose stack runs under eam.example.com (URGENT)
 - Phase 2.1 inserted after Phase 2: Two sovereignty-marker UAT findings: (1) F5 full-page reload restores the diagram via DiagramState.ts's localStorage scene-restore path, which never calls syncDiagramOnOpen/syncSovereigntyMarkers -- markers only appear via handleOpenDiagram (cross-page nav) or manual Ctrl+R sync; (2) marker fill/ring ellipses are positioned once at sync time and do not live-track a main element being dragged afterward. (URGENT)
 - Phase 02.2 inserted after Phase 2: Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable (URGENT)
+- Phase 02.3 inserted after Phase 2: Business capability requirement-chain consistency (parent vs child required levels, YELLOW status, extends D-05) (URGENT)
 
 ## Deferred Items
 
@@ -105,6 +106,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-30T16:43:42.463Z
-Stopped at: Completed 02.1-02-PLAN.md
-Resume file: None
+Last session: 2026-07-31T08:37:06.607Z
+Stopped at: Phase 02.2 context gathered
+Resume file: .planning/phases/02.2-sovereignty-marker-lifecycle-auto-add-on-drop-delete-with-el/02.2-CONTEXT.md
