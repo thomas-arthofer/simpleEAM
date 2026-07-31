@@ -279,7 +279,7 @@ export default function LinkRelatedElementDialog({
         const arrowElement = createArrowBetweenElements({
           sourceElement,
           targetElement,
-          arrowType: 'elbow',
+          arrowType: 'sharp',
           position: arrowPosition,
           reverseArrow: false,
           totalArrows: 1,
