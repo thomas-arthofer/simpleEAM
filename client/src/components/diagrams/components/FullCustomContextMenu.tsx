@@ -13,6 +13,8 @@ import {
   Edit as EditIcon,
 } from '@mui/icons-material'
 import { useTranslations } from 'next-intl'
+import { CaptureUpdateAction } from '@excalidraw/excalidraw'
+import { removeOrphanedMarkersLive } from '../utils/sovereigntyMarkers'
 
 interface CustomContextMenuProps {
   excalidrawAPI: any
@@ -242,10 +244,12 @@ export const FullCustomContextMenu: React.FC<CustomContextMenuProps> = ({
 
       // Filtere die ausgewählten Elemente heraus
       const newElements = elements.filter((el: any) => !appState.selectedElementIds[el.id])
+      const { elements: cleanedElements } = removeOrphanedMarkersLive(newElements)
 
       excalidrawAPI.updateScene({
-        elements: newElements,
+        elements: cleanedElements,
         appState: { ...appState, selectedElementIds: {} },
+        captureUpdate: CaptureUpdateAction.IMMEDIATELY,
       })
     } catch (error) {
       console.warn('Delete action failed:', error)
