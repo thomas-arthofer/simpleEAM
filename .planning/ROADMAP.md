@@ -63,8 +63,8 @@ Plans:
 - [x] 02-03-PLAN.md
 - [x] 02-04-PLAN.md
 - [x] 02-05-PLAN.md
-   **Mode:** mvp
-   **UI hint**: yes
+      **Mode:** mvp
+      **UI hint**: yes
 
 ## Progress
 
@@ -74,23 +74,35 @@ Phases execute in numeric order: 1 -> 2
 | Phase                                                | Plans Complete | Status      | Completed  |
 | ---------------------------------------------------- | -------------- | ----------- | ---------- |
 | 1. Setup Stabilization & Deployment Clarity          | 1/1            | Complete    | 2026-07-27 |
-| 2. Canonical Sovereignty Evaluation & UX Diagnostics | 5/5 | In Progress|  |
+| 2. Canonical Sovereignty Evaluation & UX Diagnostics | 5/5            | In Progress |            |
 
 ## Backlog (Accepted Blockers)
 
 - Phase 1: Helm-dependent Kubernetes runtime verification remains open and accepted into backlog.
   - Required follow-up gates: `helm status <release> -n <namespace>`, `kubectl wait --for=condition=Ready ...`, `curl -fsS <GRAPHQL_HEALTH_URL>`.
 
+### Phase 02.3: Business capability requirement-chain consistency: compare parent vs child BusinessCapability required levels along HAS_PARENT edges, flag inconsistencies (child requirement below parent) as a self-status finding (YELLOW), extending D-05 to allow a capability to be its own violation source for requirement-tree contradictions (INSERTED)
+
+**Goal:** [Urgent work - to be planned]
+**Requirements**: TBD
+**Depends on:** Phase 2
+**Plans:** 0 plans
+
+Plans:
+
+- [ ] TBD (run /gsd-plan-phase 02.3 to break down)
+
 ### Phase 02.2: Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable (INSERTED)
 
 **Goal:** Sovereignty markers stay correctly synced through the full element lifecycle on a diagram, not just at open/reload time (Phase 02.1's scope). Specifically: (1) dragging a new main element onto the canvas from the library automatically gets fill/ring markers applied immediately, without requiring a manual Ctrl+R resync; (2) deleting a main element instantly removes its associated marker ellipses in the same change, instead of leaving orphaned markers behind; (3) research whether marker ellipses are robustly tied to their main element across other lifecycle events not yet covered (e.g. copy/paste, duplicate, undo/redo of a delete, group operations), and confirm/fix that marker ellipses themselves are excluded from direct selection (not independently selectable/draggable/deletable by the user) — surface any additional gaps found during research as findings, not just the two items explicitly named here.
 **Requirements**: SOV-MARKER-AUTOADD, SOV-MARKER-DELETE (urgent bugfix; not tracked in REQUIREMENTS.md)
 **Depends on:** Phase 02.1
-**Plans:** 0 plans
+**Plans:** 2 plans
 
 Plans:
 
-- [ ] TBD (run /gsd-plan-phase 02.2 to break down)
+- [ ] 02.2-01-PLAN.md — `locked: true` non-selectability (D-04), diff-based auto-add-on-drop (D-02), live isDeleted-aware orphan-marker cleanup with explicit captureUpdate (D-01/D-03) — all wired into ExcalidrawWrapper.tsx's handleChange
+- [ ] 02.2-02-PLAN.md — Atomic marker cleanup in the context-menu Delete path (FullCustomContextMenu.tsx) + D-01 lifecycle-gap triage (verify duplicate/copy/paste free coverage, log the one confirmed non-trivial handleDuplicate gap to backlog)
 
 ### Phase 02.1: Fix diagram sovereignty marker sync gaps: F5 reload bypasses sovereignty sync entirely (localStorage scene-restore path in DiagramState.ts never calls syncDiagramOnOpen/syncSovereigntyMarkers, unlike handleOpenDiagram), and marker ellipses do not update in realtime when the user drags a main element (positions are computed once at sync time, not live-bound to the element) (INSERTED)
 
