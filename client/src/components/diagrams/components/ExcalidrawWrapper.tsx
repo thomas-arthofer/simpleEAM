@@ -1,11 +1,14 @@
 import React, { useMemo, useState, useEffect, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import { useLocale, useTranslations } from 'next-intl'
+import { useApolloClient } from '@apollo/client'
+import { CaptureUpdateAction } from '@excalidraw/excalidraw'
 import '@excalidraw/excalidraw/index.css'
 import { ExcalidrawComponentProps } from '../types/DiagramTypes'
 import { useThemeMode } from '@/contexts/ThemeContext'
 import { useCompanyContext } from '@/contexts/CompanyContext'
 import { useThemeConfig } from '@/lib/runtime-config'
+import { useFeatureFlags } from '@/lib/feature-flags'
 import ExcalidrawLoading from './ExcalidrawLoading'
 import { useExcalidrawCollaboration } from '../hooks/useExcalidrawCollaboration'
 import { CollaborationDialog } from '../dialogs/CollaborationDialog'
@@ -14,7 +17,10 @@ import { FullCustomContextMenu } from './FullCustomContextMenu'
 import ElementFormDialog from '../dialogs/ElementFormDialog'
 import { ExcalidrawElement } from '../types/relationshipTypes'
 import { useAuth } from '@/lib/auth'
-import { repositionAllMarkerEllipses } from '../utils/sovereigntyMarkers'
+import {
+  repositionAllMarkerEllipses,
+  syncSovereigntyMarkers,
+} from '../utils/sovereigntyMarkers'
 
 // Dynamic import of Excalidraw to avoid server-side rendering
 const ExcalidrawWrapper = dynamic(
@@ -62,6 +68,10 @@ const ExcalidrawWrapper = dynamic(
       const apiRef = React.useRef<any>(null)
       // Track if API is ready
       const [isAPIReady, setIsAPIReady] = useState(false)
+      // D-02: ids of main elements seen on the previous handleChange pass, used
+      // to diff-detect genuinely new main elements (library drop, duplicate,
+      // copy/paste) so the sovereignty-markers fetch fires only for those.
+      const previouslySeenMainElementIdsRef = React.useRef<Set<string>>(new Set())
 
       // Collaboration state
       const [isCollaborationDialogOpen, setIsCollaborationDialogOpen] = useState(false)
@@ -79,9 +89,11 @@ const ExcalidrawWrapper = dynamic(
 
       // Hook for theme mode (used within component)
       const { mode: themeMode } = useThemeMode()
-      const { selectedCompany } = useCompanyContext()
+      const { selectedCompany, selectedCompanyId } = useCompanyContext()
       const themeConfig = useThemeConfig()
       const { keycloak } = useAuth()
+      const apolloClient = useApolloClient()
+      const { featureFlags } = useFeatureFlags()
 
       // Get username from Keycloak token
       const username = useMemo(() => {
@@ -190,9 +202,46 @@ const ExcalidrawWrapper = dynamic(
             if (suppressOnChangeRef) {
               suppressOnChangeRef.current = true
             }
-            apiRef.current?.updateScene({ elements: repositionedElements }, false)
+            apiRef.current?.updateScene({
+              elements: repositionedElements,
+              captureUpdate: CaptureUpdateAction.EVENTUALLY,
+            })
           }
           const effectiveElements = changed ? repositionedElements : elements
+
+          // D-02: diff-based new-main-element detection (auto-add on drop).
+          // Only fires the sovereigntyMarkers fetch+apply pipeline for main
+          // elements not seen on the previous onChange pass — never on every
+          // drag/pan/edit of already-seen elements.
+          const currentMainElementIds = new Set<string>()
+          for (const el of effectiveElements) {
+            if (el.isDeleted) continue
+            if (el.customData?.isMainElement && el.customData?.databaseId) {
+              currentMainElementIds.add(el.id)
+            }
+          }
+          const newMainElementIds = Array.from(currentMainElementIds).filter(
+            id => !previouslySeenMainElementIdsRef.current.has(id)
+          )
+          previouslySeenMainElementIdsRef.current = currentMainElementIds
+
+          if (newMainElementIds.length > 0 && featureFlags.Sovereignty && selectedCompanyId) {
+            void (async () => {
+              const syncedElements = await syncSovereigntyMarkers(apolloClient, effectiveElements, {
+                enabled: true,
+                companyId: selectedCompanyId,
+              })
+              if (syncedElements !== effectiveElements) {
+                if (suppressOnChangeRef) {
+                  suppressOnChangeRef.current = true
+                }
+                apiRef.current?.updateScene({
+                  elements: syncedElements,
+                  captureUpdate: CaptureUpdateAction.EVENTUALLY,
+                })
+              }
+            })()
+          }
 
           // Call original onChange handler
           if (onChange) {
@@ -222,6 +271,9 @@ const ExcalidrawWrapper = dynamic(
           isReceivingUpdateRef,
           suppressOnChangeRef,
           apiRef,
+          apolloClient,
+          featureFlags.Sovereignty,
+          selectedCompanyId,
         ]
       )
 
