@@ -111,6 +111,7 @@ None yet.
 | --------------------- | --------------------------------------------------------------------------------------------------------- | ---------------- | ----------- |
 | Sovereignty Expansion | Blast-radius prioritization, business-process scope expansion, weighting, and portfolio analytics         | Deferred to v2   | 2026-07-22  |
 | Runtime Tooling       | Helm-dependent K8s runtime verification gate for Phase 01 (`helm status`, `kubectl wait`, endpoint check) | Accepted backlog | 2026-07-27  |
+| Diagram Lifecycle     | `handleDuplicate` (FullCustomContextMenu.tsx) builds duplicate element ids via string concatenation instead of `generateElementId()` and does not remap `groupIds`/`boundElements`/`containerId` — a latent grouping bug independent of sovereignty markers, confirmed non-trivial (would require extracting/reusing `createLibraryItemFromDatabaseElement`'s id/group remapping logic) | Accepted backlog | 2026-07-31  |
 
 ## Session Continuity
 
