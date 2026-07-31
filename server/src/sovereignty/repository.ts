@@ -42,10 +42,16 @@ interface NodeCache {
   readonly applications: Map<string, ApplicationNode>
   readonly infrastructures: Map<string, InfrastructureNode>
   readonly aiComponents: Map<string, AIComponentNode>
+  readonly capabilities: Map<string, BusinessCapabilityChain>
 }
 
 function createNodeCache(): NodeCache {
-  return { applications: new Map(), infrastructures: new Map(), aiComponents: new Map() }
+  return {
+    applications: new Map(),
+    infrastructures: new Map(),
+    aiComponents: new Map(),
+    capabilities: new Map(),
+  }
 }
 
 async function fetchInfrastructure(
@@ -101,7 +107,8 @@ async function fetchInfrastructure(
     const parent = await fetchInfrastructure(session, parentId, cache, inFlight)
     if (parent) parentInfrastructure.push(parent)
   }
-  ;(node as unknown as { parentInfrastructure: InfrastructureNode[] }).parentInfrastructure = parentInfrastructure
+  ;(node as unknown as { parentInfrastructure: InfrastructureNode[] }).parentInfrastructure =
+    parentInfrastructure
 
   inFlight.delete(infraId)
   return node
@@ -240,16 +247,31 @@ async function fetchApplication(
 /**
  * Loads a BusinessCapability's own requirements plus its full support chain:
  * supporting Applications (recursively expanded through `components` and
- * `hostedOn`, including multi-parent `parentInfrastructure`) and supporting
- * AIComponents. Returns `null` when the capability does not exist or is not
- * owned by a company in `companyIds` (and the caller is not admin).
+ * `hostedOn`, including multi-parent `parentInfrastructure`), supporting
+ * AIComponents, and — recursively — every nested child BusinessCapability
+ * (`HAS_PARENT` incoming edges, D-11), each with its own full support chain.
+ * Returns `null` when the capability does not exist or is not owned by a
+ * company in `companyIds` (and the caller is not admin).
+ *
+ * Shares `cache`/`inFlight` with the top-level `loadBusinessCapabilitySupportChain`
+ * call (and with every nested child fetch) so a capability/Application/
+ * Infrastructure/AIComponent referenced from multiple places in the subtree is
+ * only queried once (same per-fetch memoization contract as
+ * `fetchApplication`/`fetchInfrastructure`/`fetchAIComponent`).
  */
-async function loadBusinessCapabilitySupportChain(
+async function fetchBusinessCapabilityChain(
   session: Session,
   companyIds: readonly string[],
   isAdmin: boolean,
-  rootId: string
+  rootId: string,
+  cache: NodeCache,
+  inFlight: Set<string>
 ): Promise<BusinessCapabilityChain | null> {
+  const cached = cache.capabilities.get(rootId)
+  if (cached) return cached
+  if (inFlight.has(rootId)) return null
+  inFlight.add(rootId)
+
   const result = await session.run(
     `
     MATCH (cap:BusinessCapability {id: $rootId})-[:OWNED_BY]->(c:Company)
@@ -257,6 +279,7 @@ async function loadBusinessCapabilitySupportChain(
     WITH DISTINCT cap
     OPTIONAL MATCH (cap)<-[:SUPPORTS]-(app:Application)
     OPTIONAL MATCH (cap)<-[:SUPPORTS]-(aiComponent:AIComponent)
+    OPTIONAL MATCH (cap)<-[:HAS_PARENT]-(child:BusinessCapability)
     RETURN
       cap.id AS id,
       cap.sovereigntyReqStrategicAutonomy AS reqStrategicAutonomy,
@@ -264,12 +287,16 @@ async function loadBusinessCapabilitySupportChain(
       cap.sovereigntyReqSecurity AS reqSecurity,
       cap.sovereigntyReqControl AS reqControl,
       collect(DISTINCT app.id) AS appIds,
-      collect(DISTINCT aiComponent.id) AS aiComponentIds
+      collect(DISTINCT aiComponent.id) AS aiComponentIds,
+      collect(DISTINCT child.id) AS childIds
     `,
     { rootId, companyIds: [...companyIds], isAdmin }
   )
 
-  if (result.records.length === 0) return null
+  if (result.records.length === 0) {
+    inFlight.delete(rootId)
+    return null
+  }
 
   const row = result.records[0].toObject() as {
     id: string | null
@@ -279,8 +306,12 @@ async function loadBusinessCapabilitySupportChain(
     reqControl: string | null
     appIds: (string | null)[]
     aiComponentIds: (string | null)[]
+    childIds: (string | null)[]
   }
-  if (!row.id) return null
+  if (!row.id) {
+    inFlight.delete(rootId)
+    return null
+  }
 
   const required: RequirementLevels = {
     strategicAutonomy: toMaturityLevel(row.reqStrategicAutonomy),
@@ -288,9 +319,6 @@ async function loadBusinessCapabilitySupportChain(
     security: toMaturityLevel(row.reqSecurity),
     control: toMaturityLevel(row.reqControl),
   }
-
-  const cache = createNodeCache()
-  const inFlight = new Set<string>()
 
   const supportingApplications: ApplicationNode[] = []
   for (const appId of nonNullIds(row.appIds)) {
@@ -304,13 +332,47 @@ async function loadBusinessCapabilitySupportChain(
     if (aiComponent) supportingAIComponents.push(aiComponent)
   }
 
-  return {
+  const childCapabilities: BusinessCapabilityChain[] = []
+  for (const childId of nonNullIds(row.childIds)) {
+    const child = await fetchBusinessCapabilityChain(
+      session,
+      companyIds,
+      isAdmin,
+      childId,
+      cache,
+      inFlight
+    )
+    if (child) childCapabilities.push(child)
+  }
+
+  const node: BusinessCapabilityChain = {
     rootId: row.id,
     rootType: 'businessCapability',
     required,
     supportingApplications,
     supportingAIComponents,
+    childCapabilities,
   }
+  cache.capabilities.set(rootId, node)
+
+  inFlight.delete(rootId)
+  return node
+}
+
+/**
+ * Entry point for a BusinessCapability chain load: creates a fresh
+ * per-request `cache`/`inFlight` pair and delegates to
+ * `fetchBusinessCapabilityChain`.
+ */
+async function loadBusinessCapabilitySupportChain(
+  session: Session,
+  companyIds: readonly string[],
+  isAdmin: boolean,
+  rootId: string
+): Promise<BusinessCapabilityChain | null> {
+  const cache = createNodeCache()
+  const inFlight = new Set<string>()
+  return fetchBusinessCapabilityChain(session, companyIds, isAdmin, rootId, cache, inFlight)
 }
 
 /**
@@ -432,6 +494,12 @@ export async function loadBusinessCapabilityChain(
   isAdmin: boolean,
   capabilityId: string
 ): Promise<BusinessCapabilityChain | null> {
-  const chain = await loadFullSupportChain(session, companyIds, isAdmin, 'businessCapability', capabilityId)
+  const chain = await loadFullSupportChain(
+    session,
+    companyIds,
+    isAdmin,
+    'businessCapability',
+    capabilityId
+  )
   return chain && chain.rootType === 'businessCapability' ? chain : null
 }

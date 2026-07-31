@@ -5,6 +5,7 @@ import {
   greenChainFixture,
   greyChainFixture,
   multiParentInfrastructureFixture,
+  nestedCapabilitySubtreeFixture,
   partialAchievedFixture,
   redChainFixture,
 } from './fixtures'
@@ -68,9 +69,7 @@ describe('analyzeBusinessCapability', () => {
     // The compliant parent edge must be independently evaluated too (no
     // finding expected since it's fully compliant) — never merged/suppressed
     // by the sibling violating edge.
-    expect(
-      result.findings.some(f => f.violatingElementId === 'infra-parent-compliant')
-    ).toBe(false)
+    expect(result.findings.some(f => f.violatingElementId === 'infra-parent-compliant')).toBe(false)
     expect(result.downstreamStatus).toBe('RED')
   })
 
@@ -107,6 +106,27 @@ describe('analyzeBusinessCapability', () => {
 
     // resilience is satisfied (required HIGH, achieved HIGH) — no finding.
     expect(result.findings.some(f => f.dimension === 'resilience')).toBe(false)
+  })
+
+  it('rolls up a violation nested 2 levels down inside a child BusinessCapability to the ancestor (D-11, nested-bc-sov-inheritance)', () => {
+    const result = analyzeBusinessCapability(nestedCapabilitySubtreeFixture)
+
+    expect(result.selfStatus).toBe('GREY')
+    expect(result.downstreamStatus).toBe('RED')
+
+    const redFindings = result.findings.filter(f => f.status === 'RED')
+    expect(redFindings).toHaveLength(1)
+    expect(redFindings[0]).toMatchObject({
+      violatingElementId: 'app-schlechte-app',
+      dimension: 'strategicAutonomy',
+      status: 'RED',
+      requiredLevel: 'VERY_HIGH',
+      actualLevel: 'LOW',
+      chainPath: ['cap-gemeinsamer-max', 'cap-test', 'app-schlechte-app'],
+    })
+
+    // The compliant child subtree must not contribute any findings.
+    expect(result.findings.some(f => f.violatingElementId === 'app-gute-app')).toBe(false)
   })
 })
 

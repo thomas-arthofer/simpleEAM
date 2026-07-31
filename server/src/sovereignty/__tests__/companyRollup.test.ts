@@ -28,6 +28,7 @@ const CHAIN_ROWS: Record<string, Record<string, unknown>> = {
     reqControl: null,
     appIds: ['app-1'],
     aiComponentIds: [],
+    childIds: [],
   },
   'cap-2': {
     id: 'cap-2',
@@ -37,6 +38,7 @@ const CHAIN_ROWS: Record<string, Record<string, unknown>> = {
     reqControl: null,
     appIds: [],
     aiComponentIds: [],
+    childIds: [],
   },
   'do-grey': {
     id: 'do-grey',

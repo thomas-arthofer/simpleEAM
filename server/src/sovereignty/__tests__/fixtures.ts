@@ -79,6 +79,7 @@ export const redChainFixture: BusinessCapabilityChain = {
     control: 'MEDIUM',
   }),
   supportingAIComponents: [],
+  childCapabilities: [],
   supportingApplications: [
     applicationNode({
       id: 'app-billing',
@@ -114,6 +115,7 @@ export const greyChainFixture: BusinessCapabilityChain = {
   rootType: 'businessCapability',
   required: requirementLevels({ control: 'MEDIUM' }),
   supportingAIComponents: [],
+  childCapabilities: [],
   supportingApplications: [
     applicationNode({
       id: 'app-unassessed',
@@ -139,6 +141,7 @@ export const greenChainFixture: BusinessCapabilityChain = {
     control: 'HIGH',
   }),
   supportingAIComponents: [],
+  childCapabilities: [],
   supportingApplications: [
     applicationNode({
       id: 'app-compliant',
@@ -175,6 +178,7 @@ export const multiParentInfrastructureFixture: BusinessCapabilityChain = {
   rootType: 'businessCapability',
   required: requirementLevels({ resilience: 'HIGH' }),
   supportingAIComponents: [],
+  childCapabilities: [],
   supportingApplications: [
     applicationNode({
       id: 'app-multi-parent-host',
@@ -234,6 +238,7 @@ export const compositeApplicationFixture: BusinessCapabilityChain = {
   rootType: 'businessCapability',
   required: requirementLevels({ control: 'MEDIUM' }),
   supportingAIComponents: [],
+  childCapabilities: [],
   supportingApplications: [
     applicationNode({
       id: 'app-container',
@@ -294,6 +299,7 @@ function buildCyclicApplicationFixture(): BusinessCapabilityChain {
     required: requirementLevels({ security: 'MEDIUM' }),
     supportingAIComponents: [],
     supportingApplications: [appA],
+    childCapabilities: [],
   }
 }
 
@@ -332,11 +338,67 @@ export const partialAchievedFixture: BusinessCapabilityChain = {
   rootType: 'businessCapability',
   required: requirementLevels({ strategicAutonomy: 'HIGH', resilience: 'HIGH' }),
   supportingAIComponents: [],
+  childCapabilities: [],
   supportingApplications: [
     applicationNode({
       id: 'app-partial',
       name: 'PartialApp',
       achieved: achievedLevels({ strategicAutonomy: 'LOW', resilience: 'HIGH' }),
     }),
+  ],
+}
+
+/**
+ * D-11 regression fixture (nested-bc-sov-inheritance): reproduces the
+ * reported "gemeinsamer max" topology — a parent BusinessCapability with two
+ * `childCapabilities` ("TEST" and "Wichtiger Businesscase"). "TEST" has its
+ * own `sovereigntyReqStrategicAutonomy: VERY_HIGH` requirement violated by
+ * its own direct supporting Application ("schlechte app", achieved LOW).
+ * "Wichtiger Businesscase" is fully compliant via "gute app". The parent
+ * itself has no direct supporting Applications/AIComponents of its own — its
+ * `downstreamStatus` must still roll up to RED because of the violation
+ * nested 2 levels down inside "TEST", not stay GREEN just because the parent
+ * has no direct violations of its own.
+ */
+export const nestedCapabilitySubtreeFixture: BusinessCapabilityChain = {
+  rootId: 'cap-gemeinsamer-max',
+  rootType: 'businessCapability',
+  required: requirementLevels(),
+  supportingAIComponents: [],
+  supportingApplications: [],
+  childCapabilities: [
+    {
+      rootId: 'cap-test',
+      rootType: 'businessCapability',
+      required: requirementLevels({ strategicAutonomy: 'VERY_HIGH' }),
+      supportingAIComponents: [],
+      childCapabilities: [],
+      supportingApplications: [
+        applicationNode({
+          id: 'app-schlechte-app',
+          name: 'schlechte app',
+          achieved: achievedLevels({ strategicAutonomy: 'LOW' }),
+        }),
+      ],
+    },
+    {
+      rootId: 'cap-wichtiger-businesscase',
+      rootType: 'businessCapability',
+      required: requirementLevels({ strategicAutonomy: 'MEDIUM' }),
+      supportingAIComponents: [],
+      childCapabilities: [],
+      supportingApplications: [
+        applicationNode({
+          id: 'app-gute-app',
+          name: 'gute app',
+          achieved: achievedLevels({
+            strategicAutonomy: 'MEDIUM',
+            resilience: 'MEDIUM',
+            security: 'MEDIUM',
+            control: 'MEDIUM',
+          }),
+        }),
+      ],
+    },
   ],
 }

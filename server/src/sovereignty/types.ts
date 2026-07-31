@@ -119,8 +119,17 @@ export interface SupportChain {
   readonly supportingAIComponents: readonly AIComponentNode[]
 }
 
+/**
+ * A BusinessCapability's nested children (`HAS_PARENT` incoming edges, e.g.
+ * a "Business Case" that is a sub-case of another) each carry their own
+ * `SupportChain` — own requirements, own supporting Applications/AIComponents,
+ * and (recursively) their own `childCapabilities` — so a violation found only
+ * inside a descendant's own support chain still rolls up into every ancestor's
+ * `downstreamStatus` (worst-of-entire-subtree, D-11).
+ */
 export interface BusinessCapabilityChain extends SupportChain {
   readonly rootType: 'businessCapability'
+  readonly childCapabilities: readonly BusinessCapabilityChain[]
 }
 
 /**

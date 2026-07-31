@@ -100,6 +100,9 @@ export function projectMarkers(analysis: SovereigntyAnalysis): Map<string, Sover
  * apply the "never omit a requested node" rule (RESEARCH.md Anti-Pattern 3:
  * one classifier, reused everywhere).
  */
-export function resolveMarker(markers: ReadonlyMap<string, SovereigntyMarker>, id: string): SovereigntyMarker {
+export function resolveMarker(
+  markers: ReadonlyMap<string, SovereigntyMarker>,
+  id: string
+): SovereigntyMarker {
   return markers.get(id) ?? DEFAULT_MARKER
 }

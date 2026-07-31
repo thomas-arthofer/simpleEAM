@@ -39,6 +39,7 @@ const FIXTURE_ROWS: Record<string, Record<string, unknown>> = {
     reqControl: 'MEDIUM',
     appIds: ['app-billing'],
     aiComponentIds: [],
+    childIds: [],
   },
   'app-billing': {
     id: 'app-billing',
@@ -117,7 +118,10 @@ describe('SOV-05: resolver path vs direct module call parity', () => {
 
 describe('T-02-04 / T-02-05: input validation at the resolver boundary', () => {
   it('rejects (not truncates) a sovereigntyMarkers nodes array over the 500-node cap', () => {
-    const oversized = Array.from({ length: 501 }, (_, i) => ({ id: `node-${i}`, type: 'application' }))
+    const oversized = Array.from({ length: 501 }, (_, i) => ({
+      id: `node-${i}`,
+      type: 'application',
+    }))
 
     expect(() => sovereigntyMarkerNodesSchema.parse(oversized)).toThrow(ZodError)
   })
@@ -142,7 +146,10 @@ describe('T-02-04 / T-02-05: input validation at the resolver boundary', () => {
     const sessionFactory = jest.fn()
     ;(neo4jDriver.session as jest.Mock).mockImplementation(sessionFactory)
 
-    const oversized = Array.from({ length: 501 }, (_, i) => ({ id: `node-${i}`, type: 'application' }))
+    const oversized = Array.from({ length: 501 }, (_, i) => ({
+      id: `node-${i}`,
+      type: 'application',
+    }))
 
     await expect(
       sovereigntyResolvers.Query.sovereigntyMarkers(

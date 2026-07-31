@@ -118,7 +118,13 @@ export async function analyzeCompanyRollup(
   }
 
   for (const dataObjectId of dataObjectIds) {
-    const chain = await loadFullSupportChain(session, [companyId], false, 'dataObject', dataObjectId)
+    const chain = await loadFullSupportChain(
+      session,
+      [companyId],
+      false,
+      'dataObject',
+      dataObjectId
+    )
     if (!chain) continue
     pushRequiredScores(chain.required, requiredScores)
     if (chain.rootType === 'dataObject') {

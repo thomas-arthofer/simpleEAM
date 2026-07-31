@@ -176,15 +176,14 @@ function walkAIComponent(
 }
 
 /**
- * Shared analysis walk for any requirement root shape (`SupportChain`):
- * `analyzeBusinessCapability` and `analyzeDataObject` both delegate here so
- * detail views, diagram markers, and the Temporal rollup never see two
- * diverging traversal implementations (RESEARCH.md Anti-Pattern 3). Every
- * top-level supporting entity starts its own fresh visited-set branch (D-01)
- * seeded only with the root id, so multi-parent/composite/AIComponent edges
- * are always evaluated independently of one another.
+ * Walks only a `SupportChain`'s own direct supporting Applications/
+ * AIComponents (not any nested capability children) against its own
+ * `required` levels. Every top-level supporting entity starts its own fresh
+ * visited-set branch (D-01) seeded only with the root id, so multi-parent/
+ * composite/AIComponent edges are always evaluated independently of one
+ * another.
  */
-function analyzeSupportChain(chain: SupportChain, rootType: SovereigntyRootType): SovereigntyAnalysis {
+function collectOwnFindings(chain: SupportChain): Finding[] {
   const findings: Finding[] = []
 
   for (const app of chain.supportingApplications) {
@@ -196,6 +195,23 @@ function analyzeSupportChain(chain: SupportChain, rootType: SovereigntyRootType)
     )
   }
 
+  return findings
+}
+
+/**
+ * Shared analysis walk for any requirement root shape (`SupportChain`):
+ * `analyzeDataObject` delegates here directly (a DataObject has no nested
+ * children); `analyzeBusinessCapability` builds on `collectOwnFindings` plus
+ * `walkChildCapabilities` below so detail views, diagram markers, and the
+ * Temporal rollup never see two diverging traversal implementations
+ * (RESEARCH.md Anti-Pattern 3).
+ */
+function analyzeSupportChain(
+  chain: SupportChain,
+  rootType: SovereigntyRootType
+): SovereigntyAnalysis {
+  const findings = collectOwnFindings(chain)
+
   return {
     rootId: chain.rootId,
     rootType,
@@ -206,13 +222,62 @@ function analyzeSupportChain(chain: SupportChain, rootType: SovereigntyRootType)
 }
 
 /**
- * Analyzes a BusinessCapability's full support chain: supporting Applications
- * (with their composite `components` and multi-parent `hostedOn`
- * Infrastructure) and supporting AIComponents. `selfStatus` is always GREY
- * (D-05) — a BusinessCapability owns no achieved rating of its own.
+ * Recursively rolls up nested BusinessCapability children's (`HAS_PARENT`,
+ * D-11) own findings into their ancestor, so a violation found only inside a
+ * child/grandchild capability's own support chain still makes every
+ * ancestor's `downstreamStatus` reflect it (worst-of-entire-subtree, per
+ * user-confirmed expectation in nested-bc-sov-inheritance debug session).
+ * Each nested finding's `chainPath` is re-prefixed with every ancestor id it
+ * passed through on the way back up, so the displayed chain always starts at
+ * the capability the caller asked about, not at the deepest descendant.
+ *
+ * Cycle-safe via the same per-branch visited-set contract as every other
+ * walker in this module (D-03): each child gets its own copy of the
+ * ancestor-visited set, so a capability re-entered on its own HAS_PARENT path
+ * stops silently instead of recursing forever, while a capability shared by
+ * two different parents (diamond shape) is still evaluated independently on
+ * each path (D-01).
+ */
+function analyzeCapabilitySubtree(
+  chain: BusinessCapabilityChain,
+  visited: ReadonlySet<string>
+): Finding[] {
+  if (visited.has(chain.rootId)) return []
+
+  const pathVisited = new Set(visited)
+  pathVisited.add(chain.rootId)
+
+  const ownFindings = collectOwnFindings(chain)
+
+  const descendantFindings: Finding[] = []
+  for (const child of chain.childCapabilities) {
+    const nested = analyzeCapabilitySubtree(child, pathVisited)
+    for (const finding of nested) {
+      descendantFindings.push({ ...finding, chainPath: [chain.rootId, ...finding.chainPath] })
+    }
+  }
+
+  return [...ownFindings, ...descendantFindings]
+}
+
+/**
+ * Analyzes a BusinessCapability's full support chain: its own direct
+ * supporting Applications (with their composite `components` and
+ * multi-parent `hostedOn` Infrastructure) and AIComponents, PLUS — recursively
+ * — every nested child BusinessCapability's own support chain (D-11), each
+ * evaluated against that child's own requirements. `selfStatus` is always
+ * GREY (D-05) — a BusinessCapability owns no achieved rating of its own.
  */
 export function analyzeBusinessCapability(chain: BusinessCapabilityChain): SovereigntyAnalysis {
-  return analyzeSupportChain(chain, 'businessCapability')
+  const findings = analyzeCapabilitySubtree(chain, new Set())
+
+  return {
+    rootId: chain.rootId,
+    rootType: 'businessCapability',
+    findings,
+    selfStatus: 'GREY',
+    downstreamStatus: aggregateDownstreamStatus(findings),
+  }
 }
 
 /**
