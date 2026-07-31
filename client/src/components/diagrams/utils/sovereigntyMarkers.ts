@@ -394,6 +394,61 @@ export const repositionAllMarkerEllipses = (
 }
 
 /**
+ * Live/incremental, isDeleted-aware orphan-marker cleanup for the
+ * onChange-reactive path (D-01/D-03). Unlike applySovereigntyMarkers's
+ * sync-time (initial/manual-resync) orphan detection, which array-filters
+ * stale markers out and never checks element.isDeleted, this helper must
+ * correctly treat a natively-keyboard-deleted main element (Excalidraw
+ * tombstones via isDeleted: true, never physically removes it from the
+ * elements array) as no longer "present" — otherwise its markers are never
+ * flagged as orphaned. Marker cleanup here also tombstones (isDeleted: true)
+ * rather than array-filters, keeping the marker's deleted representation
+ * consistent with how Excalidraw's own change/undo tracking expects deleted
+ * elements to be represented, so it participates correctly in the following
+ * captureUpdate/history entry.
+ *
+ * applySovereigntyMarkers itself remains unmodified and is the sync-time
+ * full-rebuild path only; this function is additive and used exclusively by
+ * the live onChange cleanup wired into ExcalidrawWrapper.handleChange.
+ *
+ * Returns { elements, changed: false } (same array reference) when no marker
+ * is orphaned. A marker whose main element is present and not deleted is
+ * returned completely untouched (same object reference) even when
+ * changed: true overall.
+ */
+export const removeOrphanedMarkersLive = (
+  elements: DiagramElement[]
+): { elements: DiagramElement[]; changed: boolean } => {
+  const presentMainElementIds = new Set<string>()
+  for (const element of elements) {
+    if (element.isDeleted) continue
+    if (element.customData?.isMainElement && element.customData?.databaseId) {
+      presentMainElementIds.add(element.id)
+    }
+  }
+
+  let changed = false
+  const newElements = elements.map(element => {
+    const isMarker =
+      element.customData?.sovereigntyMarker === 'fill' ||
+      element.customData?.sovereigntyMarker === 'ring'
+    if (!isMarker || element.isDeleted || !element.customData?.mainElementId) return element
+    if (presentMainElementIds.has(element.customData.mainElementId)) return element
+
+    changed = true
+    return {
+      ...element,
+      isDeleted: true,
+      version: (element.version ?? 1) + 1,
+      versionNonce: Math.floor(Math.random() * 1000000000),
+      updated: Date.now(),
+    }
+  })
+
+  return changed ? { elements: newElements, changed: true } : { elements, changed: false }
+}
+
+/**
  * The single D-09 gate: no sovereigntyMarkers query is ever issued unless the
  * feature flag is enabled and a company is selected.
  */

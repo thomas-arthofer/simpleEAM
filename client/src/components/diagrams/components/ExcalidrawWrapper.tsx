@@ -19,6 +19,7 @@ import { ExcalidrawElement } from '../types/relationshipTypes'
 import { useAuth } from '@/lib/auth'
 import {
   repositionAllMarkerEllipses,
+  removeOrphanedMarkersLive,
   syncSovereigntyMarkers,
 } from '../utils/sovereigntyMarkers'
 
@@ -207,7 +208,24 @@ const ExcalidrawWrapper = dynamic(
               captureUpdate: CaptureUpdateAction.EVENTUALLY,
             })
           }
-          const effectiveElements = changed ? repositionedElements : elements
+          let effectiveElements = changed ? repositionedElements : elements
+
+          // D-01/D-03: live, isDeleted-aware orphan-marker cleanup for the
+          // native-keyboard-delete path. Runs on every onChange; no-op
+          // (changed: false, same elements reference) unless a main element
+          // was actually tombstoned since the last pass.
+          const { elements: cleanedElements, changed: orphansRemoved } =
+            removeOrphanedMarkersLive(effectiveElements)
+          if (orphansRemoved) {
+            if (suppressOnChangeRef) {
+              suppressOnChangeRef.current = true
+            }
+            apiRef.current?.updateScene({
+              elements: cleanedElements,
+              captureUpdate: CaptureUpdateAction.IMMEDIATELY,
+            })
+            effectiveElements = cleanedElements
+          }
 
           // D-02: diff-based new-main-element detection (auto-add on drop).
           // Only fires the sovereigntyMarkers fetch+apply pipeline for main
