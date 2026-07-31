@@ -65,6 +65,12 @@ Progress: [██████████] 100% (7/7 plans complete across phase
 | Phase 02.1 P01 | 15min    | 1 tasks | 1 files |
 | Phase 02.1 P02 | 20min    | 1 tasks | 2 files |
 
+## Quick Tasks Completed
+
+| ID          | Description                                                  | Date       | Status   | Commit  |
+| ----------- | ------------------------------------------------------------ | ---------- | -------- | ------- |
+| 260731-et9  | Default arrow type to elbow in Add Related dialog           | 2026-07-31 | complete | e7bd5e8 |
+
 ## Accumulated Context
 
 ### Decisions
