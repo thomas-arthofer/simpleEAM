@@ -2,18 +2,18 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 02.2
-current_phase_name: "Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable"
-status: executing
-stopped_at: Completed 02.2-01-PLAN.md
-last_updated: "2026-07-31T09:53:42.226Z"
+current_phase: 02.3
+current_phase_name: "Business capability requirement-chain consistency: compare parent vs child BusinessCapability required levels"
+status: planning
+stopped_at: Completed 02.2-02-PLAN.md — Phase 02.2 fully executed (2/2 plans)
+last_updated: "2026-07-31T12:00:00.000Z"
 last_activity: 2026-07-31
-last_activity_desc: Phase 02.1 complete, transitioned to Phase 02.2
+last_activity_desc: Phase 02.2 complete (2/2 plans), transitioned to Phase 02.3 (not yet planned — run /gsd-plan-phase 02.3)
 progress:
   total_phases: 6
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 11
-  completed_plans: 10
+  completed_plans: 11
 ---
 
 # Project State
@@ -23,16 +23,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-22)
 
 **Core value:** Enterprise architecture data and sovereignty assessments must be trustworthy enough that operators can reproduce the platform and explain exactly where architectural obligations are or are not met.
-**Current focus:** Phase 02.1 — Fix diagram sovereignty marker sync gaps
+**Current focus:** Phase 02.3 — Business capability requirement-chain consistency (not yet planned)
 
 ## Current Position
 
-Phase: 02.2 — Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable
-Plan: 02.2-01 complete (2/2 plans in phase; 02.2-02 not started)
-Status: 02.2-01 executed — manual QA pending (see 02.2-01-SUMMARY.md)
-Last activity: 2026-07-31 — Completed 02.2-01-PLAN.md (locked:true, auto-add-on-drop, live orphan cleanup)
+Phase: 02.2 — Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable — COMPLETE (2/2 plans)
+Plan: 02.2-02 complete (2/2 plans in phase; Phase 02.2 fully executed)
+Status: Phase 02.2 fully executed — manual QA pending on both delete pathways (see 02.2-01-SUMMARY.md, 02.2-02-SUMMARY.md); next up: Phase 02.3 (run /gsd-plan-phase 02.3 to break down)
+Last activity: 2026-07-31 — Completed 02.2-02-PLAN.md (atomic context-menu delete cleanup + D-01 lifecycle-gap triage)
 
-Progress: [██████████] 91% (10/11 plans complete across phases)
+Progress: [██████████] 100% (11/11 plans complete across phases)
 
 ## Performance Metrics
 
@@ -65,6 +65,7 @@ Progress: [██████████] 91% (10/11 plans complete across phas
 | Phase 02.1 P01 | 15min    | 1 tasks | 1 files |
 | Phase 02.1 P02 | 20min    | 1 tasks | 2 files |
 | Phase 02.2 P01 | ~15min | 3 tasks | 2 files |
+| Phase 02.2 P02 | ~10min | 2 tasks | 2 files |
 
 ## Quick Tasks Completed
 
@@ -88,6 +89,7 @@ Recent decisions affecting current work:
 - [Phase 02.1]: D-01 implemented — F5/full-page reload scene restore now runs the full syncDiagramOnOpen pipeline (name/missing-element sync + syncSovereigntyMarkers), identical to handleOpenDiagram, instead of a markers-only shortcut.
 - [Phase ?]: D-02/D-03/D-04 implemented: sovereignty marker ellipses live-reposition in place on every onChange during a drag, scoped only to main elements with an existing complete fill/ring pair.
 - [Phase ?]: 02.2-01: locked:true on marker ellipses (D-04); diff-based auto-add-on-drop (D-02); live isDeleted-aware orphan cleanup with captureUpdate:IMMEDIATELY, two-tier undo (D-01/D-03)
+- [Phase 02.2]: 02.2-02 (final plan of Phase 02.2): atomic marker cleanup added to FullCustomContextMenu.handleDelete (single updateScene, single Ctrl+Z restore, contrasting Plan 01's two-tier native-keyboard path); D-01 lifecycle-gap triage confirmed duplicate/copy/paste free coverage and logged handleDuplicate's id/groupIds remapping gap as accepted backlog
 
 ### Pending Todos
 
@@ -115,6 +117,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-31T09:53:42.212Z
-Stopped at: Completed 02.2-01-PLAN.md
+Last session: 2026-07-31T12:00:00.000Z
+Stopped at: Completed 02.2-02-PLAN.md — Phase 02.2 fully executed (2/2 plans)
 Resume file: None
