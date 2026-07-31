@@ -97,11 +97,11 @@ Plans:
 **Goal:** Sovereignty markers stay correctly synced through the full element lifecycle on a diagram, not just at open/reload time (Phase 02.1's scope). Specifically: (1) dragging a new main element onto the canvas from the library automatically gets fill/ring markers applied immediately, without requiring a manual Ctrl+R resync; (2) deleting a main element instantly removes its associated marker ellipses in the same change, instead of leaving orphaned markers behind; (3) research whether marker ellipses are robustly tied to their main element across other lifecycle events not yet covered (e.g. copy/paste, duplicate, undo/redo of a delete, group operations), and confirm/fix that marker ellipses themselves are excluded from direct selection (not independently selectable/draggable/deletable by the user) — surface any additional gaps found during research as findings, not just the two items explicitly named here.
 **Requirements**: SOV-MARKER-AUTOADD, SOV-MARKER-DELETE (urgent bugfix; not tracked in REQUIREMENTS.md)
 **Depends on:** Phase 02.1
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
 
-- [ ] 02.2-01-PLAN.md — `locked: true` non-selectability (D-04), diff-based auto-add-on-drop (D-02), live isDeleted-aware orphan-marker cleanup with explicit captureUpdate (D-01/D-03) — all wired into ExcalidrawWrapper.tsx's handleChange
+- [x] 02.2-01-PLAN.md — `locked: true` non-selectability (D-04), diff-based auto-add-on-drop (D-02), live isDeleted-aware orphan-marker cleanup with explicit captureUpdate (D-01/D-03) — all wired into ExcalidrawWrapper.tsx's handleChange
 - [ ] 02.2-02-PLAN.md — Atomic marker cleanup in the context-menu Delete path (FullCustomContextMenu.tsx) + D-01 lifecycle-gap triage (verify duplicate/copy/paste free coverage, log the one confirmed non-trivial handleDuplicate gap to backlog)
 
 ### Phase 02.1: Fix diagram sovereignty marker sync gaps: F5 reload bypasses sovereignty sync entirely (localStorage scene-restore path in DiagramState.ts never calls syncDiagramOnOpen/syncSovereigntyMarkers, unlike handleOpenDiagram), and marker ellipses do not update in realtime when the user drags a main element (positions are computed once at sync time, not live-bound to the element) (INSERTED)

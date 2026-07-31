@@ -4,16 +4,16 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 02.2
 current_phase_name: "Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable"
-status: planning
-stopped_at: Phase 02.2 context gathered
-last_updated: "2026-07-31T08:37:06.617Z"
+status: executing
+stopped_at: Completed 02.2-01-PLAN.md
+last_updated: "2026-07-31T09:53:42.226Z"
 last_activity: 2026-07-31
 last_activity_desc: Phase 02.1 complete, transitioned to Phase 02.2
 progress:
   total_phases: 6
   completed_phases: 4
-  total_plans: 9
-  completed_plans: 9
+  total_plans: 11
+  completed_plans: 10
 ---
 
 # Project State
@@ -28,11 +28,11 @@ See: .planning/PROJECT.md (updated 2026-07-22)
 ## Current Position
 
 Phase: 02.2 — Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable
-Plan: Not started
-Status: Ready to plan
-Last activity: 2026-07-31 — Phase 02.1 complete, transitioned to Phase 02.2
+Plan: 02.2-01 complete (2/2 plans in phase; 02.2-02 not started)
+Status: 02.2-01 executed — manual QA pending (see 02.2-01-SUMMARY.md)
+Last activity: 2026-07-31 — Completed 02.2-01-PLAN.md (locked:true, auto-add-on-drop, live orphan cleanup)
 
-Progress: [██████████] 100% (7/7 plans complete across phases; Phase 2: 5/5 plans complete)
+Progress: [██████████] 91% (10/11 plans complete across phases)
 
 ## Performance Metrics
 
@@ -64,12 +64,13 @@ Progress: [██████████] 100% (7/7 plans complete across phase
 | Phase 2 P05    | 35min    | 2 tasks | 4 files |
 | Phase 02.1 P01 | 15min    | 1 tasks | 1 files |
 | Phase 02.1 P02 | 20min    | 1 tasks | 2 files |
+| Phase 02.2 P01 | ~15min | 3 tasks | 2 files |
 
 ## Quick Tasks Completed
 
-| ID          | Description                                                  | Date       | Status   | Commit  |
-| ----------- | ------------------------------------------------------------ | ---------- | -------- | ------- |
-| 260731-et9  | Default arrow type to elbow in Add Related dialog           | 2026-07-31 | complete | e7bd5e8 |
+| ID         | Description                                       | Date       | Status   | Commit  |
+| ---------- | ------------------------------------------------- | ---------- | -------- | ------- |
+| 260731-et9 | Default arrow type to elbow in Add Related dialog | 2026-07-31 | complete | e7bd5e8 |
 
 ## Accumulated Context
 
@@ -86,6 +87,7 @@ Recent decisions affecting current work:
 - Phase 2: diagram sovereignty markers (fill/ring) now consume the same canonical sovereigntyMarkers query as detail views, gated behind featureFlags.Sovereignty, with worse-status merging across multiple BusinessCapability/DataObject roots on one diagram.
 - [Phase 02.1]: D-01 implemented — F5/full-page reload scene restore now runs the full syncDiagramOnOpen pipeline (name/missing-element sync + syncSovereigntyMarkers), identical to handleOpenDiagram, instead of a markers-only shortcut.
 - [Phase ?]: D-02/D-03/D-04 implemented: sovereignty marker ellipses live-reposition in place on every onChange during a drag, scoped only to main elements with an existing complete fill/ring pair.
+- [Phase ?]: 02.2-01: locked:true on marker ellipses (D-04); diff-based auto-add-on-drop (D-02); live isDeleted-aware orphan cleanup with captureUpdate:IMMEDIATELY, two-tier undo (D-01/D-03)
 
 ### Pending Todos
 
@@ -112,6 +114,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-31T08:37:06.607Z
-Stopped at: Phase 02.2 context gathered
-Resume file: .planning/phases/02.2-sovereignty-marker-lifecycle-auto-add-on-drop-delete-with-el/02.2-CONTEXT.md
+Last session: 2026-07-31T09:53:42.212Z
+Stopped at: Completed 02.2-01-PLAN.md
+Resume file: None
