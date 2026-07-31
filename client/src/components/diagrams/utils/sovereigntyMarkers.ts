@@ -184,7 +184,7 @@ const createMarkerEllipses = (
     boundElements: [],
     updated: typeof window !== 'undefined' ? Date.now() : 0,
     link: null,
-    locked: false,
+    locked: true,
   }
 
   const fillEllipse: DiagramElement = {
