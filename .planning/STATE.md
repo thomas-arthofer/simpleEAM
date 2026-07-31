@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 02.1
-current_phase_name: Fix diagram sovereignty marker sync gaps
-status: human verification needed
-stopped_at: Phase 02.1 verified (6/8 must-haves; 2 pending human UAT)
-last_updated: "2026-07-30T16:50:00.000Z"
-last_activity: 2026-07-30
-last_activity_desc: see 02.1-VERIFICATION.md and 02.1-UAT.md
+current_phase: 02.2
+current_phase_name: "Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable"
+status: planning
+stopped_at: Completed 02.1-02-PLAN.md
+last_updated: "2026-07-31T06:35:03.195Z"
+last_activity: 2026-07-31
+last_activity_desc: Phase 02.1 complete, transitioned to Phase 02.2
 progress:
-  total_phases: 4
+  total_phases: 5
   completed_phases: 4
   total_plans: 9
   completed_plans: 9
@@ -27,10 +27,10 @@ See: .planning/PROJECT.md (updated 2026-07-22)
 
 ## Current Position
 
-Phase: 02.1 (Fix diagram sovereignty marker sync gaps) — both plans executed and code-verified; 2 human UAT checks pending against a live Docker/Neo4j stack
-Plan: 2 of 2 (complete)
-Status: gsd-verifier ran 02.1-VERIFICATION.md — 6/8 must-haves verified (D-01 through D-04 all confirmed implemented exactly as decided; `yarn type-check` clean). Verdict: human_needed — 2 items require a live browser + Docker/Neo4j stack (F5 reload marker re-appearance with Network-tab confirmation; live drag-tracking of marker ellipses with undo/collaboration checks). Persisted as 02.1-UAT.md.
-Last activity: 2026-07-30 — see 02.1-VERIFICATION.md and 02.1-UAT.md
+Phase: 02.2 — Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-07-31 — Phase 02.1 complete, transitioned to Phase 02.2
 
 Progress: [██████████] 100% (7/7 plans complete across phases; Phase 2: 5/5 plans complete)
 
@@ -38,7 +38,7 @@ Progress: [██████████] 100% (7/7 plans complete across phase
 
 **Velocity:**
 
-- Total plans completed: 1
+- Total plans completed: 3
 - Average duration: 0 min
 - Total execution time: 0.0 hours
 
@@ -48,6 +48,7 @@ Progress: [██████████] 100% (7/7 plans complete across phase
 | ----- | ----- | ----- | -------- |
 | 01    | 1     | -     | -        |
 | 2     | 0     | 0 min | 0 min    |
+| 02.1 | 2 | - | - |
 
 **Recent Trend:**
 
@@ -93,6 +94,7 @@ None yet.
 
 - Phase 01.1 inserted after Phase 1: eam.example.com local domain setup: analyze and restore the eam.example.com hostname routing from the previous local setup so the Docker Compose stack runs under eam.example.com (URGENT)
 - Phase 2.1 inserted after Phase 2: Two sovereignty-marker UAT findings: (1) F5 full-page reload restores the diagram via DiagramState.ts's localStorage scene-restore path, which never calls syncDiagramOnOpen/syncSovereigntyMarkers -- markers only appear via handleOpenDiagram (cross-page nav) or manual Ctrl+R sync; (2) marker fill/ring ellipses are positioned once at sync time and do not live-track a main element being dragged afterward. (URGENT)
+- Phase 02.2 inserted after Phase 2: Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable (URGENT)
 
 ## Deferred Items
 

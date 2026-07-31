@@ -81,12 +81,23 @@ Phases execute in numeric order: 1 -> 2
 - Phase 1: Helm-dependent Kubernetes runtime verification remains open and accepted into backlog.
   - Required follow-up gates: `helm status <release> -n <namespace>`, `kubectl wait --for=condition=Ready ...`, `curl -fsS <GRAPHQL_HEALTH_URL>`.
 
+### Phase 02.2: Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable (INSERTED)
+
+**Goal:** Sovereignty markers stay correctly synced through the full element lifecycle on a diagram, not just at open/reload time (Phase 02.1's scope). Specifically: (1) dragging a new main element onto the canvas from the library automatically gets fill/ring markers applied immediately, without requiring a manual Ctrl+R resync; (2) deleting a main element instantly removes its associated marker ellipses in the same change, instead of leaving orphaned markers behind; (3) research whether marker ellipses are robustly tied to their main element across other lifecycle events not yet covered (e.g. copy/paste, duplicate, undo/redo of a delete, group operations), and confirm/fix that marker ellipses themselves are excluded from direct selection (not independently selectable/draggable/deletable by the user) — surface any additional gaps found during research as findings, not just the two items explicitly named here.
+**Requirements**: SOV-MARKER-AUTOADD, SOV-MARKER-DELETE (urgent bugfix; not tracked in REQUIREMENTS.md)
+**Depends on:** Phase 02.1
+**Plans:** 0 plans
+
+Plans:
+
+- [ ] TBD (run /gsd-plan-phase 02.2 to break down)
+
 ### Phase 02.1: Fix diagram sovereignty marker sync gaps: F5 reload bypasses sovereignty sync entirely (localStorage scene-restore path in DiagramState.ts never calls syncDiagramOnOpen/syncSovereigntyMarkers, unlike handleOpenDiagram), and marker ellipses do not update in realtime when the user drags a main element (positions are computed once at sync time, not live-bound to the element) (INSERTED)
 
 **Goal:** A raw browser F5/full-page reload restores sovereignty markers identically to opening the diagram via the Open dialog, and dragging a single main element keeps its fill/ring markers visually attached in real time instead of leaving them behind.
 **Requirements**: SOV-RELOAD-SYNC, SOV-MARKER-DRAG (urgent bugfix; not tracked in REQUIREMENTS.md)
 **Depends on:** Phase 2
-**Plans:** 2/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 
