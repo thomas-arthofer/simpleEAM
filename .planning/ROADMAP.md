@@ -83,14 +83,15 @@ Phases execute in numeric order: 1 -> 2
 
 ### Phase 02.3: Business capability requirement-chain consistency: compare parent vs child BusinessCapability required levels along HAS_PARENT edges, flag inconsistencies (child requirement below parent) as a self-status finding (YELLOW), extending D-05 to allow a capability to be its own violation source for requirement-tree contradictions (INSERTED)
 
-**Goal:** [Urgent work - to be planned]
-**Requirements**: TBD
+**Goal:** When a BusinessCapability's own required sovereignty level is weaker than any of its parent BusinessCapabilities' required levels for the same dimension, the system emits a YELLOW self-status finding (`violatingElementType: 'businessCapability'`) that names the child as the violation source. Applies to both the analysis root against its direct parents (D-01) and to descendants against their in-scope parent during subtree recursion. Null-either-side excludes the dimension entirely (D-03/D-04). Multi-parent handling is independent-per-edge (D-02). Reuses the existing `Finding` shape (D-06) and narrowly excepts markers.ts's unconditional GREY-self invariant for this one case (D-05).
+**Requirements**: D-01, D-02, D-03, D-04, D-05, D-06 (derived from 02.3-CONTEXT.md decisions; no REQUIREMENTS.md entry for this urgent inserted phase)
 **Depends on:** Phase 2
-**Plans:** 0 plans
+**Plans:** 2 plans
 
 Plans:
 
-- [ ] TBD (run /gsd-plan-phase 02.3 to break down)
+- [ ] 02.3-01-PLAN.md — Wave 1 tracer: root-vs-own-parents YELLOW finding end-to-end (types, evaluator classifyCapabilityAgainstParent, markers conditional GREY, fixture + tests) — D-01 root half, D-03, D-04, D-05, D-06
+- [ ] 02.3-02-PLAN.md — Wave 2 expansion: descendant-vs-parent in analyzeCapabilitySubtree recursion, D-02 multi-parent independent-edge iteration, Neo4j Cypher OUT-direction HAS_PARENT fetch populating parentRequiredLevels on root only
 
 ### Phase 02.2: Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable (INSERTED)
 
