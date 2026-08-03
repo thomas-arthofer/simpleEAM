@@ -155,7 +155,15 @@ describe('analyzeBusinessCapability — parent-vs-child required-level contradic
   it('excludes the dimension entirely when the parent required level is null (Test B)', () => {
     const fixture = {
       ...rootParentContradictionFixture,
-      parentRequiredLevels: [{ id: 'cap-parent-strict', required: { ...rootParentContradictionFixture.parentRequiredLevels[0].required, security: null } }],
+      parentRequiredLevels: [
+        {
+          id: 'cap-parent-strict',
+          required: {
+            ...rootParentContradictionFixture.parentRequiredLevels[0].required,
+            security: null,
+          },
+        },
+      ],
     }
 
     const result = analyzeBusinessCapability(fixture)
@@ -187,7 +195,10 @@ describe('analyzeBusinessCapability — parent-vs-child required-level contradic
       parentRequiredLevels: [
         {
           id: 'cap-parent-strict',
-          required: { ...rootParentContradictionFixture.parentRequiredLevels[0].required, resilience: 'HIGH' as const },
+          required: {
+            ...rootParentContradictionFixture.parentRequiredLevels[0].required,
+            resilience: 'HIGH' as const,
+          },
         },
       ],
     }
@@ -222,7 +233,10 @@ describe('analyzeBusinessCapability — parent-vs-child required-level contradic
       childCapabilities: [
         {
           ...descendantParentContradictionFixture.childCapabilities[0],
-          required: { ...descendantParentContradictionFixture.childCapabilities[0].required, security: null },
+          required: {
+            ...descendantParentContradictionFixture.childCapabilities[0].required,
+            security: null,
+          },
           childCapabilities: [],
         },
       ],

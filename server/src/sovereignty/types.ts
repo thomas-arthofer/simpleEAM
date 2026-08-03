@@ -153,7 +153,10 @@ export interface BusinessCapabilityChain extends SupportChain {
    * for the analysis root; nested `childCapabilities` always carry `[]` here
    * since their in-scope parent is the ancestor already present in the walk.
    */
-  readonly parentRequiredLevels: readonly { readonly id: string; readonly required: RequirementLevels }[]
+  readonly parentRequiredLevels: readonly {
+    readonly id: string
+    readonly required: RequirementLevels
+  }[]
 }
 
 /**
