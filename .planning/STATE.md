@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 02.2
 current_phase_name: 'Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable'
 status: human_needed
-stopped_at: 02.2-VERIFICATION.md verdict human_needed — code complete, 6 manual UAT checks pending (see 02.2-UAT.md)
-last_updated: '2026-07-31T12:30:00.000Z'
-last_activity: 2026-07-31
-last_activity_desc: Phase 02.2 code-complete and source-verified (7/7 must-haves), but VERIFICATION.md verdict is human_needed — 02.2-UAT.md created with 6 pending manual browser checks; phase NOT marked complete until UAT passes
+stopped_at: Gap-closure plans 02.2-03/02.2-04 executed — G-02.2-3/4/6 closed, G-02.2-5 still needs manual UAT re-verification (test 5 in 02.2-UAT.md)
+last_updated: '2026-08-03T00:00:00.000Z'
+last_activity: 2026-08-03
+last_activity_desc: Executed gap-closure Plans 02.2-03 (retry-safe D-02 diff-detection + suppressOnChangeRef wiring) and 02.2-04 (G-02.2-4 live-instrumentation, confirmed already resolved by 02.2-03). G-02.2-3/4/6 closed; G-02.2-5 (context-menu delete) still needs manual UAT re-verification. Also fixed a stale Docker client image (predated all Phase 02.2 commits) via rebuild + force-recreate.
 progress:
   total_phases: 6
   completed_phases: 5
-  total_plans: 11
-  completed_plans: 11
+  total_plans: 13
+  completed_plans: 13
 ---
 
 # Project State
@@ -23,16 +23,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-22)
 
 **Core value:** Enterprise architecture data and sovereignty assessments must be trustworthy enough that operators can reproduce the platform and explain exactly where architectural obligations are or are not met.
-**Current focus:** Phase 02.2 — awaiting manual UAT (02.2-UAT.md) before Phase 02.3 can be planned
+**Current focus:** Phase 02.2 — G-02.2-3/4/6 closed via gap-closure Plans 02.2-03/04; G-02.2-5 still needs manual UAT re-verification before Phase 02.3 can be planned
 
 ## Current Position
 
-Phase: 02.2 — Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable — CODE COMPLETE, VERIFICATION: human_needed (2/2 plans executed, 0 gaps at source level)
-Plan: 02.2-02 complete (2/2 plans in phase; Phase 02.2 fully executed at code level)
-Status: 02.2-VERIFICATION.md verdict is human_needed — all 4 must-haves source-verified with zero gaps, but 6 runtime behaviors (non-selectability, reposition, auto-add-on-drop, both delete/undo pathways, duplicate/copy/paste) require a live browser session. See 02.2-UAT.md for the exact checklist. Do NOT advance to Phase 02.3 planning until UAT passes and this file is updated to reflect true completion.
-Last activity: 2026-08-03 — Completed quick task 260803-cny: cap json-file logging on all compose services (compose.yml + override), STATE and disk-fill root cause addressed
+Phase: 02.2 — Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable — 4/4 plans executed (01, 02, and gap-closure 03, 04); G-02.2-3/4/6 CLOSED, G-02.2-5 still open pending manual re-verification
+Plan: 02.2-04 complete (4/4 plans in phase; Phase 02.2 fully executed at code level, including both gap-closure plans triggered by the initial UAT run)
+Status: Initial 02.2-UAT.md run found 4 failing gaps (G-02.2-3/4/5/6). Plan 02.2-03 fixed the D-02 diff-detection race (closing G-02.2-3/6) and added suppressOnChangeRef wiring to FullCustomContextMenu (closing G-02.2-5's likely cause, unconfirmed). Plan 02.2-04 added live instrumentation for G-02.2-4 and, after fixing a stale Docker client image, confirmed native keyboard delete already works correctly (closing G-02.2-4 with no separate code change). G-02.2-5 (context-menu delete) and the reposition/non-selectability re-checks (UAT tests 3, 5, 6) still need a manual UAT re-run against current code before Phase 02.3 can be planned.
+Last activity: 2026-08-03 — Executed gap-closure Plans 02.2-03 and 02.2-04 inline (subagent spawning unreliable in this runtime); rebuilt/redeployed the stale nextgen-eam-client Docker image along the way.
 
-Progress: [██████████] 100% (11/11 plans complete across phases)
+Progress: [██████████] 100% (13/13 plans complete across phases)
 
 ## Performance Metrics
 
@@ -66,6 +66,8 @@ Progress: [██████████] 100% (11/11 plans complete across pha
 | Phase 02.1 P02 | 20min    | 1 tasks | 2 files |
 | Phase 02.2 P01 | ~15min   | 3 tasks | 2 files |
 | Phase 02.2 P02 | ~10min   | 2 tasks | 2 files |
+| Phase 02.2 P03 | ~15min   | 2 tasks | 3 files |
+| Phase 02.2 P04 | ~20min   | 3 tasks | 2 files |
 
 ## Quick Tasks Completed
 
@@ -91,6 +93,8 @@ Recent decisions affecting current work:
 - [Phase ?]: D-02/D-03/D-04 implemented: sovereignty marker ellipses live-reposition in place on every onChange during a drag, scoped only to main elements with an existing complete fill/ring pair.
 - [Phase ?]: 02.2-01: locked:true on marker ellipses (D-04); diff-based auto-add-on-drop (D-02); live isDeleted-aware orphan cleanup with captureUpdate:IMMEDIATELY, two-tier undo (D-01/D-03)
 - [Phase 02.2]: 02.2-02 (final plan of Phase 02.2): atomic marker cleanup added to FullCustomContextMenu.handleDelete (single updateScene, single Ctrl+Z restore, contrasting Plan 01's two-tier native-keyboard path); D-01 lifecycle-gap triage confirmed duplicate/copy/paste free coverage and logged handleDuplicate's id/groupIds remapping gap as accepted backlog
+- [Phase 02.2]: 02.2-03 (gap-closure, G-02.2-3/5/6): previouslySeenMainElementIdsRef is no longer marked "seen" until a sync attempt confirms a marker applied or hasAnyMarkerRoot() confirms none possible, fixing a mark-before-confirm race; FullCustomContextMenu.handleDelete/handleDuplicate/handlePaste now set suppressOnChangeRef before updateScene(), matching every other call site
+- [Phase 02.2]: 02.2-04 (gap-closure, G-02.2-4): live browser instrumentation confirmed G-02.2-4 was already resolved by 02.2-03's fix — no separate root cause or code change existed. First test attempt gave a false "no logs" negative because the nextgen-eam-client Docker container (no source bind-mount) was running a stale pre-Phase-02.2 image; rebuilding+force-recreating it resolved the false negative.
 
 ### Pending Todos
 
@@ -118,6 +122,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-31T12:00:00.000Z
-Stopped at: Completed 02.2-02-PLAN.md — Phase 02.2 fully executed (2/2 plans)
-Resume file: None
+Last session: 2026-08-03T00:00:00.000Z
+Stopped at: Completed 02.2-04-PLAN.md — G-02.2-3/4/6 closed; G-02.2-5 and UAT tests 3/5/6 still need a manual re-verification pass against current code before Phase 02.3 can be planned
+Resume file: .planning/phases/02.2-sovereignty-marker-lifecycle-auto-add-on-drop-delete-with-el/02.2-UAT.md
