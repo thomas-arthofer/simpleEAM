@@ -194,13 +194,6 @@ const ExcalidrawWrapper = dynamic(
             return // Exit early - don't call onChange, don't broadcast, don't do anything
           }
 
-          // TEMP-DEBUG G-02.2-4: handleChange entry state
-          console.debug('[TEMP-DEBUG G-02.2-4] handleChange entry', {
-            elementsLength: elements.length,
-            deletedCount: elements.filter((el: any) => el.isDeleted === true).length,
-            suppressOnChangeRefAtEntry: suppressOnChangeRef?.current,
-          })
-
           // D-02/D-03: live-reposition sovereignty marker ellipses in place on
           // every onChange (incl. drag) for main elements that currently carry
           // a fill/ring pair (D-04). No-op (changed: false, same elements
@@ -222,36 +215,12 @@ const ExcalidrawWrapper = dynamic(
           // native-keyboard-delete path. Runs on every onChange; no-op
           // (changed: false, same elements reference) unless a main element
           // was actually tombstoned since the last pass.
-          // TEMP-DEBUG G-02.2-4: marker elements and their isDeleted state, pre-cleanup
-          console.debug(
-            '[TEMP-DEBUG G-02.2-4] pre-removeOrphanedMarkersLive marker states',
-            effectiveElements
-              .filter(
-                (el: any) =>
-                  el.customData?.sovereigntyMarker === 'fill' ||
-                  el.customData?.sovereigntyMarker === 'ring'
-              )
-              .map((el: any) => ({ id: el.id, isDeleted: el.isDeleted }))
-          )
           const { elements: cleanedElements, changed: orphansRemoved } =
             removeOrphanedMarkersLive(effectiveElements)
-          // TEMP-DEBUG G-02.2-4: removeOrphanedMarkersLive result
-          console.debug('[TEMP-DEBUG G-02.2-4] removeOrphanedMarkersLive result', {
-            orphansRemoved,
-            tombstonedMarkers: orphansRemoved
-              ? cleanedElements
-                  .filter((el: any) => el.isDeleted && el.customData?.sovereigntyMarker)
-                  .map((el: any) => ({ id: el.id, mainElementId: el.customData?.mainElementId }))
-              : [],
-          })
           if (orphansRemoved) {
             if (suppressOnChangeRef) {
               suppressOnChangeRef.current = true
             }
-            // TEMP-DEBUG G-02.2-4: about to call updateScene for orphan cleanup
-            console.debug('[TEMP-DEBUG G-02.2-4] updateScene reached (orphan cleanup)', {
-              captureUpdate: 'IMMEDIATELY',
-            })
             apiRef.current?.updateScene({
               elements: cleanedElements,
               captureUpdate: CaptureUpdateAction.IMMEDIATELY,
@@ -285,10 +254,14 @@ const ExcalidrawWrapper = dynamic(
           if (newMainElementIds.length > 0 && featureFlags.Sovereignty && selectedCompanyId) {
             void (async () => {
               try {
-                const syncedElements = await syncSovereigntyMarkers(apolloClient, effectiveElements, {
-                  enabled: true,
-                  companyId: selectedCompanyId,
-                })
+                const syncedElements = await syncSovereigntyMarkers(
+                  apolloClient,
+                  effectiveElements,
+                  {
+                    enabled: true,
+                    companyId: selectedCompanyId,
+                  }
+                )
 
                 const markedMainElementIds = new Set<string>()
                 for (const el of syncedElements) {
