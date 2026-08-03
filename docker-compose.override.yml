@@ -25,6 +25,11 @@ services:
     # die Version ist im aelteren Traefik fest verdrahtet.
     image: traefik:3.7.8
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "5"
     ports:
       - "80:80"
       - "443:443"
