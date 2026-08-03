@@ -89,8 +89,12 @@ Phases execute in numeric order: 1 -> 2
 **Plans:** 2 plans
 
 Plans:
+**Wave 1**
 
 - [ ] 02.3-01-PLAN.md — Wave 1 tracer: root-vs-own-parents YELLOW finding end-to-end (types, evaluator classifyCapabilityAgainstParent, markers conditional GREY, fixture + tests) — D-01 root half, D-03, D-04, D-05, D-06
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 02.3-02-PLAN.md — Wave 2 expansion: descendant-vs-parent in analyzeCapabilitySubtree recursion, D-02 multi-parent independent-edge iteration, Neo4j Cypher OUT-direction HAS_PARENT fetch populating parentRequiredLevels on root only
 
 ### Phase 02.2: Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable (INSERTED)
