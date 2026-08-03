@@ -5,10 +5,10 @@ milestone_name: milestone
 current_phase: 02.2
 current_phase_name: 'Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable'
 status: human_needed
-stopped_at: Gap-closure plans 02.2-03/02.2-04 executed — G-02.2-3/4/6 closed, G-02.2-5 still needs manual UAT re-verification (test 5 in 02.2-UAT.md)
-last_updated: '2026-08-03T00:00:00.000Z'
+stopped_at: G-02.2-3/4/5/6 all closed — UAT tests 3 and 6 (auto-add-on-drop, duplicate/copy-paste) still need a live re-verification pass before Phase 02.2 can be marked fully complete
+last_updated: '2026-08-03T00:30:00.000Z'
 last_activity: 2026-08-03
-last_activity_desc: Executed gap-closure Plans 02.2-03 (retry-safe D-02 diff-detection + suppressOnChangeRef wiring) and 02.2-04 (G-02.2-4 live-instrumentation, confirmed already resolved by 02.2-03). G-02.2-3/4/6 closed; G-02.2-5 (context-menu delete) still needs manual UAT re-verification. Also fixed a stale Docker client image (predated all Phase 02.2 commits) via rebuild + force-recreate.
+last_activity_desc: User re-verified context-menu Delete (UAT test 5) against the rebuilt Docker client — confirmed working. G-02.2-5 closed. All 4 original UAT gaps (G-02.2-3/4/5/6) are now closed; only UAT tests 3 and 6 still need a live re-verification pass (their fixes are code-complete via Plan 02.2-03 but not yet re-tested live) before Phase 02.2 can be marked fully complete.
 progress:
   total_phases: 6
   completed_phases: 5
@@ -23,14 +23,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-22)
 
 **Core value:** Enterprise architecture data and sovereignty assessments must be trustworthy enough that operators can reproduce the platform and explain exactly where architectural obligations are or are not met.
-**Current focus:** Phase 02.2 — G-02.2-3/4/6 closed via gap-closure Plans 02.2-03/04; G-02.2-5 still needs manual UAT re-verification before Phase 02.3 can be planned
+**Current focus:** Phase 02.2 — G-02.2-3/4/5/6 all closed; UAT tests 3 and 6 still need a live re-verification pass before Phase 02.3 can be planned
 
 ## Current Position
 
-Phase: 02.2 — Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable — 4/4 plans executed (01, 02, and gap-closure 03, 04); G-02.2-3/4/6 CLOSED, G-02.2-5 still open pending manual re-verification
+Phase: 02.2 — Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable — 4/4 plans executed (01, 02, and gap-closure 03, 04); ALL 4 gaps (G-02.2-3/4/5/6) CLOSED
 Plan: 02.2-04 complete (4/4 plans in phase; Phase 02.2 fully executed at code level, including both gap-closure plans triggered by the initial UAT run)
-Status: Initial 02.2-UAT.md run found 4 failing gaps (G-02.2-3/4/5/6). Plan 02.2-03 fixed the D-02 diff-detection race (closing G-02.2-3/6) and added suppressOnChangeRef wiring to FullCustomContextMenu (closing G-02.2-5's likely cause, unconfirmed). Plan 02.2-04 added live instrumentation for G-02.2-4 and, after fixing a stale Docker client image, confirmed native keyboard delete already works correctly (closing G-02.2-4 with no separate code change). G-02.2-5 (context-menu delete) and the reposition/non-selectability re-checks (UAT tests 3, 5, 6) still need a manual UAT re-run against current code before Phase 02.3 can be planned.
-Last activity: 2026-08-03 — Executed gap-closure Plans 02.2-03 and 02.2-04 inline (subagent spawning unreliable in this runtime); rebuilt/redeployed the stale nextgen-eam-client Docker image along the way.
+Status: Initial 02.2-UAT.md run found 4 failing gaps (G-02.2-3/4/5/6). Plan 02.2-03 fixed the D-02 diff-detection race (closing G-02.2-3/6 at code level) and added suppressOnChangeRef wiring to FullCustomContextMenu (closing G-02.2-5, live-reconfirmed 2026-08-03). Plan 02.2-04 added live instrumentation for G-02.2-4 and, after fixing a stale Docker client image, confirmed native keyboard delete already works correctly (closed, no separate code change needed). Remaining: UAT tests 3 (auto-add-on-drop) and 6 (duplicate/copy-paste) still need a live re-verification pass against current code — their fixes are code-complete via Plan 02.2-03 but not yet re-tested live. Do NOT advance to Phase 02.3 planning until those are confirmed.
+Last activity: 2026-08-03 — User re-verified context-menu Delete (UAT test 5) live against the rebuilt Docker client; confirmed working. G-02.2-5 closed.
+
+Progress: [██████████] 100% (13/13 plans complete across phases)
 
 Progress: [██████████] 100% (13/13 plans complete across phases)
 
@@ -71,9 +73,9 @@ Progress: [██████████] 100% (13/13 plans complete across pha
 
 ## Quick Tasks Completed
 
-| ID         | Description                                       | Date       | Status   | Commit  |
-| ---------- | ------------------------------------------------- | ---------- | -------- | ------- |
-| 260731-et9 | Default arrow type to elbow in Add Related dialog | 2026-07-31 | complete | e7bd5e8 |
+| ID         | Description                                           | Date       | Status   | Commit  |
+| ---------- | ----------------------------------------------------- | ---------- | -------- | ------- |
+| 260731-et9 | Default arrow type to elbow in Add Related dialog     | 2026-07-31 | complete | e7bd5e8 |
 | 260803-cny | Cap json-file logging (50m×5) on all compose services | 2026-08-03 | complete | eb5414e |
 
 ## Accumulated Context
