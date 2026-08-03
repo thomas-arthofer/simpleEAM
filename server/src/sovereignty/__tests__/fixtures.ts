@@ -449,3 +449,118 @@ export const rootParentNoContradictionFixture: BusinessCapabilityChain = {
   supportingApplications: [],
   childCapabilities: [],
 }
+
+/**
+ * 02.3 D-01 descendant half / Test J: a three-level chain (root -> child ->
+ * grandchild) where each level's required level is weaker than the one
+ * above it. `analyzeCapabilitySubtree`'s existing recursion already has the
+ * immediate parent in scope at each level, so the grandchild's finding must
+ * compare against the CHILD's required level (MEDIUM), not the root's
+ * (HIGH) — proving the descendant check uses the immediate in-scope parent.
+ */
+export const descendantParentContradictionFixture: BusinessCapabilityChain = {
+  rootId: 'cap-root-3lvl',
+  rootType: 'businessCapability',
+  required: requirementLevels({ security: 'HIGH' }),
+  parentRequiredLevels: [],
+  supportingAIComponents: [],
+  supportingApplications: [],
+  childCapabilities: [
+    {
+      rootId: 'cap-child-3lvl',
+      rootType: 'businessCapability',
+      required: requirementLevels({ security: 'MEDIUM' }),
+      parentRequiredLevels: [],
+      supportingAIComponents: [],
+      supportingApplications: [],
+      childCapabilities: [
+        {
+          rootId: 'cap-grandchild-3lvl',
+          rootType: 'businessCapability',
+          required: requirementLevels({ security: 'LOW' }),
+          parentRequiredLevels: [],
+          supportingAIComponents: [],
+          supportingApplications: [],
+          childCapabilities: [],
+        },
+      ],
+    },
+  ],
+}
+
+/**
+ * 02.3 D-02: a root with TWO parents, both stricter than the root's own
+ * required control level — expects exactly TWO independent findings (one
+ * per parent edge), never a collapsed worst-of finding (Test K).
+ */
+export const multiParentBothStricterFixture: BusinessCapabilityChain = {
+  rootId: 'cap-root-multi-both',
+  rootType: 'businessCapability',
+  required: requirementLevels({ control: 'LOW' }),
+  parentRequiredLevels: [
+    { id: 'p1', required: requirementLevels({ control: 'MEDIUM' }) },
+    { id: 'p2', required: requirementLevels({ control: 'HIGH' }) },
+  ],
+  supportingAIComponents: [],
+  supportingApplications: [],
+  childCapabilities: [],
+}
+
+/**
+ * 02.3 D-02: a root with TWO parents where only one is stricter than the
+ * root's own required control level — expects exactly ONE finding, from the
+ * stricter parent only; the root is flagged "below ANY parent", not
+ * required to be below ALL (Test L).
+ */
+export const multiParentOnlyOneStricterFixture: BusinessCapabilityChain = {
+  rootId: 'cap-root-multi-one',
+  rootType: 'businessCapability',
+  required: requirementLevels({ control: 'MEDIUM' }),
+  parentRequiredLevels: [
+    { id: 'p-strict', required: requirementLevels({ control: 'HIGH' }) },
+    { id: 'p-loose', required: requirementLevels({ control: 'LOW' }) },
+  ],
+  supportingAIComponents: [],
+  supportingApplications: [],
+  childCapabilities: [],
+}
+
+/**
+ * 02.3 D-03 cycle-safety regression (Test M): a `childCapabilities` cycle
+ * where the nested child's own `childCapabilities` entry shares the root's
+ * `rootId` — the pre-existing per-branch visited-set contract in
+ * `analyzeCapabilitySubtree` must stop the re-entrant branch silently
+ * instead of recursing forever, while the non-cyclic child-vs-root
+ * descendant contradiction (security: root HIGH, child LOW) still surfaces.
+ */
+export const capabilityCycleFixture: BusinessCapabilityChain = {
+  rootId: 'cap-cycle-root',
+  rootType: 'businessCapability',
+  required: requirementLevels({ security: 'HIGH' }),
+  parentRequiredLevels: [],
+  supportingAIComponents: [],
+  supportingApplications: [],
+  childCapabilities: [
+    {
+      rootId: 'cap-cycle-child',
+      rootType: 'businessCapability',
+      required: requirementLevels({ security: 'LOW' }),
+      parentRequiredLevels: [],
+      supportingAIComponents: [],
+      supportingApplications: [],
+      childCapabilities: [
+        {
+          // Cyclic edge: shares the root's id, re-entering an already
+          // visited branch — must terminate silently, not recurse forever.
+          rootId: 'cap-cycle-root',
+          rootType: 'businessCapability',
+          required: requirementLevels({ security: 'HIGH' }),
+          parentRequiredLevels: [],
+          supportingAIComponents: [],
+          supportingApplications: [],
+          childCapabilities: [],
+        },
+      ],
+    },
+  ],
+}

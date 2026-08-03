@@ -258,6 +258,16 @@ async function fetchApplication(
  * Infrastructure/AIComponent referenced from multiple places in the subtree is
  * only queried once (same per-fetch memoization contract as
  * `fetchApplication`/`fetchInfrastructure`/`fetchAIComponent`).
+ *
+ * `isRoot` (02.3 D-01 root-only scoping): only `true` for the very first call
+ * from `loadBusinessCapabilitySupportChain`. It gates the Cypher's direct
+ * `HAS_PARENT`-OUT match — recursive calls for `childCapabilities` always
+ * pass `false` (the default), so a nested capability's own parents (which,
+ * for a subtree recursion, would just be the current node and would cause
+ * confusing double-counting) are never fetched; descendant-vs-parent
+ * contradictions for nested capabilities are instead classified in
+ * `evaluator.ts`'s `analyzeCapabilitySubtree` using the already-in-scope
+ * parent from the recursive walk itself.
  */
 async function fetchBusinessCapabilityChain(
   session: Session,
@@ -265,12 +275,26 @@ async function fetchBusinessCapabilityChain(
   isAdmin: boolean,
   rootId: string,
   cache: NodeCache,
-  inFlight: Set<string>
+  inFlight: Set<string>,
+  isRoot = false
 ): Promise<BusinessCapabilityChain | null> {
   const cached = cache.capabilities.get(rootId)
   if (cached) return cached
   if (inFlight.has(rootId)) return null
   inFlight.add(rootId)
+
+  // T-02.3-04: the parent match is scoped to the caller's own company
+  // (or admin) exactly like the root's own `OWNED_BY` check above, so a
+  // parent belonging to a different tenant is silently excluded rather than
+  // leaking its required levels into `parentRequiredRows`.
+  const parentMatchClause = isRoot
+    ? `
+    OPTIONAL MATCH (cap)-[:HAS_PARENT]->(parent:BusinessCapability)-[:OWNED_BY]->(parentCompany:Company)
+    WHERE parent IS NULL OR $isAdmin OR parentCompany.id IN $companyIds`
+    : ''
+  const parentReturnClause = isRoot
+    ? `collect(DISTINCT parent { .id, .sovereigntyReqStrategicAutonomy, .sovereigntyReqResilience, .sovereigntyReqSecurity, .sovereigntyReqControl }) AS parentRequiredRows`
+    : '[] AS parentRequiredRows'
 
   const result = await session.run(
     `
@@ -280,6 +304,7 @@ async function fetchBusinessCapabilityChain(
     OPTIONAL MATCH (cap)<-[:SUPPORTS]-(app:Application)
     OPTIONAL MATCH (cap)<-[:SUPPORTS]-(aiComponent:AIComponent)
     OPTIONAL MATCH (cap)<-[:HAS_PARENT]-(child:BusinessCapability)
+    ${parentMatchClause}
     RETURN
       cap.id AS id,
       cap.sovereigntyReqStrategicAutonomy AS reqStrategicAutonomy,
@@ -288,7 +313,8 @@ async function fetchBusinessCapabilityChain(
       cap.sovereigntyReqControl AS reqControl,
       collect(DISTINCT app.id) AS appIds,
       collect(DISTINCT aiComponent.id) AS aiComponentIds,
-      collect(DISTINCT child.id) AS childIds
+      collect(DISTINCT child.id) AS childIds,
+      ${parentReturnClause}
     `,
     { rootId, companyIds: [...companyIds], isAdmin }
   )
@@ -307,6 +333,13 @@ async function fetchBusinessCapabilityChain(
     appIds: (string | null)[]
     aiComponentIds: (string | null)[]
     childIds: (string | null)[]
+    parentRequiredRows: {
+      id: string | null
+      sovereigntyReqStrategicAutonomy: string | null
+      sovereigntyReqResilience: string | null
+      sovereigntyReqSecurity: string | null
+      sovereigntyReqControl: string | null
+    }[]
   }
   if (!row.id) {
     inFlight.delete(rootId)
@@ -345,6 +378,18 @@ async function fetchBusinessCapabilityChain(
     if (child) childCapabilities.push(child)
   }
 
+  const parentRequiredLevels = (row.parentRequiredRows ?? [])
+    .filter((parentRow): parentRow is typeof parentRow & { id: string } => Boolean(parentRow?.id))
+    .map(parentRow => ({
+      id: parentRow.id,
+      required: {
+        strategicAutonomy: toMaturityLevel(parentRow.sovereigntyReqStrategicAutonomy),
+        resilience: toMaturityLevel(parentRow.sovereigntyReqResilience),
+        security: toMaturityLevel(parentRow.sovereigntyReqSecurity),
+        control: toMaturityLevel(parentRow.sovereigntyReqControl),
+      },
+    }))
+
   const node: BusinessCapabilityChain = {
     rootId: row.id,
     rootType: 'businessCapability',
@@ -352,8 +397,7 @@ async function fetchBusinessCapabilityChain(
     supportingApplications,
     supportingAIComponents,
     childCapabilities,
-    // Populated by the Neo4j fetch added in Plan 02.3-02 (D-01 root-only scoping).
-    parentRequiredLevels: [],
+    parentRequiredLevels,
   }
   cache.capabilities.set(rootId, node)
 
@@ -364,7 +408,8 @@ async function fetchBusinessCapabilityChain(
 /**
  * Entry point for a BusinessCapability chain load: creates a fresh
  * per-request `cache`/`inFlight` pair and delegates to
- * `fetchBusinessCapabilityChain`.
+ * `fetchBusinessCapabilityChain`, requesting the root-only parent-required-
+ * levels fetch (02.3 D-01) via `isRoot: true`.
  */
 async function loadBusinessCapabilitySupportChain(
   session: Session,
@@ -374,7 +419,7 @@ async function loadBusinessCapabilitySupportChain(
 ): Promise<BusinessCapabilityChain | null> {
   const cache = createNodeCache()
   const inFlight = new Set<string>()
-  return fetchBusinessCapabilityChain(session, companyIds, isAdmin, rootId, cache, inFlight)
+  return fetchBusinessCapabilityChain(session, companyIds, isAdmin, rootId, cache, inFlight, true)
 }
 
 /**

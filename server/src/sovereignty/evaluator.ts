@@ -306,6 +306,17 @@ function analyzeCapabilitySubtree(
       descendantFindings.push({ ...finding, chainPath: [chain.rootId, ...finding.chainPath] })
     }
     capabilityIds.push(...nested.capabilityIds)
+
+    // Descendant-vs-immediate-parent contradiction (02.3 D-01 second half):
+    // the parent (`chain`) is already in scope at this recursion level, so no
+    // new fetch or traversal is needed — piggybacks on the existing walk.
+    // Pushed directly (NOT re-prefixed like `nested.findings` above):
+    // `classifyCapabilityAgainstParent` already produces the correct
+    // `[chain.rootId, child.rootId]` chainPath for this level, and
+    // re-prefixing again here would double-prepend `chain.rootId`.
+    descendantFindings.push(
+      ...classifyCapabilityAgainstParent(child, { id: chain.rootId, required: chain.required }, [])
+    )
   }
 
   return { findings: [...ownFindings, ...descendantFindings], capabilityIds }

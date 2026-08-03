@@ -1,10 +1,14 @@
 import { analyzeBusinessCapability, analyzeDataObject } from '../evaluator'
 import {
+  capabilityCycleFixture,
   compositeApplicationFixture,
   dataObjectChainFixture,
+  descendantParentContradictionFixture,
   greenChainFixture,
   greyChainFixture,
+  multiParentBothStricterFixture,
   multiParentInfrastructureFixture,
+  multiParentOnlyOneStricterFixture,
   nestedCapabilitySubtreeFixture,
   partialAchievedFixture,
   redChainFixture,
@@ -195,6 +199,93 @@ describe('analyzeBusinessCapability — parent-vs-child required-level contradic
     const resilienceFinding = result.findings.find(f => f.dimension === 'resilience')
     expect(securityFinding).toMatchObject({ requiredLevel: 'HIGH', actualLevel: 'MEDIUM' })
     expect(resilienceFinding).toMatchObject({ requiredLevel: 'HIGH', actualLevel: 'LOW' })
+  })
+
+  it('flags a nested child whose own required level is weaker than its immediate parent (Test G, D-01 descendant half)', () => {
+    const result = analyzeBusinessCapability(descendantParentContradictionFixture)
+
+    const finding = result.findings.find(f => f.violatingElementId === 'cap-child-3lvl')
+    expect(finding).toMatchObject({
+      status: 'YELLOW',
+      violatingElementType: 'businessCapability',
+      dimension: 'security',
+      requiredLevel: 'HIGH',
+      actualLevel: 'MEDIUM',
+    })
+    expect(finding?.chainPath[0]).toBe('cap-root-3lvl')
+    expect(finding?.chainPath[finding.chainPath.length - 1]).toBe('cap-child-3lvl')
+  })
+
+  it('excludes the dimension when the descendant child required level is null (Test H)', () => {
+    const fixture = {
+      ...descendantParentContradictionFixture,
+      childCapabilities: [
+        {
+          ...descendantParentContradictionFixture.childCapabilities[0],
+          required: { ...descendantParentContradictionFixture.childCapabilities[0].required, security: null },
+          childCapabilities: [],
+        },
+      ],
+    }
+
+    const result = analyzeBusinessCapability(fixture)
+
+    expect(result.findings.filter(f => f.dimension === 'security')).toHaveLength(0)
+  })
+
+  it('excludes the dimension when the descendant parent (in-scope) required level is null (Test I)', () => {
+    const fixture = {
+      ...descendantParentContradictionFixture,
+      required: { ...descendantParentContradictionFixture.required, security: null },
+      childCapabilities: [
+        { ...descendantParentContradictionFixture.childCapabilities[0], childCapabilities: [] },
+      ],
+    }
+
+    const result = analyzeBusinessCapability(fixture)
+
+    expect(result.findings.filter(f => f.dimension === 'security')).toHaveLength(0)
+  })
+
+  it('compares a grandchild against its immediate parent (child), not the root (Test J)', () => {
+    const result = analyzeBusinessCapability(descendantParentContradictionFixture)
+
+    const finding = result.findings.find(f => f.violatingElementId === 'cap-grandchild-3lvl')
+    expect(finding).toMatchObject({
+      status: 'YELLOW',
+      dimension: 'security',
+      requiredLevel: 'MEDIUM',
+      actualLevel: 'LOW',
+    })
+    expect(finding?.chainPath).toEqual(['cap-root-3lvl', 'cap-child-3lvl', 'cap-grandchild-3lvl'])
+  })
+
+  it('emits two independent findings when two parents are both stricter (Test K, D-02)', () => {
+    const result = analyzeBusinessCapability(multiParentBothStricterFixture)
+
+    const controlFindings = result.findings.filter(f => f.dimension === 'control')
+    expect(controlFindings).toHaveLength(2)
+    expect(controlFindings.map(f => f.chainPath[0]).sort()).toEqual(['p1', 'p2'])
+  })
+
+  it('emits exactly one finding when only one of two parents is stricter (Test L, D-02)', () => {
+    const result = analyzeBusinessCapability(multiParentOnlyOneStricterFixture)
+
+    const controlFindings = result.findings.filter(f => f.dimension === 'control')
+    expect(controlFindings).toHaveLength(1)
+    expect(controlFindings[0].chainPath[0]).toBe('p-strict')
+  })
+
+  it('terminates on a childCapabilities cycle and still emits the non-cyclic descendant finding (Test M, D-03)', () => {
+    const result = analyzeBusinessCapability(capabilityCycleFixture)
+
+    const finding = result.findings.find(f => f.violatingElementId === 'cap-cycle-child')
+    expect(finding).toMatchObject({
+      status: 'YELLOW',
+      dimension: 'security',
+      requiredLevel: 'HIGH',
+      actualLevel: 'LOW',
+    })
   })
 })
 
