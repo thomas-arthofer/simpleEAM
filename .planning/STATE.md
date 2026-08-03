@@ -4,16 +4,16 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 02.3
 current_phase_name: "Business capability requirement-chain consistency: compare parent vs child BusinessCapability required levels"
-status: planning
-stopped_at: Phase 02.3 context gathered
-last_updated: "2026-08-03T11:11:22.335Z"
-last_activity: 2026-08-03
-last_activity_desc: User live-confirmed UAT test 3 (auto-add-on-drop) and test 6 (duplicate/copy-paste) both working. Phase 02.2 marked complete in 02.2-UAT.md and 02.2-VERIFICATION.md.
+status: complete
+stopped_at: Phase 02.3 complete — both plans (02.3-01 tracer, 02.3-02 descendant/multi-parent + Neo4j fetch) executed, tested, committed, summarized
+last_updated: "2026-08-04T00:00:00.000Z"
+last_activity: 2026-08-04
+last_activity_desc: Executed Phase 02.3 (both plans). 02.3-01 added classifyCapabilityAgainstParent + parentRequiredLevels (root-only tracer, D-01/D-03/D-04/D-05/D-06). 02.3-02 hooked the descendant-vs-parent case into analyzeCapabilitySubtree (D-01 descendant half), verified D-02 multi-parent independence, and wired the real Neo4j Cypher fetch in repository.ts with a tenant-isolation guard (T-02.3-04). 37 sovereignty tests pass, yarn tsc --noEmit clean.
 progress:
-  total_phases: 6
-  completed_phases: 5
-  total_plans: 13
-  completed_plans: 13
+  total_phases: 7
+  completed_phases: 6
+  total_plans: 15
+  completed_plans: 15
 ---
 
 # Project State
@@ -23,16 +23,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-22)
 
 **Core value:** Enterprise architecture data and sovereignty assessments must be trustworthy enough that operators can reproduce the platform and explain exactly where architectural obligations are or are not met.
-**Current focus:** Phase 02.2 COMPLETE (all 6 UAT tests pass, all 4 gaps closed) — Phase 02.3 ("Business capability requirement-chain consistency") ready for planning
+**Current focus:** Phase 02.3 COMPLETE (parent-vs-child BusinessCapability requirement-chain consistency tracer, root-only + descendant + multi-parent, Neo4j-wired) — ready to plan the next phase
 
 ## Current Position
 
-Phase: 02.3 — Business capability requirement-chain consistency: compare parent vs child BusinessCapability required levels — not yet planned
-Plan: none yet (Phase 02.2 is fully executed and verified: 4/4 plans, all 6 UAT tests pass, all 4 gaps (G-02.2-3/4/5/6) resolved)
-Status: Phase 02.2 is fully COMPLETE. Initial 02.2-UAT.md run found 4 failing gaps (G-02.2-3/4/5/6); Plan 02.2-03 fixed the D-02 diff-detection race (closing G-02.2-3/6 at code level) and added suppressOnChangeRef wiring to FullCustomContextMenu (closing G-02.2-5); Plan 02.2-04 confirmed native keyboard delete already worked correctly after fixing a stale Docker client image (closing G-02.2-4). All 6 UAT tests were then live-reconfirmed by the user (test 1 passes with an accepted non-blocking deviation). Ready to begin Phase 02.3 planning.
-Last activity: 2026-08-03 — User live-confirmed UAT test 3 (auto-add-on-drop) and test 6 (duplicate/copy-paste) both working. Phase 02.2 marked complete in 02.2-UAT.md and 02.2-VERIFICATION.md.
+Phase: 02.3 — Business capability requirement-chain consistency: compare parent vs child BusinessCapability required levels — COMPLETE
+Plan: both plans executed (02.3-01 tracer + 02.3-02 descendant/multi-parent + Neo4j fetch), 2/2 plans
+Status: Phase 02.3 is fully COMPLETE. Plan 02.3-01 added `classifyCapabilityAgainstParent` and the root-only `parentRequiredLevels` field/fetch scaffolding (D-01 root half, D-03/D-04 null exclusion, D-05 narrow YELLOW-self exception, D-06 businessCapability violating-element type). Plan 02.3-02 hooked the same classifier into `analyzeCapabilitySubtree`'s existing recursion for the descendant-vs-parent case (D-01 second half), verified D-02 multi-parent independent-edge iteration (no refactor needed — Plan 02.3-01's `flatMap` loop already satisfied it), and wired the real Neo4j Cypher fetch (`fetchBusinessCapabilityChain`'s new OUT-direction `HAS_PARENT` match, gated by an `isRoot` parameter, with a T-02.3-04 tenant-isolation guard). 37 sovereignty tests pass; `yarn tsc --noEmit` clean. Ready to plan the next phase.
+Last activity: 2026-08-04 — Both Phase 02.3 plans executed, verified, committed (`c19be53`, `397a218`, `b59f56a`, `7abda62`), SUMMARY.md written for each.
 
-Progress: [██████████] 100% (13/13 plans complete across phases)
+Progress: [██████████] 100% (15/15 plans complete across phases)
 
 ## Performance Metrics
 
@@ -96,6 +96,8 @@ Recent decisions affecting current work:
 - [Phase 02.2]: 02.2-03 (gap-closure, G-02.2-3/5/6): previouslySeenMainElementIdsRef is no longer marked "seen" until a sync attempt confirms a marker applied or hasAnyMarkerRoot() confirms none possible, fixing a mark-before-confirm race; FullCustomContextMenu.handleDelete/handleDuplicate/handlePaste now set suppressOnChangeRef before updateScene(), matching every other call site
 - [Phase 02.2]: 02.2-04 (gap-closure, G-02.2-4): live browser instrumentation confirmed G-02.2-4 was already resolved by 02.2-03's fix — no separate root cause or code change existed. First test attempt gave a false "no logs" negative because the nextgen-eam-client Docker container (no source bind-mount) was running a stale pre-Phase-02.2 image; rebuilding+force-recreating it resolved the false negative.
 - [Phase 02.2]: Phase COMPLETE 2026-08-03 — all 6 UAT tests live-reconfirmed passing (test 1 with an accepted non-blocking deviation: marker ellipses are selectable/resizable but not draggable, still excluded from meaningful interaction); all 4 gaps (G-02.2-3/4/5/6) resolved. 02.2-UAT.md and 02.2-VERIFICATION.md updated to reflect final passing state.
+- [Phase 02.3]: 02.3-01 (tracer, root-only): `classifyCapabilityAgainstParent` compares a BusinessCapability's own required level against one parent's required level, per-dimension, null-either-side excluded (D-03/D-04); `BusinessCapabilityChain.parentRequiredLevels` added as a root-only field; `markers.ts` gained a narrow YELLOW-self exception (D-05) for a capability that is itself the violating element of its own contradiction, preserving the GREY-self invariant otherwise (D-06: `businessCapability` added to `ViolatingElementType`). `repository.ts` got a mechanical `parentRequiredLevels: []` default (deviation, documented in 02.3-01-SUMMARY.md) to keep `tsc` clean pending the real fetch.
+- [Phase 02.3]: 02.3-02 (descendant + multi-parent + Neo4j fetch, PHASE COMPLETE): `analyzeCapabilitySubtree` now calls `classifyCapabilityAgainstParent` for every child against its already-in-scope immediate parent (D-01 descendant half) — no new recursion, D-03 cycle-safety contract untouched; D-02 multi-parent independent-per-parent iteration verified via Tests K/L (Plan 02.3-01's `flatMap` loop already correct, no refactor needed). `fetchBusinessCapabilityChain` gained an `isRoot` parameter gating a new OUT-direction `(cap)-[:HAS_PARENT]->(parent:BusinessCapability)` Cypher match (tenant-scoped via `parentCompany`, mitigating T-02.3-04), populating `parentRequiredLevels` from real Neo4j data for the analysis root only. 37 sovereignty tests pass, `yarn tsc --noEmit` clean.
 
 ### Pending Todos
 
@@ -123,6 +125,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-03T11:11:22.323Z
-Stopped at: Phase 02.3 context gathered
-Resume file: .planning/phases/02.3-business-capability-requirement-chain-consistency-compare-pa/02.3-CONTEXT.md
+Last session: 2026-08-04T00:00:00.000Z
+Stopped at: Phase 02.3 complete — both plans executed, tested, committed, summarized. Ready to plan the next phase.
+Resume file: .planning/phases/02.3-business-capability-requirement-chain-consistency-compare-pa/02.3-02-SUMMARY.md
