@@ -19,8 +19,15 @@ export type SovereigntyStatus = (typeof SOVEREIGNTY_STATUSES)[number]
 export const SOVEREIGNTY_MATURITY_LEVELS = ['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_HIGH'] as const
 export type SovereigntyMaturityLevel = (typeof SOVEREIGNTY_MATURITY_LEVELS)[number]
 
-/** Achieved-leaf entity types in scope for chain traversal (D-08 — no Supplier). */
-export type ViolatingElementType = 'application' | 'aiComponent' | 'infrastructure'
+/** Achieved-leaf entity types in scope for chain traversal (D-08 — no Supplier).
+ * `'businessCapability'` (02.3 D-06) is the one exception: it names a capability
+ * as the violating element in a parent-vs-child required-level contradiction
+ * finding, not an achieved-value violation. */
+export type ViolatingElementType =
+  | 'application'
+  | 'aiComponent'
+  | 'infrastructure'
+  | 'businessCapability'
 
 /**
  * A single sovereignty violation: names the violating element, dimension,
@@ -46,6 +53,15 @@ export type SovereigntyRootType = 'businessCapability' | 'dataObject'
  * GREY for a root — a BusinessCapability/DataObject owns no achieved rating
  * of its own and can never be the cause of a violation, only affected by one
  * (D-05).
+ *
+ * `capabilityIds` lists every BusinessCapability id that is part of this
+ * analysis's own subtree — the root itself plus, recursively, every nested
+ * `childCapabilities` id (D-11/D-05). A BusinessCapability never owns an
+ * achieved rating, so D-05's "selfStatus is always GREY" guarantee applies
+ * to every one of these ids, not only to `rootId` — this is what lets
+ * `projectMarkers` force GREY on a nested capability appearing mid-chain in
+ * an ancestor's findings, not just on the analysis's own top-level root. For
+ * a DataObject analysis (no nesting), this is always exactly `[rootId]`.
  */
 export interface SovereigntyAnalysis {
   readonly rootId: string
@@ -53,6 +69,7 @@ export interface SovereigntyAnalysis {
   readonly findings: readonly Finding[]
   readonly selfStatus: SovereigntyStatus
   readonly downstreamStatus: SovereigntyStatus
+  readonly capabilityIds: readonly string[]
 }
 
 export interface RequirementLevels {
@@ -130,6 +147,13 @@ export interface SupportChain {
 export interface BusinessCapabilityChain extends SupportChain {
   readonly rootType: 'businessCapability'
   readonly childCapabilities: readonly BusinessCapabilityChain[]
+  /**
+   * Direct parents' (`HAS_PARENT` outgoing) own required levels only — never
+   * their full support chains (02.3 D-01). Populated by the repository only
+   * for the analysis root; nested `childCapabilities` always carry `[]` here
+   * since their in-scope parent is the ancestor already present in the walk.
+   */
+  readonly parentRequiredLevels: readonly { readonly id: string; readonly required: RequirementLevels }[]
 }
 
 /**

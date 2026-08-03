@@ -352,6 +352,8 @@ async function fetchBusinessCapabilityChain(
     supportingApplications,
     supportingAIComponents,
     childCapabilities,
+    // Populated by the Neo4j fetch added in Plan 02.3-02 (D-01 root-only scoping).
+    parentRequiredLevels: [],
   }
   cache.capabilities.set(rootId, node)
 

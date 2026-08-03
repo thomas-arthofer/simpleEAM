@@ -82,6 +82,49 @@ export function classifyNode(
   return findings
 }
 
+/**
+ * Classifies a BusinessCapability's own required levels against one direct
+ * parent's required levels (02.3 D-01/D-02/D-06) — a required-vs-required
+ * tree-consistency check, distinct from `classifyNode`'s achieved-vs-required
+ * comparison. Diverges from `classifyNode` in two ways: (1) EITHER side being
+ * `null` excludes the dimension entirely (no finding, not even GREY) per
+ * D-03/D-04 — a missing child requirement is never treated as "weakest"; (2)
+ * only a weaker child level than the parent produces a finding, always
+ * YELLOW (a structural requirement-tree contradiction, not an achieved-value
+ * violation). Each parent edge is classified independently (D-02) — callers
+ * loop over every entry in `parentRequiredLevels` and concatenate results,
+ * never collapsing multiple parents into one "worst of" finding.
+ */
+export function classifyCapabilityAgainstParent(
+  chain: BusinessCapabilityChain,
+  parentEntry: { readonly id: string; readonly required: RequirementLevels },
+  chainPathPrefix: readonly string[]
+): Finding[] {
+  const findings: Finding[] = []
+
+  for (const dimension of SOVEREIGNTY_DIMENSIONS) {
+    const parentRequired = parentEntry.required[dimension]
+    const childRequired = chain.required[dimension]
+
+    if (parentRequired === null || childRequired === null) continue
+
+    if (maturityIndex(childRequired) < maturityIndex(parentRequired)) {
+      findings.push({
+        violatingElementId: chain.rootId,
+        violatingElementType: 'businessCapability',
+        violatingElementName: chain.rootId,
+        dimension,
+        status: 'YELLOW',
+        requiredLevel: parentRequired,
+        actualLevel: childRequired,
+        chainPath: [...chainPathPrefix, parentEntry.id, chain.rootId],
+      })
+    }
+  }
+
+  return findings
+}
+
 function aggregateDownstreamStatus(findings: readonly Finding[]): SovereigntyStatus {
   if (findings.some(f => f.status === 'RED')) return 'RED'
   if (findings.some(f => f.status === 'YELLOW')) return 'YELLOW'
@@ -218,6 +261,7 @@ function analyzeSupportChain(
     findings,
     selfStatus: 'GREY',
     downstreamStatus: aggregateDownstreamStatus(findings),
+    capabilityIds: [chain.rootId],
   }
 }
 
@@ -238,11 +282,16 @@ function analyzeSupportChain(
  * two different parents (diamond shape) is still evaluated independently on
  * each path (D-01).
  */
+interface CapabilitySubtreeResult {
+  readonly findings: Finding[]
+  readonly capabilityIds: string[]
+}
+
 function analyzeCapabilitySubtree(
   chain: BusinessCapabilityChain,
   visited: ReadonlySet<string>
-): Finding[] {
-  if (visited.has(chain.rootId)) return []
+): CapabilitySubtreeResult {
+  if (visited.has(chain.rootId)) return { findings: [], capabilityIds: [] }
 
   const pathVisited = new Set(visited)
   pathVisited.add(chain.rootId)
@@ -250,14 +299,16 @@ function analyzeCapabilitySubtree(
   const ownFindings = collectOwnFindings(chain)
 
   const descendantFindings: Finding[] = []
+  const capabilityIds: string[] = [chain.rootId]
   for (const child of chain.childCapabilities) {
     const nested = analyzeCapabilitySubtree(child, pathVisited)
-    for (const finding of nested) {
+    for (const finding of nested.findings) {
       descendantFindings.push({ ...finding, chainPath: [chain.rootId, ...finding.chainPath] })
     }
+    capabilityIds.push(...nested.capabilityIds)
   }
 
-  return [...ownFindings, ...descendantFindings]
+  return { findings: [...ownFindings, ...descendantFindings], capabilityIds }
 }
 
 /**
@@ -269,14 +320,20 @@ function analyzeCapabilitySubtree(
  * GREY (D-05) — a BusinessCapability owns no achieved rating of its own.
  */
 export function analyzeBusinessCapability(chain: BusinessCapabilityChain): SovereigntyAnalysis {
-  const findings = analyzeCapabilitySubtree(chain, new Set())
+  const { findings, capabilityIds } = analyzeCapabilitySubtree(chain, new Set())
+
+  const parentContradictionFindings = chain.parentRequiredLevels.flatMap(parentEntry =>
+    classifyCapabilityAgainstParent(chain, parentEntry, [])
+  )
+  const combinedFindings = [...findings, ...parentContradictionFindings]
 
   return {
     rootId: chain.rootId,
     rootType: 'businessCapability',
-    findings,
+    findings: combinedFindings,
     selfStatus: 'GREY',
-    downstreamStatus: aggregateDownstreamStatus(findings),
+    downstreamStatus: aggregateDownstreamStatus(combinedFindings),
+    capabilityIds,
   }
 }
 

@@ -72,6 +72,7 @@ function aiComponentNode(
 export const redChainFixture: BusinessCapabilityChain = {
   rootId: 'cap-abrechnung',
   rootType: 'businessCapability',
+  parentRequiredLevels: [],
   required: requirementLevels({
     strategicAutonomy: 'MEDIUM',
     resilience: 'HIGH',
@@ -113,6 +114,7 @@ export const redChainFixture: BusinessCapabilityChain = {
 export const greyChainFixture: BusinessCapabilityChain = {
   rootId: 'cap-grey',
   rootType: 'businessCapability',
+  parentRequiredLevels: [],
   required: requirementLevels({ control: 'MEDIUM' }),
   supportingAIComponents: [],
   childCapabilities: [],
@@ -134,6 +136,7 @@ export const greyChainFixture: BusinessCapabilityChain = {
 export const greenChainFixture: BusinessCapabilityChain = {
   rootId: 'cap-green',
   rootType: 'businessCapability',
+  parentRequiredLevels: [],
   required: requirementLevels({
     strategicAutonomy: 'HIGH',
     resilience: 'HIGH',
@@ -176,6 +179,7 @@ export const greenChainFixture: BusinessCapabilityChain = {
 export const multiParentInfrastructureFixture: BusinessCapabilityChain = {
   rootId: 'cap-multi-parent',
   rootType: 'businessCapability',
+  parentRequiredLevels: [],
   required: requirementLevels({ resilience: 'HIGH' }),
   supportingAIComponents: [],
   childCapabilities: [],
@@ -236,6 +240,7 @@ export const multiParentInfrastructureFixture: BusinessCapabilityChain = {
 export const compositeApplicationFixture: BusinessCapabilityChain = {
   rootId: 'cap-composite',
   rootType: 'businessCapability',
+  parentRequiredLevels: [],
   required: requirementLevels({ control: 'MEDIUM' }),
   supportingAIComponents: [],
   childCapabilities: [],
@@ -296,6 +301,7 @@ function buildCyclicApplicationFixture(): BusinessCapabilityChain {
   return {
     rootId: 'cap-cycle',
     rootType: 'businessCapability',
+    parentRequiredLevels: [],
     required: requirementLevels({ security: 'MEDIUM' }),
     supportingAIComponents: [],
     supportingApplications: [appA],
@@ -336,6 +342,7 @@ export const dataObjectChainFixture: DataObjectChain = {
 export const partialAchievedFixture: BusinessCapabilityChain = {
   rootId: 'cap-partial',
   rootType: 'businessCapability',
+  parentRequiredLevels: [],
   required: requirementLevels({ strategicAutonomy: 'HIGH', resilience: 'HIGH' }),
   supportingAIComponents: [],
   childCapabilities: [],
@@ -363,6 +370,7 @@ export const partialAchievedFixture: BusinessCapabilityChain = {
 export const nestedCapabilitySubtreeFixture: BusinessCapabilityChain = {
   rootId: 'cap-gemeinsamer-max',
   rootType: 'businessCapability',
+  parentRequiredLevels: [],
   required: requirementLevels(),
   supportingAIComponents: [],
   supportingApplications: [],
@@ -370,6 +378,7 @@ export const nestedCapabilitySubtreeFixture: BusinessCapabilityChain = {
     {
       rootId: 'cap-test',
       rootType: 'businessCapability',
+      parentRequiredLevels: [],
       required: requirementLevels({ strategicAutonomy: 'VERY_HIGH' }),
       supportingAIComponents: [],
       childCapabilities: [],
@@ -384,6 +393,7 @@ export const nestedCapabilitySubtreeFixture: BusinessCapabilityChain = {
     {
       rootId: 'cap-wichtiger-businesscase',
       rootType: 'businessCapability',
+      parentRequiredLevels: [],
       required: requirementLevels({ strategicAutonomy: 'MEDIUM' }),
       supportingAIComponents: [],
       childCapabilities: [],
@@ -401,4 +411,41 @@ export const nestedCapabilitySubtreeFixture: BusinessCapabilityChain = {
       ],
     },
   ],
+}
+
+/**
+ * 02.3 D-01/D-06: a root whose own required security (MEDIUM) is weaker than
+ * its direct parent's required security (HIGH) — the ROOT-only tracer case.
+ * Expects exactly one YELLOW finding naming the root as the violating
+ * element, `requiredLevel` from the parent, `actualLevel` from the root's
+ * own required, and `chainPath: ['cap-parent-strict', 'cap-root-weaker']`.
+ */
+export const rootParentContradictionFixture: BusinessCapabilityChain = {
+  rootId: 'cap-root-weaker',
+  rootType: 'businessCapability',
+  required: requirementLevels({ security: 'MEDIUM' }),
+  parentRequiredLevels: [
+    { id: 'cap-parent-strict', required: requirementLevels({ security: 'HIGH' }) },
+  ],
+  supportingAIComponents: [],
+  supportingApplications: [],
+  childCapabilities: [],
+}
+
+/**
+ * 02.3 D-01/D-06: a root whose own required security (HIGH) is equal to or
+ * stricter than its direct parent's required security (MEDIUM) — no
+ * contradiction, so no finding and `selfStatus` stays the general GREY
+ * (Test C / Test F).
+ */
+export const rootParentNoContradictionFixture: BusinessCapabilityChain = {
+  rootId: 'cap-root-stricter',
+  rootType: 'businessCapability',
+  required: requirementLevels({ security: 'HIGH' }),
+  parentRequiredLevels: [
+    { id: 'cap-parent-looser', required: requirementLevels({ security: 'MEDIUM' }) },
+  ],
+  supportingAIComponents: [],
+  supportingApplications: [],
+  childCapabilities: [],
 }

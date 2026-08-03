@@ -57,6 +57,7 @@ function worseStatus(a: SovereigntyStatus, b: SovereigntyStatus): SovereigntySta
  */
 export function projectMarkers(analysis: SovereigntyAnalysis): Map<string, SovereigntyMarker> {
   const markers = new Map<string, SovereigntyMarker>()
+  const capabilityIds = new Set(analysis.capabilityIds)
 
   function ensure(id: string): SovereigntyMarker {
     const existing = markers.get(id)
@@ -75,19 +76,58 @@ export function projectMarkers(analysis: SovereigntyAnalysis): Map<string, Sover
 
   for (const finding of analysis.findings) {
     for (const id of finding.chainPath) {
-      const isRoot = id === analysis.rootId
+      // Every BusinessCapability in this analysis's own subtree (D-11) must
+      // stay GREY-self forever, not just the outermost query root (D-05): a
+      // capability owns no achieved rating, whether it's the id the caller
+      // asked about or a nested `childCapabilities` id merely passed through
+      // on the way to a descendant's violation. Without this, a nested
+      // capability's selfStatus fell back to the DEFAULT_MARKER's GREEN,
+      // since it is never a finding's own `violatingElementId` (only
+      // Application/AIComponent/Infrastructure ever are).
+      const isCapability = capabilityIds.has(id)
       const current = ensure(id)
       const isViolatingElement = id === finding.violatingElementId
+      // 02.3 D-05 narrow exception: a capability that IS the violating element
+      // of its own parent-vs-child required-level contradiction finding gets a
+      // real selfStatus (YELLOW) instead of the unconditional GREY every other
+      // capability keeps. Every other isCapability case (mid-chain pass-through,
+      // or a violating element of a non-businessCapability type) stays GREY.
+      const isCapabilitySelfViolation =
+        isCapability && isViolatingElement && finding.violatingElementType === 'businessCapability'
 
       markers.set(id, {
-        selfStatus: isRoot
-          ? 'GREY'
-          : isViolatingElement
-            ? worseStatus(current.selfStatus, finding.status)
-            : current.selfStatus,
+        selfStatus: isCapabilitySelfViolation
+          ? worseStatus(current.selfStatus, finding.status)
+          : isCapability
+            ? 'GREY'
+            : isViolatingElement
+              ? worseStatus(current.selfStatus, finding.status)
+              : current.selfStatus,
         downstreamStatus: worseStatus(current.downstreamStatus, finding.status),
       })
     }
+  }
+
+  // A BusinessCapability with zero findings anywhere in its own subtree
+  // (fully compliant, e.g. a compliant sibling next to a violating one)
+  // never appears in the loop above at all, so without this it would fall
+  // through to `resolveMarker`'s DEFAULT_MARKER (GREEN/GREEN) — wrong for a
+  // capability, which must always resolve GREY-self, never GREEN-self
+  // (D-05). Backfills every capability id with an explicit GREY-self entry,
+  // defaulting its downstream to GREEN only when no finding ever touched it.
+  // 02.3 D-05: skip the unconditional GREY overwrite for a capability that IS
+  // the violating element of a parent-vs-child required-level contradiction
+  // finding (its selfStatus was already set to YELLOW in the loop above) —
+  // every other capability id still gets backfilled to GREY exactly as before.
+  const capabilitiesWithOwnFinding = new Set(
+    analysis.findings
+      .filter(f => f.violatingElementType === 'businessCapability')
+      .map(f => f.violatingElementId)
+  )
+  for (const id of capabilityIds) {
+    const current = ensure(id)
+    if (capabilitiesWithOwnFinding.has(id)) continue
+    markers.set(id, { selfStatus: 'GREY', downstreamStatus: current.downstreamStatus })
   }
 
   return markers

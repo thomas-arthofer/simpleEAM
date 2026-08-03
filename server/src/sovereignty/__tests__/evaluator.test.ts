@@ -8,6 +8,8 @@ import {
   nestedCapabilitySubtreeFixture,
   partialAchievedFixture,
   redChainFixture,
+  rootParentContradictionFixture,
+  rootParentNoContradictionFixture,
 } from './fixtures'
 
 describe('analyzeBusinessCapability', () => {
@@ -127,6 +129,72 @@ describe('analyzeBusinessCapability', () => {
 
     // The compliant child subtree must not contribute any findings.
     expect(result.findings.some(f => f.violatingElementId === 'app-gute-app')).toBe(false)
+  })
+})
+
+describe('analyzeBusinessCapability — parent-vs-child required-level contradiction (02.3 D-01/D-06)', () => {
+  it('produces exactly one YELLOW finding when the root is weaker than its direct parent (Test A)', () => {
+    const result = analyzeBusinessCapability(rootParentContradictionFixture)
+
+    expect(result.findings).toHaveLength(1)
+    expect(result.findings[0]).toMatchObject({
+      status: 'YELLOW',
+      violatingElementType: 'businessCapability',
+      violatingElementId: rootParentContradictionFixture.rootId,
+      dimension: 'security',
+      requiredLevel: 'HIGH',
+      actualLevel: 'MEDIUM',
+    })
+    expect(result.findings[0].chainPath).toEqual(['cap-parent-strict', 'cap-root-weaker'])
+  })
+
+  it('excludes the dimension entirely when the parent required level is null (Test B)', () => {
+    const fixture = {
+      ...rootParentContradictionFixture,
+      parentRequiredLevels: [{ id: 'cap-parent-strict', required: { ...rootParentContradictionFixture.parentRequiredLevels[0].required, security: null } }],
+    }
+
+    const result = analyzeBusinessCapability(fixture)
+
+    expect(result.findings.filter(f => f.dimension === 'security')).toHaveLength(0)
+  })
+
+  it('excludes the dimension entirely when the child required level is null (Test B)', () => {
+    const fixture = {
+      ...rootParentContradictionFixture,
+      required: { ...rootParentContradictionFixture.required, security: null },
+    }
+
+    const result = analyzeBusinessCapability(fixture)
+
+    expect(result.findings.filter(f => f.dimension === 'security')).toHaveLength(0)
+  })
+
+  it('produces no finding when the child is stricter than the parent (Test C)', () => {
+    const result = analyzeBusinessCapability(rootParentNoContradictionFixture)
+
+    expect(result.findings).toHaveLength(0)
+  })
+
+  it('produces one independent finding per dimension when the parent is stricter on multiple dimensions (Test D)', () => {
+    const fixture = {
+      ...rootParentContradictionFixture,
+      required: { ...rootParentContradictionFixture.required, resilience: 'LOW' as const },
+      parentRequiredLevels: [
+        {
+          id: 'cap-parent-strict',
+          required: { ...rootParentContradictionFixture.parentRequiredLevels[0].required, resilience: 'HIGH' as const },
+        },
+      ],
+    }
+
+    const result = analyzeBusinessCapability(fixture)
+
+    expect(result.findings).toHaveLength(2)
+    const securityFinding = result.findings.find(f => f.dimension === 'security')
+    const resilienceFinding = result.findings.find(f => f.dimension === 'resilience')
+    expect(securityFinding).toMatchObject({ requiredLevel: 'HIGH', actualLevel: 'MEDIUM' })
+    expect(resilienceFinding).toMatchObject({ requiredLevel: 'HIGH', actualLevel: 'LOW' })
   })
 })
 
