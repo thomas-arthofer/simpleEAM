@@ -23,6 +23,7 @@ interface CustomContextMenuProps {
   onEditElement?: (element: any) => void
   viewModeEnabled?: boolean
   isViewerRole?: boolean
+  suppressOnChangeRef?: React.MutableRefObject<boolean>
 }
 
 /**
@@ -36,6 +37,7 @@ export const FullCustomContextMenu: React.FC<CustomContextMenuProps> = ({
   onEditElement,
   viewModeEnabled = false,
   isViewerRole = false,
+  suppressOnChangeRef,
 }) => {
   const t = useTranslations()
 
@@ -224,6 +226,9 @@ export const FullCustomContextMenu: React.FC<CustomContextMenuProps> = ({
           return acc
         }, {})
 
+        if (suppressOnChangeRef) {
+          suppressOnChangeRef.current = true
+        }
         excalidrawAPI.updateScene({
           elements: allElements,
           appState: { ...appState, selectedElementIds: newSelectedIds },
@@ -233,7 +238,7 @@ export const FullCustomContextMenu: React.FC<CustomContextMenuProps> = ({
       console.warn('Paste action failed:', error)
     }
     handleClose()
-  }, [excalidrawAPI, handleClose])
+  }, [excalidrawAPI, handleClose, suppressOnChangeRef])
 
   const handleDelete = useCallback(() => {
     if (!excalidrawAPI || !contextMenu?.selectedElements.length) return
@@ -246,6 +251,9 @@ export const FullCustomContextMenu: React.FC<CustomContextMenuProps> = ({
       const newElements = elements.filter((el: any) => !appState.selectedElementIds[el.id])
       const { elements: cleanedElements } = removeOrphanedMarkersLive(newElements)
 
+      if (suppressOnChangeRef) {
+        suppressOnChangeRef.current = true
+      }
       excalidrawAPI.updateScene({
         elements: cleanedElements,
         appState: { ...appState, selectedElementIds: {} },
@@ -255,7 +263,7 @@ export const FullCustomContextMenu: React.FC<CustomContextMenuProps> = ({
       console.warn('Delete action failed:', error)
     }
     handleClose()
-  }, [excalidrawAPI, contextMenu, handleClose])
+  }, [excalidrawAPI, contextMenu, handleClose, suppressOnChangeRef])
 
   const handleDuplicate = useCallback(() => {
     if (!excalidrawAPI || !contextMenu?.selectedElements.length) return
@@ -283,6 +291,9 @@ export const FullCustomContextMenu: React.FC<CustomContextMenuProps> = ({
           return acc
         }, {})
 
+        if (suppressOnChangeRef) {
+          suppressOnChangeRef.current = true
+        }
         excalidrawAPI.updateScene({
           elements: allElements,
           appState: { ...appState, selectedElementIds: newSelectedIds },
@@ -292,7 +303,7 @@ export const FullCustomContextMenu: React.FC<CustomContextMenuProps> = ({
       console.warn('Duplicate action failed:', error)
     }
     handleClose()
-  }, [excalidrawAPI, contextMenu, handleClose])
+  }, [excalidrawAPI, contextMenu, handleClose, suppressOnChangeRef])
 
   const handleBringToFront = useCallback(() => {
     if (!excalidrawAPI || !contextMenu?.selectedElements.length) return

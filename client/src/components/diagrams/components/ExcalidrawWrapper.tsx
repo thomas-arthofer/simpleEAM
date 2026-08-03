@@ -21,6 +21,7 @@ import {
   repositionAllMarkerEllipses,
   removeOrphanedMarkersLive,
   syncSovereigntyMarkers,
+  hasAnyMarkerRoot,
 } from '../utils/sovereigntyMarkers'
 
 // Dynamic import of Excalidraw to avoid server-side rendering
@@ -241,22 +242,52 @@ const ExcalidrawWrapper = dynamic(
           const newMainElementIds = Array.from(currentMainElementIds).filter(
             id => !previouslySeenMainElementIdsRef.current.has(id)
           )
-          previouslySeenMainElementIdsRef.current = currentMainElementIds
+          // Retry-safe commit (G-02.2-3/G-02.2-6 fix): retain already-confirmed
+          // ids that are still present, drop ids no longer present, but do NOT
+          // yet add newly-seen ids here — they are only added below once their
+          // sync attempt confirms a marker was applied or is impossible, so an
+          // empty/failed single attempt is retried on the next handleChange.
+          previouslySeenMainElementIdsRef.current = new Set(
+            Array.from(currentMainElementIds).filter(id => !newMainElementIds.includes(id))
+          )
 
           if (newMainElementIds.length > 0 && featureFlags.Sovereignty && selectedCompanyId) {
             void (async () => {
-              const syncedElements = await syncSovereigntyMarkers(apolloClient, effectiveElements, {
-                enabled: true,
-                companyId: selectedCompanyId,
-              })
-              if (syncedElements !== effectiveElements) {
-                if (suppressOnChangeRef) {
-                  suppressOnChangeRef.current = true
-                }
-                apiRef.current?.updateScene({
-                  elements: syncedElements,
-                  captureUpdate: CaptureUpdateAction.EVENTUALLY,
+              try {
+                const syncedElements = await syncSovereigntyMarkers(apolloClient, effectiveElements, {
+                  enabled: true,
+                  companyId: selectedCompanyId,
                 })
+
+                const markedMainElementIds = new Set<string>()
+                for (const el of syncedElements) {
+                  if (
+                    (el.customData?.sovereigntyMarker === 'fill' ||
+                      el.customData?.sovereigntyMarker === 'ring') &&
+                    el.customData?.mainElementId
+                  ) {
+                    markedMainElementIds.add(el.customData.mainElementId)
+                  }
+                }
+                const noMarkersPossible = !hasAnyMarkerRoot(syncedElements)
+
+                for (const id of newMainElementIds) {
+                  if (markedMainElementIds.has(id) || noMarkersPossible) {
+                    previouslySeenMainElementIdsRef.current.add(id)
+                  }
+                }
+
+                if (syncedElements !== effectiveElements) {
+                  if (suppressOnChangeRef) {
+                    suppressOnChangeRef.current = true
+                  }
+                  apiRef.current?.updateScene({
+                    elements: syncedElements,
+                    captureUpdate: CaptureUpdateAction.EVENTUALLY,
+                  })
+                }
+              } catch (error) {
+                console.warn('syncSovereigntyMarkers failed, will retry on next change:', error)
               }
             })()
           }
@@ -694,6 +725,7 @@ const ExcalidrawWrapper = dynamic(
             }}
             viewModeEnabled={viewModeEnabled}
             isViewerRole={false} // TODO: Aus dem Auth-Kontext oder Props holen
+            suppressOnChangeRef={suppressOnChangeRef}
           />
 
           {/* Collaboration Dialog */}

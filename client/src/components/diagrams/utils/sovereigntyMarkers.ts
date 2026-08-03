@@ -79,6 +79,19 @@ const isMarkerRoot = (element: DiagramElement): boolean =>
   element.customData?.elementType === 'dataObject'
 
 /**
+ * The definitive "no markers possible" signal for a whole diagram: true iff
+ * at least one BusinessCapability/DataObject marker root exists among the
+ * diagram's database elements — mirrors fetchSovereigntyMarkersForDiagram's
+ * own zero-roots early-return exactly. Distinct from a per-node empty sync
+ * result (markerByNodeId.size === 0), which may simply mean the backend
+ * hasn't resolved that node's marker yet — this helper lets the retry-safe
+ * diff-detection in ExcalidrawWrapper.handleChange distinguish "will never
+ * have a marker" from "not yet resolved, keep retrying."
+ */
+export const hasAnyMarkerRoot = (elements: DiagramElement[]): boolean =>
+  extractDatabaseElements(elements).some(isMarkerRoot)
+
+/**
  * Fetches sovereigntyMarkers for every BusinessCapability/DataObject root
  * found among the diagram's database elements, merging results across roots
  * (worse status always wins) into a single Map keyed by nodeId. A diagram
