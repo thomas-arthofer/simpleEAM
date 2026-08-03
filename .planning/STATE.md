@@ -3,10 +3,10 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 02.2
-current_phase_name: "Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable"
+current_phase_name: 'Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable'
 status: human_needed
 stopped_at: 02.2-VERIFICATION.md verdict human_needed — code complete, 6 manual UAT checks pending (see 02.2-UAT.md)
-last_updated: "2026-07-31T12:30:00.000Z"
+last_updated: '2026-07-31T12:30:00.000Z'
 last_activity: 2026-07-31
 last_activity_desc: Phase 02.2 code-complete and source-verified (7/7 must-haves), but VERIFICATION.md verdict is human_needed — 02.2-UAT.md created with 6 pending manual browser checks; phase NOT marked complete until UAT passes
 progress:
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-07-22)
 Phase: 02.2 — Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable — CODE COMPLETE, VERIFICATION: human_needed (2/2 plans executed, 0 gaps at source level)
 Plan: 02.2-02 complete (2/2 plans in phase; Phase 02.2 fully executed at code level)
 Status: 02.2-VERIFICATION.md verdict is human_needed — all 4 must-haves source-verified with zero gaps, but 6 runtime behaviors (non-selectability, reposition, auto-add-on-drop, both delete/undo pathways, duplicate/copy/paste) require a live browser session. See 02.2-UAT.md for the exact checklist. Do NOT advance to Phase 02.3 planning until UAT passes and this file is updated to reflect true completion.
-Last activity: 2026-07-31 — gsd-verifier ran goal-backward verification of Phase 02.2 → human_needed; created 02.2-VERIFICATION.md and 02.2-UAT.md
+Last activity: 2026-08-03 — Completed quick task 260803-cny: cap json-file logging on all compose services (compose.yml + override), STATE and disk-fill root cause addressed
 
 Progress: [██████████] 100% (11/11 plans complete across phases)
 
@@ -64,14 +64,15 @@ Progress: [██████████] 100% (11/11 plans complete across pha
 | Phase 2 P05    | 35min    | 2 tasks | 4 files |
 | Phase 02.1 P01 | 15min    | 1 tasks | 1 files |
 | Phase 02.1 P02 | 20min    | 1 tasks | 2 files |
-| Phase 02.2 P01 | ~15min | 3 tasks | 2 files |
-| Phase 02.2 P02 | ~10min | 2 tasks | 2 files |
+| Phase 02.2 P01 | ~15min   | 3 tasks | 2 files |
+| Phase 02.2 P02 | ~10min   | 2 tasks | 2 files |
 
 ## Quick Tasks Completed
 
 | ID         | Description                                       | Date       | Status   | Commit  |
 | ---------- | ------------------------------------------------- | ---------- | -------- | ------- |
 | 260731-et9 | Default arrow type to elbow in Add Related dialog | 2026-07-31 | complete | e7bd5e8 |
+| 260803-cny | Cap json-file logging (50m×5) on all compose services | 2026-08-03 | complete | eb5414e |
 
 ## Accumulated Context
 
@@ -109,10 +110,10 @@ None yet.
 
 ## Deferred Items
 
-| Category              | Item                                                                                                      | Status           | Deferred At |
-| --------------------- | --------------------------------------------------------------------------------------------------------- | ---------------- | ----------- |
-| Sovereignty Expansion | Blast-radius prioritization, business-process scope expansion, weighting, and portfolio analytics         | Deferred to v2   | 2026-07-22  |
-| Runtime Tooling       | Helm-dependent K8s runtime verification gate for Phase 01 (`helm status`, `kubectl wait`, endpoint check) | Accepted backlog | 2026-07-27  |
+| Category              | Item                                                                                                                                                                                                                                                                                                                                                                                    | Status           | Deferred At |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- | ----------- |
+| Sovereignty Expansion | Blast-radius prioritization, business-process scope expansion, weighting, and portfolio analytics                                                                                                                                                                                                                                                                                       | Deferred to v2   | 2026-07-22  |
+| Runtime Tooling       | Helm-dependent K8s runtime verification gate for Phase 01 (`helm status`, `kubectl wait`, endpoint check)                                                                                                                                                                                                                                                                               | Accepted backlog | 2026-07-27  |
 | Diagram Lifecycle     | `handleDuplicate` (FullCustomContextMenu.tsx) builds duplicate element ids via string concatenation instead of `generateElementId()` and does not remap `groupIds`/`boundElements`/`containerId` — a latent grouping bug independent of sovereignty markers, confirmed non-trivial (would require extracting/reusing `createLibraryItemFromDatabaseElement`'s id/group remapping logic) | Accepted backlog | 2026-07-31  |
 
 ## Session Continuity
