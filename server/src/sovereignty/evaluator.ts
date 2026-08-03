@@ -301,6 +301,17 @@ function analyzeCapabilitySubtree(
   const descendantFindings: Finding[] = []
   const capabilityIds: string[] = [chain.rootId]
   for (const child of chain.childCapabilities) {
+    // D-03 cycle-safety: a `childCapabilities` entry that re-enters an
+    // already-visited ancestor (including `chain` itself, an immediate
+    // self-loop) must stop completely silently — no recursion AND no
+    // contradiction finding. `analyzeCapabilitySubtree` below already no-ops
+    // for this case (returns `{ findings: [], capabilityIds: [] }`) via its
+    // own `pathVisited.has(child.rootId)` check, but the descendant-vs-parent
+    // classifier is a flat call, not a recursive one, so it needs the same
+    // guard explicitly here or it would still emit a spurious finding
+    // comparing the cyclic node against this "parent" on the re-entrant edge.
+    if (pathVisited.has(child.rootId)) continue
+
     const nested = analyzeCapabilitySubtree(child, pathVisited)
     for (const finding of nested.findings) {
       descendantFindings.push({ ...finding, chainPath: [chain.rootId, ...finding.chainPath] })

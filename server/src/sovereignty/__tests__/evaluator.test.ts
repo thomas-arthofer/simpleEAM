@@ -1,6 +1,7 @@
 import { analyzeBusinessCapability, analyzeDataObject } from '../evaluator'
 import {
   capabilityCycleFixture,
+  capabilityCycleTriggeringFixture,
   compositeApplicationFixture,
   dataObjectChainFixture,
   descendantParentContradictionFixture,
@@ -300,6 +301,35 @@ describe('analyzeBusinessCapability — parent-vs-child required-level contradic
       requiredLevel: 'HIGH',
       actualLevel: 'LOW',
     })
+
+    // WR-02: assert the total count too — this fixture's re-entrant node
+    // happens not to trigger a contradiction against its cyclic "parent", so
+    // without this the test would pass identically whether or not the
+    // re-entrant edge was silently skipped (see Test M2 for a fixture that
+    // actually exercises the guard).
+    expect(result.findings).toHaveLength(1)
+  })
+
+  it('does not emit a spurious contradiction finding via a cyclic re-entrant edge (Test M2, WR-01)', () => {
+    const result = analyzeBusinessCapability(capabilityCycleTriggeringFixture)
+
+    // Only the non-cyclic child-vs-root contradiction should fire.
+    expect(result.findings).toHaveLength(1)
+    expect(result.findings[0]).toMatchObject({
+      status: 'YELLOW',
+      violatingElementType: 'businessCapability',
+      violatingElementId: 'cap-cycle-child-2',
+      dimension: 'security',
+      requiredLevel: 'HIGH',
+      actualLevel: 'LOW',
+    })
+
+    // No finding may attribute a contradiction to the re-entrant edge (the
+    // cyclic node's NONE-vs-LOW comparison against its cyclic "parent" must
+    // never surface, per D-03's "stops silently" contract).
+    expect(
+      result.findings.some(f => f.violatingElementId === 'cap-cycle-root-2' && f.actualLevel === 'NONE')
+    ).toBe(false)
   })
 })
 

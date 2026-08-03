@@ -59,6 +59,21 @@ export function projectMarkers(analysis: SovereigntyAnalysis): Map<string, Sover
   const markers = new Map<string, SovereigntyMarker>()
   const capabilityIds = new Set(analysis.capabilityIds)
 
+  // 02.3 D-05: a capability can be analyzed more than once when it is shared
+  // by two or more parents in the same subtree (diamond topology — no
+  // memoization by design, per D-02 independent-per-parent evaluation). Each
+  // occurrence produces its own block of findings in `analysis.findings`, so
+  // whether `id` keeps its self-violation status must be decided from the
+  // FULL finding set up front, not per-finding as the loop below walks
+  // blocks in order — otherwise a later block's non-violating passthrough
+  // for the same id would unconditionally reset an earlier block's genuine
+  // YELLOW self-violation back to GREY (CR-01).
+  const selfViolatingIds = new Set(
+    analysis.findings
+      .filter(f => f.violatingElementType === 'businessCapability')
+      .map(f => f.violatingElementId)
+  )
+
   function ensure(id: string): SovereigntyMarker {
     const existing = markers.get(id)
     if (existing) return existing
@@ -92,12 +107,19 @@ export function projectMarkers(analysis: SovereigntyAnalysis): Map<string, Sover
       // real selfStatus (YELLOW) instead of the unconditional GREY every other
       // capability keeps. Every other isCapability case (mid-chain pass-through,
       // or a violating element of a non-businessCapability type) stays GREY.
-      const isCapabilitySelfViolation =
-        isCapability && isViolatingElement && finding.violatingElementType === 'businessCapability'
+      //
+      // Checked against `selfViolatingIds` (computed once from the full
+      // finding set above), NOT against this single `finding` in isolation —
+      // a diamond-shared capability's self-violation, once true anywhere in
+      // the analysis, must never be reset to GREY by a later, unrelated
+      // passthrough finding for the same id (CR-01).
+      const isCapabilitySelfViolation = isCapability && selfViolatingIds.has(id)
 
       markers.set(id, {
         selfStatus: isCapabilitySelfViolation
-          ? worseStatus(current.selfStatus, finding.status)
+          ? isViolatingElement
+            ? worseStatus(current.selfStatus, finding.status)
+            : current.selfStatus
           : isCapability
             ? 'GREY'
             : isViolatingElement
@@ -119,14 +141,9 @@ export function projectMarkers(analysis: SovereigntyAnalysis): Map<string, Sover
   // the violating element of a parent-vs-child required-level contradiction
   // finding (its selfStatus was already set to YELLOW in the loop above) —
   // every other capability id still gets backfilled to GREY exactly as before.
-  const capabilitiesWithOwnFinding = new Set(
-    analysis.findings
-      .filter(f => f.violatingElementType === 'businessCapability')
-      .map(f => f.violatingElementId)
-  )
   for (const id of capabilityIds) {
     const current = ensure(id)
-    if (capabilitiesWithOwnFinding.has(id)) continue
+    if (selfViolatingIds.has(id)) continue
     markers.set(id, { selfStatus: 'GREY', downstreamStatus: current.downstreamStatus })
   }
 

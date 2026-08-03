@@ -1,6 +1,7 @@
 import { analyzeBusinessCapability } from '../evaluator'
 import { DEFAULT_MARKER, projectMarkers, resolveMarker } from '../markers'
 import {
+  diamondSharedCapabilityFixture,
   greenChainFixture,
   greyChainFixture,
   nestedCapabilitySubtreeFixture,
@@ -100,5 +101,18 @@ describe('projectMarkers', () => {
       selfStatus: 'GREY',
       downstreamStatus: 'GREEN',
     })
+  })
+
+  // CR-01 regression: a capability shared by two parents in the same
+  // subtree (diamond topology, no memoization by design per D-02) genuinely
+  // self-violates against only ONE of its two parents. Its selfStatus must
+  // stay YELLOW even though a LATER, unrelated finding block (the other
+  // parent's copy, which has its own real Application/AIComponent violation
+  // below it) also touches the same id as a mid-chain passthrough member.
+  it("keeps a diamond-shared capability's genuine YELLOW self-violation even when a later finding block also passes through it (Test N, CR-01)", () => {
+    const analysis = analyzeBusinessCapability(diamondSharedCapabilityFixture)
+    const markers = projectMarkers(analysis)
+
+    expect(markers.get('cap-shared')?.selfStatus).toBe('YELLOW')
   })
 })

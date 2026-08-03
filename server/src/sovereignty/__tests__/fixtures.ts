@@ -564,3 +564,124 @@ export const capabilityCycleFixture: BusinessCapabilityChain = {
     },
   ],
 }
+
+/**
+ * 02.3 D-03/WR-01 regression: unlike `capabilityCycleFixture` (whose
+ * re-entrant node's required level happens not to trigger a contradiction
+ * against its cyclic "parent", so it cannot prove the guard actually does
+ * anything), this fixture's re-entrant node IS weaker than its immediate
+ * cyclic parent (`cap-cycle-child-2`'s `security: LOW` vs. the re-entrant
+ * node's `security: NONE`). Without the `pathVisited` guard on the
+ * descendant-vs-parent classifier call, this would produce a SECOND, bogus
+ * finding attributing a contradiction to the already-visited root via the
+ * re-entrant edge (Test M2 asserts this does not happen).
+ */
+export const capabilityCycleTriggeringFixture: BusinessCapabilityChain = {
+  rootId: 'cap-cycle-root-2',
+  rootType: 'businessCapability',
+  required: requirementLevels({ security: 'HIGH' }),
+  parentRequiredLevels: [],
+  supportingAIComponents: [],
+  supportingApplications: [],
+  childCapabilities: [
+    {
+      rootId: 'cap-cycle-child-2',
+      rootType: 'businessCapability',
+      required: requirementLevels({ security: 'LOW' }),
+      parentRequiredLevels: [],
+      supportingAIComponents: [],
+      supportingApplications: [],
+      childCapabilities: [
+        {
+          // Cyclic edge back to the root, with a required level deliberately
+          // weaker than its immediate cyclic "parent" (cap-cycle-child-2's
+          // LOW) — would trigger a spurious contradiction if the re-entrant
+          // edge were not skipped entirely (WR-01).
+          rootId: 'cap-cycle-root-2',
+          rootType: 'businessCapability',
+          required: requirementLevels({ security: 'NONE' }),
+          parentRequiredLevels: [],
+          supportingAIComponents: [],
+          supportingApplications: [],
+          childCapabilities: [],
+        },
+      ],
+    },
+  ],
+}
+
+/**
+ * 02.3 D-05/CR-01 regression: a capability ("cap-shared") reachable from TWO
+ * different parents within the same analyzed subtree (a diamond topology —
+ * explicitly supported by design, no memoization by design per D-02's
+ * independent-per-parent evaluation). "cap-shared" genuinely violates
+ * against ONE parent (`cap-p1`, stricter) but not the other (`cap-p2`,
+ * equal), and its `cap-p2`-side copy also has its own supporting Application
+ * with a real RED achieved-level violation below it — so "cap-shared"
+ * appears as a mid-chain PASSTHROUGH id in a *second*, later finding block
+ * that is not itself a businessCapability-type self-violation. Before the
+ * CR-01 fix, that later passthrough block would unconditionally reset
+ * "cap-shared"'s already-correct YELLOW selfStatus back to GREY.
+ */
+export const diamondSharedCapabilityFixture: BusinessCapabilityChain = {
+  rootId: 'cap-diamond-root',
+  rootType: 'businessCapability',
+  required: requirementLevels({ security: 'LOW' }),
+  parentRequiredLevels: [],
+  supportingAIComponents: [],
+  supportingApplications: [],
+  childCapabilities: [
+    {
+      // Stricter parent: "cap-shared"'s own LOW requirement is weaker than
+      // this parent's HIGH requirement — genuine self-violation.
+      rootId: 'cap-p1',
+      rootType: 'businessCapability',
+      required: requirementLevels({ security: 'HIGH' }),
+      parentRequiredLevels: [],
+      supportingAIComponents: [],
+      supportingApplications: [],
+      childCapabilities: [
+        {
+          rootId: 'cap-shared',
+          rootType: 'businessCapability',
+          required: requirementLevels({ security: 'LOW' }),
+          parentRequiredLevels: [],
+          supportingAIComponents: [],
+          supportingApplications: [],
+          childCapabilities: [],
+        },
+      ],
+    },
+    {
+      // Equal (non-stricter) parent: "cap-shared"'s LOW requirement matches
+      // this parent's own LOW requirement exactly — NOT weaker, so no
+      // self-violation from this edge. This copy also carries a real
+      // Application-level RED violation below it, so "cap-shared" still
+      // appears (as a mid-chain passthrough, not a violatingElementId) in a
+      // finding processed AFTER the cap-p1 block above.
+      rootId: 'cap-p2',
+      rootType: 'businessCapability',
+      required: requirementLevels({ security: 'LOW' }),
+      parentRequiredLevels: [],
+      supportingAIComponents: [],
+      supportingApplications: [],
+      childCapabilities: [
+        {
+          rootId: 'cap-shared',
+          rootType: 'businessCapability',
+          required: requirementLevels({ security: 'LOW' }),
+          parentRequiredLevels: [],
+          supportingAIComponents: [
+            aiComponentNode({
+              id: 'ai-under-shared',
+              name: 'AI under shared',
+              achieved: achievedLevels({ security: 'NONE' }),
+            }),
+          ],
+          supportingApplications: [],
+          childCapabilities: [],
+        },
+      ],
+    },
+  ],
+}
