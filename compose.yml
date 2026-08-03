@@ -1,3 +1,9 @@
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "50m"
+    max-file: "5"
+
 services:
   # Neo4j Database
   neo4j:
@@ -19,6 +25,7 @@ services:
         cp "$$APJAR" /plugins/apoc.jar
         exec /startup/docker-entrypoint.sh neo4j
     restart: unless-stopped
+    logging: *default-logging
     ports:
       - "${NEO4J_EXTERNAL_PORT}:${NEO4J_PORT}" # HTTP
       - "${NEO4J_EXTERNAL_BOLT_PORT}:${NEO4J_BOLT_PORT}" # Bolt
@@ -53,6 +60,7 @@ services:
       args:
         NODE_ENV: ${NODE_ENV}
     restart: unless-stopped
+    logging: *default-logging
     ports:
       - "${GRAPHQL_EXTERNAL_PORT}:${GRAPHQL_INTERNAL_PORT}"
     depends_on:
@@ -111,6 +119,7 @@ services:
       args:
         NODE_ENV: ${NODE_ENV}
     restart: unless-stopped
+    logging: *default-logging
     profiles:
       - ai
     ports:
@@ -159,6 +168,7 @@ services:
       args:
         NODE_ENV: ${NODE_ENV}
     restart: unless-stopped
+    logging: *default-logging
     depends_on:
       - temporal
     environment:
@@ -183,6 +193,7 @@ services:
       args:
         NODE_ENV: ${NODE_ENV}
     restart: unless-stopped
+    logging: *default-logging
     depends_on:
       - server
       - temporal
@@ -207,6 +218,7 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:26.6
     restart: unless-stopped
+    logging: *default-logging
     environment:
       - KC_BOOTSTRAP_ADMIN_USERNAME=${KEYCLOAK_ADMIN}
       - KC_BOOTSTRAP_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
@@ -251,6 +263,7 @@ services:
   keycloak-db:
     image: postgres:15
     restart: unless-stopped
+    logging: *default-logging
     volumes:
       - ./auth/data:/var/lib/postgresql/data
     environment:
@@ -264,6 +277,7 @@ services:
   excalidraw-room:
     image: excalidraw/excalidraw-room:sha-03ff435
     restart: unless-stopped
+    logging: *default-logging
     ports:
       - "${EXCALIDRAW_ROOM_EXTERNAL_PORT}:${EXCALIDRAW_ROOM_PORT}"
     networks:
@@ -289,6 +303,7 @@ services:
   temporal-db:
     image: postgres:15
     restart: unless-stopped
+    logging: *default-logging
     environment:
       - POSTGRES_DB=${TEMPORAL_DB_NAME:-temporal}
       - POSTGRES_USER=${TEMPORAL_DB_USER:-temporal}
@@ -311,6 +326,7 @@ services:
   temporal:
     image: temporalio/auto-setup:1.24.2
     restart: unless-stopped
+    logging: *default-logging
     depends_on:
       temporal-db:
         condition: service_healthy
@@ -329,6 +345,7 @@ services:
   temporal-ui:
     image: temporalio/ui:2.31.2
     restart: unless-stopped
+    logging: *default-logging
     depends_on:
       - temporal
     environment:
@@ -363,6 +380,7 @@ services:
       args:
         NODE_ENV: ${NODE_ENV}
     restart: unless-stopped
+    logging: *default-logging
     profiles:
       - ai
     depends_on:
@@ -402,6 +420,7 @@ services:
   clickhouse:
     image: clickhouse/clickhouse-server:24.8
     restart: unless-stopped
+    logging: *default-logging
     environment:
       - CLICKHOUSE_DB=${CLICKHOUSE_DB:-nextgen_analytics}
       - CLICKHOUSE_USER=${CLICKHOUSE_USER:-default}
@@ -421,6 +440,7 @@ services:
   cube:
     image: cubejs/cube:latest
     restart: unless-stopped
+    logging: *default-logging
     depends_on:
       - clickhouse
       - cubestore
@@ -447,6 +467,7 @@ services:
   cubestore:
     image: cubejs/cubestore:latest
     restart: unless-stopped
+    logging: *default-logging
     environment:
       - CUBESTORE_SERVER_NAME=${CUBESTORE_SERVER_NAME:-cubestore:9999}
       - CUBESTORE_META_PORT=${CUBESTORE_META_PORT:-9999}
@@ -468,6 +489,7 @@ services:
       context: .
       dockerfile: client/Dockerfile
     restart: unless-stopped
+    logging: *default-logging
     ports:
       - "${CLIENT_EXTERNAL_PORT}:${CLIENT_PORT}"
     depends_on:
