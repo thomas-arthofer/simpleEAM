@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 02.2
-current_phase_name: 'Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable'
-status: human_needed
-stopped_at: G-02.2-3/4/5/6 all closed — UAT tests 3 and 6 (auto-add-on-drop, duplicate/copy-paste) still need a live re-verification pass before Phase 02.2 can be marked fully complete
-last_updated: '2026-08-03T00:30:00.000Z'
+current_phase: 02.3
+current_phase_name: 'Business capability requirement-chain consistency: compare parent vs child BusinessCapability required levels'
+status: planning
+stopped_at: Phase 02.2 fully complete — all 6 UAT tests pass (test 1 with an accepted non-blocking deviation), all 4 gaps (G-02.2-3/4/5/6) resolved and live-reconfirmed. Ready to plan Phase 02.3.
+last_updated: '2026-08-03T01:15:00.000Z'
 last_activity: 2026-08-03
-last_activity_desc: User re-verified context-menu Delete (UAT test 5) against the rebuilt Docker client — confirmed working. G-02.2-5 closed. All 4 original UAT gaps (G-02.2-3/4/5/6) are now closed; only UAT tests 3 and 6 still need a live re-verification pass (their fixes are code-complete via Plan 02.2-03 but not yet re-tested live) before Phase 02.2 can be marked fully complete.
+last_activity_desc: User live-confirmed UAT tests 3 (auto-add-on-drop — "Auto-Drop: working") and 6 (duplicate/copy-paste — "copy-paste: working"). All 6 UAT tests now pass; all 4 gaps (G-02.2-3/4/5/6) resolved. Phase 02.2 is COMPLETE. 02.2-UAT.md and 02.2-VERIFICATION.md updated accordingly.
 progress:
   total_phases: 6
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 13
   completed_plans: 13
 ---
@@ -23,16 +23,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-22)
 
 **Core value:** Enterprise architecture data and sovereignty assessments must be trustworthy enough that operators can reproduce the platform and explain exactly where architectural obligations are or are not met.
-**Current focus:** Phase 02.2 — G-02.2-3/4/5/6 all closed; UAT tests 3 and 6 still need a live re-verification pass before Phase 02.3 can be planned
+**Current focus:** Phase 02.2 COMPLETE (all 6 UAT tests pass, all 4 gaps closed) — Phase 02.3 ("Business capability requirement-chain consistency") ready for planning
 
 ## Current Position
 
-Phase: 02.2 — Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable — 4/4 plans executed (01, 02, and gap-closure 03, 04); ALL 4 gaps (G-02.2-3/4/5/6) CLOSED
-Plan: 02.2-04 complete (4/4 plans in phase; Phase 02.2 fully executed at code level, including both gap-closure plans triggered by the initial UAT run)
-Status: Initial 02.2-UAT.md run found 4 failing gaps (G-02.2-3/4/5/6). Plan 02.2-03 fixed the D-02 diff-detection race (closing G-02.2-3/6 at code level) and added suppressOnChangeRef wiring to FullCustomContextMenu (closing G-02.2-5, live-reconfirmed 2026-08-03). Plan 02.2-04 added live instrumentation for G-02.2-4 and, after fixing a stale Docker client image, confirmed native keyboard delete already works correctly (closed, no separate code change needed). Remaining: UAT tests 3 (auto-add-on-drop) and 6 (duplicate/copy-paste) still need a live re-verification pass against current code — their fixes are code-complete via Plan 02.2-03 but not yet re-tested live. Do NOT advance to Phase 02.3 planning until those are confirmed.
-Last activity: 2026-08-03 — User re-verified context-menu Delete (UAT test 5) live against the rebuilt Docker client; confirmed working. G-02.2-5 closed.
-
-Progress: [██████████] 100% (13/13 plans complete across phases)
+Phase: 02.3 — Business capability requirement-chain consistency: compare parent vs child BusinessCapability required levels — not yet planned
+Plan: none yet (Phase 02.2 is fully executed and verified: 4/4 plans, all 6 UAT tests pass, all 4 gaps (G-02.2-3/4/5/6) resolved)
+Status: Phase 02.2 is fully COMPLETE. Initial 02.2-UAT.md run found 4 failing gaps (G-02.2-3/4/5/6); Plan 02.2-03 fixed the D-02 diff-detection race (closing G-02.2-3/6 at code level) and added suppressOnChangeRef wiring to FullCustomContextMenu (closing G-02.2-5); Plan 02.2-04 confirmed native keyboard delete already worked correctly after fixing a stale Docker client image (closing G-02.2-4). All 6 UAT tests were then live-reconfirmed by the user (test 1 passes with an accepted non-blocking deviation). Ready to begin Phase 02.3 planning.
+Last activity: 2026-08-03 — User live-confirmed UAT test 3 (auto-add-on-drop) and test 6 (duplicate/copy-paste) both working. Phase 02.2 marked complete in 02.2-UAT.md and 02.2-VERIFICATION.md.
 
 Progress: [██████████] 100% (13/13 plans complete across phases)
 
@@ -97,6 +95,7 @@ Recent decisions affecting current work:
 - [Phase 02.2]: 02.2-02 (final plan of Phase 02.2): atomic marker cleanup added to FullCustomContextMenu.handleDelete (single updateScene, single Ctrl+Z restore, contrasting Plan 01's two-tier native-keyboard path); D-01 lifecycle-gap triage confirmed duplicate/copy/paste free coverage and logged handleDuplicate's id/groupIds remapping gap as accepted backlog
 - [Phase 02.2]: 02.2-03 (gap-closure, G-02.2-3/5/6): previouslySeenMainElementIdsRef is no longer marked "seen" until a sync attempt confirms a marker applied or hasAnyMarkerRoot() confirms none possible, fixing a mark-before-confirm race; FullCustomContextMenu.handleDelete/handleDuplicate/handlePaste now set suppressOnChangeRef before updateScene(), matching every other call site
 - [Phase 02.2]: 02.2-04 (gap-closure, G-02.2-4): live browser instrumentation confirmed G-02.2-4 was already resolved by 02.2-03's fix — no separate root cause or code change existed. First test attempt gave a false "no logs" negative because the nextgen-eam-client Docker container (no source bind-mount) was running a stale pre-Phase-02.2 image; rebuilding+force-recreating it resolved the false negative.
+- [Phase 02.2]: Phase COMPLETE 2026-08-03 — all 6 UAT tests live-reconfirmed passing (test 1 with an accepted non-blocking deviation: marker ellipses are selectable/resizable but not draggable, still excluded from meaningful interaction); all 4 gaps (G-02.2-3/4/5/6) resolved. 02.2-UAT.md and 02.2-VERIFICATION.md updated to reflect final passing state.
 
 ### Pending Todos
 
@@ -124,6 +123,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-03T00:00:00.000Z
-Stopped at: Completed 02.2-04-PLAN.md — G-02.2-3/4/6 closed; G-02.2-5 and UAT tests 3/5/6 still need a manual re-verification pass against current code before Phase 02.3 can be planned
-Resume file: .planning/phases/02.2-sovereignty-marker-lifecycle-auto-add-on-drop-delete-with-el/02.2-UAT.md
+Last session: 2026-08-03T01:15:00.000Z
+Stopped at: Phase 02.2 fully complete — all 6 UAT tests pass, all 4 gaps (G-02.2-3/4/5/6) resolved and live-reconfirmed. Ready to begin Phase 02.3 planning.
+Resume file: .planning/phases/02.3-business-capability-requirement-chain-consistency-compare-pa/ (currently only a .gitkeep — needs discuss-phase/plan-phase)
