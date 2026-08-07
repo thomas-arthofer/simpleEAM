@@ -134,7 +134,7 @@ Special case to design: when the _entire_ chain from a node downward is green (i
 Multi-parent handling (D-02 from Phase 2/02.3) carries over unchanged: GREEN requires consistency with **all** parents, not just the strictest one.
 **Requirements**: D-01, D-02, D-03, D-04 (03-CONTEXT.md; extends 02.3's D-01/D-02/D-03/D-04/D-05/D-06)
 **Depends on:** Phase 02.3
-**Plans:** 1/1 plans executed
+**Plans:** 1/1 plans complete
 
 Plans:
 

@@ -17,14 +17,15 @@ Enterprise architecture data and sovereignty assessments must be trustworthy eno
 - ✓ Users can authenticate through Keycloak-backed access control and use a localized web application — existing
 - ✓ Operators can run the platform as a multi-service stack spanning client, GraphQL API, Neo4j, analytics services, and optional AI services — existing
 - ✓ The data model already stores sovereignty requirements and achieved ratings on relevant architecture elements — existing
+- ✓ Stabilize development setup so Docker Compose can start the stack without extra ad hoc development hacks and ideally without router-level DNS workarounds for required HTTPS hostnames — Phase 1/01.1
+- ✓ Document Kubernetes deployment prerequisites clearly, including external dependencies such as the existing Traefik network and other cluster assumptions not obvious from the current docs — Phase 1
+- ✓ Replace sovereignty value inheritance with explicit per-element ratings and evaluate violations along the dependency chain from business requirement to technical foundation, including parent/child requirement-chain consistency (YELLOW) and a three-valued GREEN/YELLOW/GREY self-status — Phase 2/02.3/03
+- ✓ Surface sovereignty fit and violations when opening an element detail view, so users can see whether that element's own rating satisfies higher-level requirements — Phase 2
+- ✓ Expose optional sovereignty status markers automatically for diagram elements so filled/ring-style status cues can appear directly in diagrams when elements are added, including live drag-repositioning and lifecycle-safe auto-add/cleanup — Phase 2/02.1/02.2
 
 ### Active
 
-- [ ] Stabilize development setup so Docker Compose can start the stack without extra ad hoc development hacks and ideally without router-level DNS workarounds for required HTTPS hostnames.
-- [ ] Document Kubernetes deployment prerequisites clearly, including external dependencies such as the existing Traefik network and other cluster assumptions not obvious from the current docs.
-- [ ] Replace sovereignty value inheritance with explicit per-element ratings and evaluate violations along the dependency chain from business requirement to technical foundation.
-- [ ] Surface sovereignty fit and violations when opening an element detail view, so users can see whether that element's own rating satisfies higher-level requirements.
-- [ ] Expose optional sovereignty status markers automatically for diagram elements so filled/ring-style status cues can appear directly in diagrams when elements are added.
+None — all milestone requirements validated as of Phase 03 (last phase of milestone v1.0). Ready for `/gsd-complete-milestone`.
 
 ### Out of Scope
 
@@ -55,7 +56,8 @@ The concept in `eam-konzept.md` is the source document for the sovereignty redes
 | Plan this milestone as two ordered phases                                               | The user explicitly prioritized setup stabilization before sovereignty refactoring                                       | — Pending |
 | Treat setup stabilization as behavior plus documentation work                           | The repo docs are outdated, but success also requires the actual Docker path to become reproducible without manual hacks | — Pending |
 | Implement sovereignty as explicit per-element ratings with chain-based violation checks | Inherited ratings make missing assessments look compliant and prevent trustworthy diagnostics                            | — Pending |
-| Include UI and diagram diagnostics in the sovereignty phase                             | The user wants both element-detail visibility and optional diagram markers, not backend-only logic changes               | — Pending |
+| Include UI and diagram diagnostics in the sovereignty phase                             | The user wants both element-detail visibility and optional diagram markers, not backend-only logic changes             | Shipped — Phase 2/02.1/02.2 |
+| Thread a `hasRealComparison`/`comparedCapabilityIds` signal end-to-end so `analyzeBusinessCapability`'s own selfStatus and `projectMarkers()`'s diagram marker selfStatus are computed from the same data and can never disagree | A hardcoded `selfStatus: 'GREY'` in `analyzeBusinessCapability` meant the `/sovereignty` detail page and diagram markers could show contradicting colors for the same capability | Shipped — Phase 03 |
 
 ## Evolution
 
@@ -78,4 +80,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-_Last updated: 2026-07-22 after initialization_
+_Last updated: 2026-08-07 after Phase 03 (milestone v1.0 fully validated — all Active requirements shipped)_
