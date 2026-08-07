@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 02.3
-current_phase_name: "Business capability requirement-chain consistency: compare parent vs child BusinessCapability required levels"
+current_phase_name: 'Business capability requirement-chain consistency: compare parent vs child BusinessCapability required levels'
 status: complete
-stopped_at: Phase 02.3 complete — both plans (02.3-01 tracer, 02.3-02 descendant/multi-parent + Neo4j fetch) executed, tested, committed, summarized. Phase 01.1's stale verification was refreshed (re-verified, 5/5 must-haves) and its UAT completed. Phase 02 was executed (5/5 plans) but its verification is still human_needed — pending UAT (/gsd-verify-work 02).
-last_updated: "2026-08-07T08:52:55.804Z"
+stopped_at: Phase 02.3 complete. Phase 01.1 re-verified/UAT'd complete. Phase 02's canonical verification now also passed — UAT 4/4 (last item unblocked by fixing a missing ai-server CA-trust mount and starting the never-launched ai-worker container). All phases through 02.3 are now verified complete; milestone v1.0 is fully closed pending final review.
+last_updated: '2026-08-07T09:25:00.000Z'
 last_activity: 2026-08-07
-last_activity_desc: Re-verified Phase 01.1 (was stale — SUMMARY/VALIDATION had uncommitted cosmetic-only reformatting; independently re-confirmed 5/5 must-haves, no regressions) and completed its UAT (4/4 passed, 0 issues). ROADMAP.md's Phase 01.1 checkbox marked complete.
+last_activity_desc: Ran /gsd-verify-work 02 — resumed the one blocked UAT item (Temporal sovereignty rollup), diagnosed and fixed two real infra gaps (ai-server missing local CA trust mount causing 401s on /sovereignty/recalculate; ai-worker container never started so the workflow never left CALCULATING), confirmed CALCULATING → IDLE with matching scores. UAT now 4/4 passed, 0 issues; 02-VERIFICATION.md canonicalized to passed; ROADMAP.md Phase 2 checkbox marked complete.
 progress:
   total_phases: 6
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 15
   completed_plans: 15
 ---
@@ -23,14 +23,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-22)
 
 **Core value:** Enterprise architecture data and sovereignty assessments must be trustworthy enough that operators can reproduce the platform and explain exactly where architectural obligations are or are not met.
-**Current focus:** Phase 02.3 COMPLETE (parent-vs-child BusinessCapability requirement-chain consistency tracer, root-only + descendant + multi-parent, Neo4j-wired). Phase 02's verification is still `human_needed` (pending UAT) — run `/gsd-verify-work 02` before the milestone can be considered fully closed.
+**Current focus:** All phases through 02.3 are complete and verified. Phase 02's UAT passed 4/4 (2026-08-07) after fixing two infra gaps (ai-server CA trust mount, ai-worker never started). Milestone v1.0 is fully closed — ready for `/gsd-complete-milestone` or a next milestone.
 
 ## Current Position
 
 Phase: 02.3 — Business capability requirement-chain consistency: compare parent vs child BusinessCapability required levels — COMPLETE
 Plan: both plans executed (02.3-01 tracer + 02.3-02 descendant/multi-parent + Neo4j fetch), 2/2 plans
-Status: Phase 02.3 is fully COMPLETE. Phase 01.1 re-verified and UAT'd complete (`/gsd-verify-work 01.1`, 2026-08-07). Outstanding: Phase 02's canonical verification is `human_needed` — run `/gsd-verify-work 02` to resolve.
-Last activity: 2026-08-07 — Phase 01.1 re-verified (stale → passed) and UAT completed (4/4 passed).
+Status: All phases (1, 01.1, 2, 02.1, 02.2, 02.3) are now complete and verified. Phase 02's canonical verification passed 2026-08-07 (UAT 4/4).
+Last activity: 2026-08-07 — Phase 02 UAT completed (4/4 passed), two infra gaps fixed along the way (ai-server CA trust, ai-worker startup), 02-VERIFICATION.md canonicalized to passed, ROADMAP.md Phase 2 marked complete.
 
 Progress: [██████████] 100% (15/15 plans complete across phases)
 
@@ -49,7 +49,7 @@ Progress: [██████████] 100% (15/15 plans complete across pha
 | 01    | 1     | -     | -        |
 | 2     | 0     | 0 min | 0 min    |
 | 02.1  | 2     | -     | -        |
-| 01.1 | 1 | - | - |
+| 01.1  | 1     | -     | -        |
 
 **Recent Trend:**
 
