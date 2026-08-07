@@ -38,7 +38,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Goal:** Restore `https://eam.example.com` local routing, most importantly Keycloak-backed SSO login, so it works end-to-end again. Narrow restoration only — Phase 1's localhost-first Supported Path stays the unchanged default.
 **Requirements**: TBD (urgent inserted phase; tracked as `GOAL-01.1` in plan/validation artifacts)
 **Depends on:** Phase 1
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
 

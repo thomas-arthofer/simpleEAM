@@ -5,13 +5,13 @@ milestone_name: milestone
 current_phase: 02.3
 current_phase_name: "Business capability requirement-chain consistency: compare parent vs child BusinessCapability required levels"
 status: complete
-stopped_at: Phase 02.3 complete — both plans (02.3-01 tracer, 02.3-02 descendant/multi-parent + Neo4j fetch) executed, tested, committed, summarized
-last_updated: "2026-08-04T00:00:00.000Z"
-last_activity: 2026-08-04
-last_activity_desc: Executed Phase 02.3 (both plans). 02.3-01 added classifyCapabilityAgainstParent + parentRequiredLevels (root-only tracer, D-01/D-03/D-04/D-05/D-06). 02.3-02 hooked the descendant-vs-parent case into analyzeCapabilitySubtree (D-01 descendant half), verified D-02 multi-parent independence, and wired the real Neo4j Cypher fetch in repository.ts with a tenant-isolation guard (T-02.3-04). 37 sovereignty tests pass, yarn tsc --noEmit clean.
+stopped_at: Phase 02.3 complete — both plans (02.3-01 tracer, 02.3-02 descendant/multi-parent + Neo4j fetch) executed, tested, committed, summarized. Phase 01.1's stale verification was refreshed (re-verified, 5/5 must-haves) and its UAT completed. Phase 02 was executed (5/5 plans) but its verification is still human_needed — pending UAT (/gsd-verify-work 02).
+last_updated: "2026-08-07T08:52:55.804Z"
+last_activity: 2026-08-07
+last_activity_desc: Re-verified Phase 01.1 (was stale — SUMMARY/VALIDATION had uncommitted cosmetic-only reformatting; independently re-confirmed 5/5 must-haves, no regressions) and completed its UAT (4/4 passed, 0 issues). ROADMAP.md's Phase 01.1 checkbox marked complete.
 progress:
-  total_phases: 7
-  completed_phases: 6
+  total_phases: 6
+  completed_phases: 5
   total_plans: 15
   completed_plans: 15
 ---
@@ -23,14 +23,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-22)
 
 **Core value:** Enterprise architecture data and sovereignty assessments must be trustworthy enough that operators can reproduce the platform and explain exactly where architectural obligations are or are not met.
-**Current focus:** Phase 02.3 COMPLETE (parent-vs-child BusinessCapability requirement-chain consistency tracer, root-only + descendant + multi-parent, Neo4j-wired) — ready to plan the next phase
+**Current focus:** Phase 02.3 COMPLETE (parent-vs-child BusinessCapability requirement-chain consistency tracer, root-only + descendant + multi-parent, Neo4j-wired). Phase 02's verification is still `human_needed` (pending UAT) — run `/gsd-verify-work 02` before the milestone can be considered fully closed.
 
 ## Current Position
 
 Phase: 02.3 — Business capability requirement-chain consistency: compare parent vs child BusinessCapability required levels — COMPLETE
 Plan: both plans executed (02.3-01 tracer + 02.3-02 descendant/multi-parent + Neo4j fetch), 2/2 plans
-Status: Phase 02.3 is fully COMPLETE. Plan 02.3-01 added `classifyCapabilityAgainstParent` and the root-only `parentRequiredLevels` field/fetch scaffolding (D-01 root half, D-03/D-04 null exclusion, D-05 narrow YELLOW-self exception, D-06 businessCapability violating-element type). Plan 02.3-02 hooked the same classifier into `analyzeCapabilitySubtree`'s existing recursion for the descendant-vs-parent case (D-01 second half), verified D-02 multi-parent independent-edge iteration (no refactor needed — Plan 02.3-01's `flatMap` loop already satisfied it), and wired the real Neo4j Cypher fetch (`fetchBusinessCapabilityChain`'s new OUT-direction `HAS_PARENT` match, gated by an `isRoot` parameter, with a T-02.3-04 tenant-isolation guard). 37 sovereignty tests pass; `yarn tsc --noEmit` clean. Ready to plan the next phase.
-Last activity: 2026-08-04 — Both Phase 02.3 plans executed, verified, committed (`c19be53`, `397a218`, `b59f56a`, `7abda62`), SUMMARY.md written for each.
+Status: Phase 02.3 is fully COMPLETE. Phase 01.1 re-verified and UAT'd complete (`/gsd-verify-work 01.1`, 2026-08-07). Outstanding: Phase 02's canonical verification is `human_needed` — run `/gsd-verify-work 02` to resolve.
+Last activity: 2026-08-07 — Phase 01.1 re-verified (stale → passed) and UAT completed (4/4 passed).
 
 Progress: [██████████] 100% (15/15 plans complete across phases)
 
@@ -38,7 +38,7 @@ Progress: [██████████] 100% (15/15 plans complete across pha
 
 **Velocity:**
 
-- Total plans completed: 3
+- Total plans completed: 4
 - Average duration: 0 min
 - Total execution time: 0.0 hours
 
@@ -49,6 +49,7 @@ Progress: [██████████] 100% (15/15 plans complete across pha
 | 01    | 1     | -     | -        |
 | 2     | 0     | 0 min | 0 min    |
 | 02.1  | 2     | -     | -        |
+| 01.1 | 1 | - | - |
 
 **Recent Trend:**
 
