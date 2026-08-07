@@ -71,10 +71,10 @@ Plans:
 **Execution Order:**
 Phases execute in numeric order: 1 -> 2
 
-| Phase                                                | Plans Complete | Status      | Completed  |
-| ---------------------------------------------------- | -------------- | ----------- | ---------- |
-| 1. Setup Stabilization & Deployment Clarity          | 1/1            | Complete    | 2026-07-27 |
-| 2. Canonical Sovereignty Evaluation & UX Diagnostics | 5/5            | Complete    | 2026-08-07 |
+| Phase                                                | Plans Complete | Status   | Completed  |
+| ---------------------------------------------------- | -------------- | -------- | ---------- |
+| 1. Setup Stabilization & Deployment Clarity          | 1/1            | Complete | 2026-07-27 |
+| 2. Canonical Sovereignty Evaluation & UX Diagnostics | 5/5            | Complete | 2026-08-07 |
 
 ## Backlog (Accepted Blockers)
 
@@ -124,3 +124,18 @@ Plans:
 
 - [x] 02.1-01-PLAN.md — Run the full syncDiagramOnOpen pipeline on F5/full-page-reload scene restore (D-01)
 - [x] 02.1-02-PLAN.md — Live-reposition marker ellipses in place on every onChange during a drag (D-02/D-03/D-04)
+
+### Phase 3: BusinessCapability self-status GREEN for parent-consistent requirements
+
+**Goal:** Extend Phase 02.3's required-level tree-consistency check so a `BusinessCapability`'s self-status is three-valued instead of two-valued: GREEN when its own required level is explicitly checked and consistent with its parent(s) (currently indistinguishable from the "nothing to compare" case), YELLOW on contradiction (existing 02.3 behavior, unchanged), GREY only when there is genuinely nothing to compare (no parent present — the root of the whole capability hierarchy is inherently GREY, permanently, since it has no parent by definition). Benefit: on a diagram, self-fill and downstream-ring together become unambiguous — e.g. a capability with GREEN fill + RED ring instantly reads as "my own requirement chain is fine, the problem is downstream," instead of today's ambiguous GREY fill + RED ring.
+
+Special case to design: when the _entire_ chain from a node downward is green (its own self-status is GREEN AND its downstream status is also GREEN — nothing below violates anything), the two-marker projection should render as GREEN/GREEN. Otherwise the existing combinations apply (e.g. GREY self/GREY downstream when nothing is comparable or wrong, or GREY self/RED downstream when the root has no parent but something below is broken).
+
+Multi-parent handling (D-02 from Phase 2/02.3) carries over unchanged: GREEN requires consistency with **all** parents, not just the strictest one.
+**Requirements**: D-01, D-02, D-03, D-04 (03-CONTEXT.md; extends 02.3's D-01/D-02/D-03/D-04/D-05/D-06)
+**Depends on:** Phase 02.3
+**Plans:** 1 plan
+
+Plans:
+
+- [ ] 03-01-PLAN.md — Thread the "real comparison happened" signal from `evaluator.ts` through `markers.ts` so `projectMarkers()` resolves GREEN/YELLOW/GREY for root, descendant, and D-02 multi-parent cases
