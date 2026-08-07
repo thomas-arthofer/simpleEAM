@@ -94,19 +94,29 @@ export function classifyNode(
  * violation). Each parent edge is classified independently (D-02) — callers
  * loop over every entry in `parentRequiredLevels` and concatenate results,
  * never collapsing multiple parents into one "worst of" finding.
+ *
+ * Also reports `hasRealComparison` (03-CONTEXT.md D-01/D-02): true when at
+ * least one dimension reached the maturity comparison (both sides non-null),
+ * whether or not it then produced a finding — this is the "was anything
+ * genuinely compared" signal `markers.ts` needs to distinguish GREEN
+ * (compared and consistent) from GREY (nothing to compare), since both cases
+ * otherwise produce zero findings and are indistinguishable downstream.
  */
 export function classifyCapabilityAgainstParent(
   chain: BusinessCapabilityChain,
   parentEntry: { readonly id: string; readonly required: RequirementLevels },
   chainPathPrefix: readonly string[]
-): Finding[] {
+): { readonly findings: Finding[]; readonly hasRealComparison: boolean } {
   const findings: Finding[] = []
+  let hasRealComparison = false
 
   for (const dimension of SOVEREIGNTY_DIMENSIONS) {
     const parentRequired = parentEntry.required[dimension]
     const childRequired = chain.required[dimension]
 
     if (parentRequired === null || childRequired === null) continue
+
+    hasRealComparison = true
 
     if (maturityIndex(childRequired) < maturityIndex(parentRequired)) {
       findings.push({
@@ -122,7 +132,7 @@ export function classifyCapabilityAgainstParent(
     }
   }
 
-  return findings
+  return { findings, hasRealComparison }
 }
 
 function aggregateDownstreamStatus(findings: readonly Finding[]): SovereigntyStatus {
@@ -262,6 +272,7 @@ function analyzeSupportChain(
     selfStatus: 'GREY',
     downstreamStatus: aggregateDownstreamStatus(findings),
     capabilityIds: [chain.rootId],
+    comparedCapabilityIds: [],
   }
 }
 
@@ -285,13 +296,15 @@ function analyzeSupportChain(
 interface CapabilitySubtreeResult {
   readonly findings: Finding[]
   readonly capabilityIds: string[]
+  readonly comparedCapabilityIds: string[]
 }
 
 function analyzeCapabilitySubtree(
   chain: BusinessCapabilityChain,
   visited: ReadonlySet<string>
 ): CapabilitySubtreeResult {
-  if (visited.has(chain.rootId)) return { findings: [], capabilityIds: [] }
+  if (visited.has(chain.rootId))
+    return { findings: [], capabilityIds: [], comparedCapabilityIds: [] }
 
   const pathVisited = new Set(visited)
   pathVisited.add(chain.rootId)
@@ -300,6 +313,7 @@ function analyzeCapabilitySubtree(
 
   const descendantFindings: Finding[] = []
   const capabilityIds: string[] = [chain.rootId]
+  const comparedCapabilityIds: string[] = []
   for (const child of chain.childCapabilities) {
     // D-03 cycle-safety: a `childCapabilities` entry that re-enters an
     // already-visited ancestor (including `chain` itself, an immediate
@@ -317,6 +331,7 @@ function analyzeCapabilitySubtree(
       descendantFindings.push({ ...finding, chainPath: [chain.rootId, ...finding.chainPath] })
     }
     capabilityIds.push(...nested.capabilityIds)
+    comparedCapabilityIds.push(...nested.comparedCapabilityIds)
 
     // Descendant-vs-immediate-parent contradiction (02.3 D-01 second half):
     // the parent (`chain`) is already in scope at this recursion level, so no
@@ -325,12 +340,20 @@ function analyzeCapabilitySubtree(
     // `classifyCapabilityAgainstParent` already produces the correct
     // `[chain.rootId, child.rootId]` chainPath for this level, and
     // re-prefixing again here would double-prepend `chain.rootId`.
-    descendantFindings.push(
-      ...classifyCapabilityAgainstParent(child, { id: chain.rootId, required: chain.required }, [])
+    const { findings: parentCheckFindings, hasRealComparison } = classifyCapabilityAgainstParent(
+      child,
+      { id: chain.rootId, required: chain.required },
+      []
     )
+    descendantFindings.push(...parentCheckFindings)
+    if (hasRealComparison) comparedCapabilityIds.push(child.rootId)
   }
 
-  return { findings: [...ownFindings, ...descendantFindings], capabilityIds }
+  return {
+    findings: [...ownFindings, ...descendantFindings],
+    capabilityIds,
+    comparedCapabilityIds,
+  }
 }
 
 /**
@@ -338,24 +361,47 @@ function analyzeCapabilitySubtree(
  * supporting Applications (with their composite `components` and
  * multi-parent `hostedOn` Infrastructure) and AIComponents, PLUS — recursively
  * — every nested child BusinessCapability's own support chain (D-11), each
- * evaluated against that child's own requirements. `selfStatus` is always
- * GREY (D-05) — a BusinessCapability owns no achieved rating of its own.
+ * evaluated against that child's own requirements. `selfStatus` is
+ * three-valued (03-CONTEXT.md D-01/D-02): YELLOW if any parent-vs-own
+ * required-level contradiction was found, GREEN if no contradiction but at
+ * least one real (non-excluded) dimension was compared against a parent,
+ * GREY only when there is genuinely nothing to compare (no parent at all, or
+ * every dimension excluded on every parent).
  */
 export function analyzeBusinessCapability(chain: BusinessCapabilityChain): SovereigntyAnalysis {
-  const { findings, capabilityIds } = analyzeCapabilitySubtree(chain, new Set())
+  const {
+    findings,
+    capabilityIds,
+    comparedCapabilityIds: nestedComparedIds,
+  } = analyzeCapabilitySubtree(chain, new Set())
 
-  const parentContradictionFindings = chain.parentRequiredLevels.flatMap(parentEntry =>
+  const parentResults = chain.parentRequiredLevels.map(parentEntry =>
     classifyCapabilityAgainstParent(chain, parentEntry, [])
   )
+  const parentContradictionFindings = parentResults.flatMap(r => r.findings)
+  const rootHasRealComparison = parentResults.some(r => r.hasRealComparison)
   const combinedFindings = [...findings, ...parentContradictionFindings]
+  const comparedCapabilityIds = rootHasRealComparison
+    ? [...nestedComparedIds, chain.rootId]
+    : nestedComparedIds
+
+  // Blocker fix: this is the SAME data markers.ts independently derives its
+  // own GREEN/GREY resolution from (via comparedCapabilityIds) — computing
+  // selfStatus here from it, instead of a hardcoded 'GREY' literal, is what
+  // keeps the `/sovereignty` detail page (this function's own selfStatus)
+  // and the diagram markers (projectMarkers()'s SovereigntyMarker.selfStatus)
+  // from ever disagreeing about the same capability.
+  const selfStatus: SovereigntyStatus =
+    parentContradictionFindings.length > 0 ? 'YELLOW' : rootHasRealComparison ? 'GREEN' : 'GREY'
 
   return {
     rootId: chain.rootId,
     rootType: 'businessCapability',
     findings: combinedFindings,
-    selfStatus: 'GREY',
+    selfStatus,
     downstreamStatus: aggregateDownstreamStatus(combinedFindings),
     capabilityIds,
+    comparedCapabilityIds,
   }
 }
 

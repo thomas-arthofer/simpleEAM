@@ -70,6 +70,15 @@ export interface SovereigntyAnalysis {
   readonly selfStatus: SovereigntyStatus
   readonly downstreamStatus: SovereigntyStatus
   readonly capabilityIds: readonly string[]
+  /**
+   * The subset of `capabilityIds` that had at least one real (non-excluded —
+   * both parent and child sides non-null) dimension compared against at
+   * least one parent, regardless of whether that comparison passed or
+   * contradicted (03-CONTEXT.md D-01/D-02). Consumed only by `markers.ts` to
+   * distinguish "genuinely nothing to compare" (GREY) from "compared and
+   * found consistent" (GREEN) — never exposed via GraphQL.
+   */
+  readonly comparedCapabilityIds: readonly string[]
 }
 
 export interface RequirementLevels {

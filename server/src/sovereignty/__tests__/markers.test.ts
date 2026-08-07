@@ -6,6 +6,7 @@ import {
   greyChainFixture,
   nestedCapabilitySubtreeFixture,
   redChainFixture,
+  rootParentAllExcludedFixture,
   rootParentContradictionFixture,
   rootParentNoContradictionFixture,
 } from './fixtures'
@@ -93,11 +94,30 @@ describe('projectMarkers', () => {
     expect(markers.get(rootParentContradictionFixture.rootId)?.selfStatus).toBe('YELLOW')
   })
 
-  it('keeps the general GREY invariant when parentRequiredLevels is populated but produces no contradiction (Test F)', () => {
+  // 03-CONTEXT.md D-01: a capability whose own required level was genuinely
+  // compared (both sides non-null) against a parent and found consistent
+  // (no contradiction anywhere) resolves selfStatus GREEN — distinct from
+  // both the general "no parent at all" GREY invariant above and the
+  // YELLOW contradiction case below.
+  it('resolves GREEN when parentRequiredLevels is populated and produces no contradiction — a genuine comparison passed (Test F, D-01)', () => {
     const analysis = analyzeBusinessCapability(rootParentNoContradictionFixture)
     const markers = projectMarkers(analysis)
 
     expect(markers.get(rootParentNoContradictionFixture.rootId)).toEqual({
+      selfStatus: 'GREEN',
+      downstreamStatus: 'GREEN',
+    })
+  })
+
+  // 03-CONTEXT.md D-01: a parent IS present, but every one of its 4
+  // dimensions is null (excluded from comparison regardless of the child's
+  // own values) — genuinely nothing was compared, so this must stay GREY,
+  // distinct from the GREEN case immediately above.
+  it('stays GREY when a parent is present but every dimension is excluded from comparison (genuinely nothing compared)', () => {
+    const analysis = analyzeBusinessCapability(rootParentAllExcludedFixture)
+    const markers = projectMarkers(analysis)
+
+    expect(markers.get(rootParentAllExcludedFixture.rootId)).toEqual({
       selfStatus: 'GREY',
       downstreamStatus: 'GREEN',
     })

@@ -451,6 +451,26 @@ export const rootParentNoContradictionFixture: BusinessCapabilityChain = {
 }
 
 /**
+ * 03-CONTEXT.md D-01: a root with a parent, but the parent's own `required`
+ * is entirely null — every one of the 4 dimensions is excluded from
+ * comparison regardless of the root's own values, so genuinely nothing was
+ * compared. Distinct from BOTH the "no parent at all" GREY bucket
+ * (`redChainFixture`/`greyChainFixture`/`greenChainFixture`) and the
+ * "compared and passed" GREEN bucket (`rootParentNoContradictionFixture`) —
+ * this fixture proves the "parent present but nothing genuinely comparable"
+ * case stays GREY too, not GREEN by vacuous non-contradiction.
+ */
+export const rootParentAllExcludedFixture: BusinessCapabilityChain = {
+  rootId: 'cap-root-all-excluded',
+  rootType: 'businessCapability',
+  required: requirementLevels({ security: 'HIGH', resilience: 'MEDIUM' }),
+  parentRequiredLevels: [{ id: 'cap-parent-vacuous', required: requirementLevels() }],
+  supportingAIComponents: [],
+  supportingApplications: [],
+  childCapabilities: [],
+}
+
+/**
  * 02.3 D-01 descendant half / Test J: a three-level chain (root -> child ->
  * grandchild) where each level's required level is weaker than the one
  * above it. `analyzeCapabilitySubtree`'s existing recursion already has the

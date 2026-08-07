@@ -43,9 +43,13 @@ function worseStatus(a: SovereigntyStatus, b: SovereigntyStatus): SovereigntySta
  * `Finding[]` already produced by `evaluator.ts` (RESEARCH.md Anti-Pattern
  * 3: one classifier, reused everywhere).
  *
- * - The root always has an entry with `selfStatus: 'GREY'` (D-05 — a
- *   BusinessCapability/DataObject owns no achieved rating of its own), and
- *   `downstreamStatus` equal to the analysis's own aggregate.
+ * - The root always has an entry (D-05 — a BusinessCapability/DataObject
+ *   owns no achieved rating of its own): `selfStatus` is GREEN when a real
+ *   comparison against a parent was made and found consistent, YELLOW on a
+ *   parent-vs-own contradiction, GREY only when there is genuinely nothing
+ *   to compare (03-CONTEXT.md D-01/D-02); a DataObject root (no parents)
+ *   always stays GREY. `downstreamStatus` equals the analysis's own
+ *   aggregate.
  * - Every other element that appears anywhere in a finding's `chainPath`
  *   gets its own `selfStatus` (worst status among findings where it is the
  *   `violatingElementId`) and `downstreamStatus` (worst status among all
@@ -74,6 +78,15 @@ export function projectMarkers(analysis: SovereigntyAnalysis): Map<string, Sover
       .map(f => f.violatingElementId)
   )
 
+  // 03-CONTEXT.md D-01/D-02: the set of capability ids that had at least one
+  // real (non-excluded) dimension compared against a parent, whether that
+  // comparison passed or contradicted. Consulted below alongside
+  // `selfViolatingIds` to resolve the three-valued GREEN/YELLOW/GREY
+  // selfStatus — YELLOW (selfViolatingIds) still wins over GREEN
+  // (comparedIds) for free, since a genuine contradiction is by construction
+  // also a hasRealComparison=true case (no new precedence logic needed).
+  const comparedIds = new Set(analysis.comparedCapabilityIds)
+
   function ensure(id: string): SovereigntyMarker {
     const existing = markers.get(id)
     if (existing) return existing
@@ -82,8 +95,11 @@ export function projectMarkers(analysis: SovereigntyAnalysis): Map<string, Sover
     return created
   }
 
-  // The root always gets an entry, GREY-self, regardless of whether any
-  // findings exist at all (D-05).
+  // The root always gets an entry, GREY-self by default, regardless of
+  // whether any findings exist at all (D-05) — the loop below and the
+  // backfill loop after it may still upgrade this to GREEN (via
+  // `comparedIds`) or YELLOW (via `selfViolatingIds`) for a capability root
+  // whose own required level was genuinely compared against a parent.
   markers.set(analysis.rootId, {
     selfStatus: 'GREY',
     downstreamStatus: analysis.downstreamStatus,
@@ -106,7 +122,9 @@ export function projectMarkers(analysis: SovereigntyAnalysis): Map<string, Sover
       // of its own parent-vs-child required-level contradiction finding gets a
       // real selfStatus (YELLOW) instead of the unconditional GREY every other
       // capability keeps. Every other isCapability case (mid-chain pass-through,
-      // or a violating element of a non-businessCapability type) stays GREY.
+      // or a violating element of a non-businessCapability type) resolves via
+      // `comparedIds` (03-CONTEXT.md D-01/D-02): GREEN if a real comparison
+      // happened for this id anywhere in the analysis, GREY otherwise.
       //
       // Checked against `selfViolatingIds` (computed once from the full
       // finding set above), NOT against this single `finding` in isolation —
@@ -121,7 +139,9 @@ export function projectMarkers(analysis: SovereigntyAnalysis): Map<string, Sover
             ? worseStatus(current.selfStatus, finding.status)
             : current.selfStatus
           : isCapability
-            ? 'GREY'
+            ? comparedIds.has(id)
+              ? 'GREEN'
+              : 'GREY'
             : isViolatingElement
               ? worseStatus(current.selfStatus, finding.status)
               : current.selfStatus,
@@ -134,18 +154,24 @@ export function projectMarkers(analysis: SovereigntyAnalysis): Map<string, Sover
   // (fully compliant, e.g. a compliant sibling next to a violating one)
   // never appears in the loop above at all, so without this it would fall
   // through to `resolveMarker`'s DEFAULT_MARKER (GREEN/GREEN) — wrong for a
-  // capability, which must always resolve GREY-self, never GREEN-self
-  // (D-05). Backfills every capability id with an explicit GREY-self entry,
-  // defaulting its downstream to GREEN only when no finding ever touched it.
-  // 02.3 D-05: skip the unconditional GREY overwrite for a capability that IS
-  // the violating element of a parent-vs-child required-level contradiction
+  // capability, which must resolve GREEN-self only when a real comparison
+  // actually happened (`comparedIds`), GREY otherwise (D-05/D-01). Backfills
+  // every capability id with an explicit self-status entry, defaulting its
+  // downstream to GREEN only when no finding ever touched it.
+  // 02.3 D-05: skip the unconditional backfill for a capability that IS the
+  // violating element of a parent-vs-child required-level contradiction
   // finding (its selfStatus was already set to YELLOW in the loop above) —
-  // every other capability id still gets backfilled to GREY exactly as before.
+  // every other capability id still gets backfilled to GREEN/GREY exactly as
+  // determined by `comparedIds`.
   for (const id of capabilityIds) {
     const current = ensure(id)
     if (selfViolatingIds.has(id)) continue
-    markers.set(id, { selfStatus: 'GREY', downstreamStatus: current.downstreamStatus })
+    markers.set(id, {
+      selfStatus: comparedIds.has(id) ? 'GREEN' : 'GREY',
+      downstreamStatus: current.downstreamStatus,
+    })
   }
+
 
   return markers
 }

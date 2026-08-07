@@ -13,6 +13,7 @@ import {
   nestedCapabilitySubtreeFixture,
   partialAchievedFixture,
   redChainFixture,
+  rootParentAllExcludedFixture,
   rootParentContradictionFixture,
   rootParentNoContradictionFixture,
 } from './fixtures'
@@ -151,6 +152,9 @@ describe('analyzeBusinessCapability — parent-vs-child required-level contradic
       actualLevel: 'MEDIUM',
     })
     expect(result.findings[0].chainPath).toEqual(['cap-parent-strict', 'cap-root-weaker'])
+    // 03-CONTEXT.md D-01: a contradiction is still a real comparison, just a
+    // failing one — YELLOW must win over GREEN, not GREY.
+    expect(result.selfStatus).toBe('YELLOW')
   })
 
   it('excludes the dimension entirely when the parent required level is null (Test B)', () => {
@@ -187,6 +191,10 @@ describe('analyzeBusinessCapability — parent-vs-child required-level contradic
     const result = analyzeBusinessCapability(rootParentNoContradictionFixture)
 
     expect(result.findings).toHaveLength(0)
+    // Blocker fix: `analyzeBusinessCapability`'s own selfStatus must resolve
+    // GREEN here, not the old hardcoded GREY — this is the value the
+    // `/sovereignty` detail page's StatusChip renders.
+    expect(result.selfStatus).toBe('GREEN')
   })
 
   it('produces one independent finding per dimension when the parent is stricter on multiple dimensions (Test D)', () => {
@@ -328,9 +336,34 @@ describe('analyzeBusinessCapability — parent-vs-child required-level contradic
     // cyclic node's NONE-vs-LOW comparison against its cyclic "parent" must
     // never surface, per D-03's "stops silently" contract).
     expect(
-      result.findings.some(f => f.violatingElementId === 'cap-cycle-root-2' && f.actualLevel === 'NONE')
+      result.findings.some(
+        f => f.violatingElementId === 'cap-cycle-root-2' && f.actualLevel === 'NONE'
+      )
     ).toBe(false)
   })
+})
+
+describe('analyzeBusinessCapability — comparedCapabilityIds / three-valued selfStatus (03-CONTEXT.md D-01/D-02)', () => {
+  it('includes the root id in comparedCapabilityIds when a real comparison passed', () => {
+    const result = analyzeBusinessCapability(rootParentNoContradictionFixture)
+
+    expect(result.comparedCapabilityIds).toContain(rootParentNoContradictionFixture.rootId)
+  })
+
+  it('includes the root id in comparedCapabilityIds even when the comparison contradicted — a contradiction is still a real comparison', () => {
+    const result = analyzeBusinessCapability(rootParentContradictionFixture)
+
+    expect(result.comparedCapabilityIds).toContain(rootParentContradictionFixture.rootId)
+  })
+
+  it('excludes the root id from comparedCapabilityIds when every dimension was excluded on every parent (genuinely nothing compared)', () => {
+    const result = analyzeBusinessCapability(rootParentAllExcludedFixture)
+
+    expect(result.comparedCapabilityIds).not.toContain(rootParentAllExcludedFixture.rootId)
+    expect(result.selfStatus).toBe('GREY')
+    expect(result.findings).toHaveLength(0)
+  })
+
 })
 
 describe('analyzeDataObject', () => {
