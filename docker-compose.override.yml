@@ -28,12 +28,12 @@ services:
     logging:
       driver: json-file
       options:
-        max-size: "50m"
-        max-file: "5"
+        max-size: '50m'
+        max-file: '5'
     ports:
-      - "80:80"
-      - "443:443"
-      - "8090:8080" # Dashboard: http://<VM-IP>:8090
+      - '80:80'
+      - '443:443'
+      - '8090:8080' # Dashboard: http://<VM-IP>:8090
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./local/traefik/traefik.yml:/etc/traefik/traefik.yml:ro
@@ -60,6 +60,12 @@ services:
     environment:
       - NODE_EXTRA_CA_CERTS=/etc/ssl/local/rootCA.pem
 
+  ai-server:
+    volumes:
+      - ./local/certs/rootCA.pem:/etc/ssl/local/rootCA.pem:ro
+    environment:
+      - NODE_EXTRA_CA_CERTS=/etc/ssl/local/rootCA.pem
+
   analytics-worker:
     volumes:
       - ./local/certs/rootCA.pem:/etc/ssl/local/rootCA.pem:ro
@@ -79,7 +85,7 @@ services:
   # --------------------------------------------------------------------------
   temporal-ui:
     labels:
-      - "traefik.http.routers.${COMPOSE_PROJECT_NAME:-nextgen-eam}-temporal-ui.tls.certresolver="
+      - 'traefik.http.routers.${COMPOSE_PROJECT_NAME:-nextgen-eam}-temporal-ui.tls.certresolver='
 
   # --------------------------------------------------------------------------
   # RAM-Deckel. Ohne Limits kann vor allem ClickHouse den Host leerraeumen.
