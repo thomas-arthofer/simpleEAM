@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 02.3
-current_phase_name: 'Business capability requirement-chain consistency: compare parent vs child BusinessCapability required levels'
+current_phase_name: "Business capability requirement-chain consistency: compare parent vs child BusinessCapability required levels"
 status: complete
-stopped_at: Phase 02.3 complete. Phase 01.1 re-verified/UAT'd complete. Phase 02's canonical verification now also passed — UAT 4/4 (last item unblocked by fixing a missing ai-server CA-trust mount and starting the never-launched ai-worker container). All phases through 02.3 are now verified complete; milestone v1.0 is fully closed pending final review.
-last_updated: '2026-08-07T09:25:00.000Z'
+stopped_at: Phase 03 context gathered
+last_updated: "2026-08-07T09:51:03.583Z"
 last_activity: 2026-08-07
-last_activity_desc: Ran /gsd-verify-work 02 — resumed the one blocked UAT item (Temporal sovereignty rollup), diagnosed and fixed two real infra gaps (ai-server missing local CA trust mount causing 401s on /sovereignty/recalculate; ai-worker container never started so the workflow never left CALCULATING), confirmed CALCULATING → IDLE with matching scores. UAT now 4/4 passed, 0 issues; 02-VERIFICATION.md canonicalized to passed; ROADMAP.md Phase 2 checkbox marked complete.
+last_activity_desc: Phase 02 UAT completed (4/4 passed), two infra gaps fixed along the way (ai-server CA trust, ai-worker startup), 02-VERIFICATION.md canonicalized to passed, ROADMAP.md Phase 2 marked complete.
 progress:
-  total_phases: 6
+  total_phases: 7
   completed_phases: 6
   total_plans: 15
   completed_plans: 15
@@ -115,6 +115,7 @@ None yet.
 - Phase 2.1 inserted after Phase 2: Two sovereignty-marker UAT findings: (1) F5 full-page reload restores the diagram via DiagramState.ts's localStorage scene-restore path, which never calls syncDiagramOnOpen/syncSovereigntyMarkers -- markers only appear via handleOpenDiagram (cross-page nav) or manual Ctrl+R sync; (2) marker fill/ring ellipses are positioned once at sync time and do not live-track a main element being dragged afterward. (URGENT)
 - Phase 02.2 inserted after Phase 2: Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable (URGENT)
 - Phase 02.3 inserted after Phase 2: Business capability requirement-chain consistency (parent vs child required levels, YELLOW status, extends D-05) (URGENT)
+- Phase 3 added after Phase 02.3: BusinessCapability self-status GREEN for parent-consistent requirements — three-valued self-status (GREEN=consistent with parent, YELLOW=contradiction per 02.3, GREY=no parent to compare, root inherently GREY), plus a full-chain-green special case for the self/downstream marker projection
 
 ## Deferred Items
 
@@ -126,6 +127,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-04T00:00:00.000Z
-Stopped at: Phase 02.3 complete — both plans executed, tested, committed, summarized. Ready to plan the next phase.
-Resume file: .planning/phases/02.3-business-capability-requirement-chain-consistency-compare-pa/02.3-02-SUMMARY.md
+Last session: 2026-08-07T09:51:03.570Z
+Stopped at: Phase 03 context gathered
+Resume file: .planning/phases/03-business-capability-self-status-green-when-consistent-with-p/03-CONTEXT.md
