@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 02.3
-current_phase_name: Business capability selfStatus GREEN when consistent with parent
-status: in-progress
-stopped_at: Completed 03-01-PLAN.md
+current_phase: "03"
+current_phase_name: "BusinessCapability self-status GREEN for parent-consistent requirements"
+status: executed
+stopped_at: Completed 03-01-PLAN.md, pending verification/UAT
 last_updated: "2026-08-07T10:37:22.956Z"
 last_activity: 2026-08-07
 last_activity_desc: Phase 02 UAT completed (4/4 passed), two infra gaps fixed along the way (ai-server CA trust, ai-worker startup), 02-VERIFICATION.md canonicalized to passed, ROADMAP.md Phase 2 marked complete.
