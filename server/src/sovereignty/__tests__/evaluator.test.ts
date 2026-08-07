@@ -10,6 +10,8 @@ import {
   multiParentBothStricterFixture,
   multiParentInfrastructureFixture,
   multiParentOnlyOneStricterFixture,
+  multiParentOneEmptyOneConsistentFixture,
+  nestedCapabilityGreenFixture,
   nestedCapabilitySubtreeFixture,
   partialAchievedFixture,
   redChainFixture,
@@ -364,6 +366,19 @@ describe('analyzeBusinessCapability — comparedCapabilityIds / three-valued sel
     expect(result.findings).toHaveLength(0)
   })
 
+  it('resolves GREEN for a descendant whose own required level was genuinely compared against its immediate parent and found consistent', () => {
+    const result = analyzeBusinessCapability(nestedCapabilityGreenFixture)
+
+    expect(result.comparedCapabilityIds).toContain('cap-child-nested-green')
+    expect(result.findings).toHaveLength(0)
+  })
+
+  it('D-02: includes the root id in comparedCapabilityIds when one parent contributes zero comparable dimensions but another contributes a real, consistent one', () => {
+    const result = analyzeBusinessCapability(multiParentOneEmptyOneConsistentFixture)
+
+    expect(result.comparedCapabilityIds).toContain(multiParentOneEmptyOneConsistentFixture.rootId)
+    expect(result.findings).toHaveLength(0)
+  })
 })
 
 describe('analyzeDataObject', () => {

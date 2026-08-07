@@ -4,6 +4,8 @@ import {
   diamondSharedCapabilityFixture,
   greenChainFixture,
   greyChainFixture,
+  multiParentOneEmptyOneConsistentFixture,
+  nestedCapabilityGreenFixture,
   nestedCapabilitySubtreeFixture,
   redChainFixture,
   rootParentAllExcludedFixture,
@@ -68,6 +70,13 @@ describe('projectMarkers', () => {
   // `violatingElementId` (only Application/AIComponent/Infrastructure ever
   // are). Reproduces the "gemeinsamer max" -> "Wichtiger Businesscase" ->
   // "TEST" topology from the nested-bc-sov-inheritance precedent.
+  //
+  // 03-CONTEXT.md D-01: this stays GREY under the new three-valued rule too
+  // (not a behavior change) — "cap-test"/"cap-wichtiger-businesscase"'s
+  // immediate parent ("cap-gemeinsamer-max") has `required: requirementLevels()`
+  // (every dimension null), so every dimension is excluded for both children,
+  // landing in the same "genuinely nothing compared" bucket as
+  // `rootParentAllExcludedFixture`, not the "no parent at all" bucket.
   it('gives every nested BusinessCapability child a GREY selfStatus too, not just the analysis root (D-05, D-11)', () => {
     const analysis = analyzeBusinessCapability(nestedCapabilitySubtreeFixture)
     const markers = projectMarkers(analysis)
@@ -129,10 +138,32 @@ describe('projectMarkers', () => {
   // stay YELLOW even though a LATER, unrelated finding block (the other
   // parent's copy, which has its own real Application/AIComponent violation
   // below it) also touches the same id as a mid-chain passthrough member.
+  //
+  // 03-CONTEXT.md D-02 precedence regression: "cap-shared"'s `cap-p2` edge
+  // (security LOW vs. parent LOW — equal, not stricter, a real PASSING
+  // comparison) now ALSO contributes to `comparedIds` (this phase's new
+  // GREEN-eligibility signal), yet `selfStatus` must still resolve YELLOW,
+  // never GREEN, because the `cap-p1` edge's genuine contradiction wins —
+  // proving "any contradiction beats any GREEN-eligible comparison" holds
+  // even when the same capability id has both kinds of edge in one analysis.
   it("keeps a diamond-shared capability's genuine YELLOW self-violation even when a later finding block also passes through it (Test N, CR-01)", () => {
     const analysis = analyzeBusinessCapability(diamondSharedCapabilityFixture)
     const markers = projectMarkers(analysis)
 
     expect(markers.get('cap-shared')?.selfStatus).toBe('YELLOW')
+  })
+
+  it('resolves GREEN for a descendant whose own required level was genuinely compared against its immediate parent and found consistent (D-01 descendant half)', () => {
+    const analysis = analyzeBusinessCapability(nestedCapabilityGreenFixture)
+    const markers = projectMarkers(analysis)
+
+    expect(markers.get('cap-child-nested-green')?.selfStatus).toBe('GREEN')
+  })
+
+  it('D-02: resolves GREEN overall when one parent contributes zero comparable dimensions but another contributes a real, consistent one', () => {
+    const analysis = analyzeBusinessCapability(multiParentOneEmptyOneConsistentFixture)
+    const markers = projectMarkers(analysis)
+
+    expect(markers.get(multiParentOneEmptyOneConsistentFixture.rootId)?.selfStatus).toBe('GREEN')
   })
 })

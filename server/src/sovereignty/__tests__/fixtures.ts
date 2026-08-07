@@ -705,3 +705,52 @@ export const diamondSharedCapabilityFixture: BusinessCapabilityChain = {
     },
   ],
 }
+
+/**
+ * 03-CONTEXT.md D-01 descendant half: a root with a real, non-null required
+ * dimension (`security: MEDIUM`) and one child whose own required level
+ * (`security: HIGH`) is stricter than — and thus consistent with — its
+ * immediate in-scope parent. Proves a descendant, not just the analysis
+ * root, gets the GREEN treatment via the same `analyzeCapabilitySubtree`
+ * per-child loop Task 1 rewired (no separate traversal needed).
+ */
+export const nestedCapabilityGreenFixture: BusinessCapabilityChain = {
+  rootId: 'cap-root-nested-green',
+  rootType: 'businessCapability',
+  required: requirementLevels({ security: 'MEDIUM' }),
+  parentRequiredLevels: [],
+  supportingAIComponents: [],
+  supportingApplications: [],
+  childCapabilities: [
+    {
+      rootId: 'cap-child-nested-green',
+      rootType: 'businessCapability',
+      required: requirementLevels({ security: 'HIGH' }),
+      parentRequiredLevels: [],
+      supportingAIComponents: [],
+      supportingApplications: [],
+      childCapabilities: [],
+    },
+  ],
+}
+
+/**
+ * 03-CONTEXT.md D-02: a root with TWO parents, one (`p-empty`) contributing
+ * zero comparable dimensions (its `required` is entirely null) and the
+ * other (`p-consistent`) contributing one real, consistent (non-
+ * contradicting) dimension. Proves GREEN is not blocked by one parent
+ * contributing nothing to compare, as long as some other parent's edge was
+ * genuinely checked and passed.
+ */
+export const multiParentOneEmptyOneConsistentFixture: BusinessCapabilityChain = {
+  rootId: 'cap-root-multi-green',
+  rootType: 'businessCapability',
+  required: requirementLevels({ control: 'MEDIUM' }),
+  parentRequiredLevels: [
+    { id: 'p-empty', required: requirementLevels() },
+    { id: 'p-consistent', required: requirementLevels({ control: 'LOW' }) },
+  ],
+  supportingAIComponents: [],
+  supportingApplications: [],
+  childCapabilities: [],
+}
