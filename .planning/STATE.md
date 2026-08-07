@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 02.3
-current_phase_name: "Business capability requirement-chain consistency: compare parent vs child BusinessCapability required levels"
-status: complete
-stopped_at: Phase 03 context gathered
-last_updated: "2026-08-07T09:51:03.583Z"
+current_phase_name: Business capability selfStatus GREEN when consistent with parent
+status: in-progress
+stopped_at: Completed 03-01-PLAN.md
+last_updated: "2026-08-07T10:37:22.956Z"
 last_activity: 2026-08-07
 last_activity_desc: Phase 02 UAT completed (4/4 passed), two infra gaps fixed along the way (ai-server CA trust, ai-worker startup), 02-VERIFICATION.md canonicalized to passed, ROADMAP.md Phase 2 marked complete.
 progress:
   total_phases: 7
-  completed_phases: 6
-  total_plans: 15
-  completed_plans: 15
+  completed_phases: 7
+  total_plans: 16
+  completed_plans: 16
 ---
 
 # Project State
@@ -27,12 +27,12 @@ See: .planning/PROJECT.md (updated 2026-07-22)
 
 ## Current Position
 
-Phase: 02.3 — Business capability requirement-chain consistency: compare parent vs child BusinessCapability required levels — COMPLETE
-Plan: both plans executed (02.3-01 tracer + 02.3-02 descendant/multi-parent + Neo4j fetch), 2/2 plans
-Status: All phases (1, 01.1, 2, 02.1, 02.2, 02.3) are now complete and verified. Phase 02's canonical verification passed 2026-08-07 (UAT 4/4).
-Last activity: 2026-08-07 — Phase 02 UAT completed (4/4 passed), two infra gaps fixed along the way (ai-server CA trust, ai-worker startup), 02-VERIFICATION.md canonicalized to passed, ROADMAP.md Phase 2 marked complete.
+Phase: 03 — Business capability selfStatus GREEN when consistent with parent — COMPLETE
+Plan: 1/1 plans executed (03-01 — threads comparedCapabilityIds/hasRealComparison through evaluator.ts/markers.ts, fixes analyzeBusinessCapability's hardcoded GREY selfStatus, expands to descendant + D-02 multi-parent GREEN)
+Status: All phases (1, 01.1, 2, 02.1, 02.2, 02.3, 03) are now complete. Phase 03's single plan (03-01) executed, verified (yarn tsc --noEmit clean, 47/47 sovereignty tests pass), committed, and summarized.
+Last activity: 2026-08-07 — Phase 03 Plan 01 executed and summarized.
 
-Progress: [██████████] 100% (15/15 plans complete across phases)
+Progress: [██████████] 100% (16/16 plans complete across phases)
 
 ## Performance Metrics
 
@@ -69,6 +69,7 @@ Progress: [██████████] 100% (15/15 plans complete across pha
 | Phase 02.2 P02 | ~10min   | 2 tasks | 2 files |
 | Phase 02.2 P03 | ~15min   | 2 tasks | 3 files |
 | Phase 02.2 P04 | ~20min   | 3 tasks | 2 files |
+| Phase 03 P01 | unknown | 2 tasks | 6 files |
 
 ## Quick Tasks Completed
 
@@ -99,6 +100,8 @@ Recent decisions affecting current work:
 - [Phase 02.2]: Phase COMPLETE 2026-08-03 — all 6 UAT tests live-reconfirmed passing (test 1 with an accepted non-blocking deviation: marker ellipses are selectable/resizable but not draggable, still excluded from meaningful interaction); all 4 gaps (G-02.2-3/4/5/6) resolved. 02.2-UAT.md and 02.2-VERIFICATION.md updated to reflect final passing state.
 - [Phase 02.3]: 02.3-01 (tracer, root-only): `classifyCapabilityAgainstParent` compares a BusinessCapability's own required level against one parent's required level, per-dimension, null-either-side excluded (D-03/D-04); `BusinessCapabilityChain.parentRequiredLevels` added as a root-only field; `markers.ts` gained a narrow YELLOW-self exception (D-05) for a capability that is itself the violating element of its own contradiction, preserving the GREY-self invariant otherwise (D-06: `businessCapability` added to `ViolatingElementType`). `repository.ts` got a mechanical `parentRequiredLevels: []` default (deviation, documented in 02.3-01-SUMMARY.md) to keep `tsc` clean pending the real fetch.
 - [Phase 02.3]: 02.3-02 (descendant + multi-parent + Neo4j fetch, PHASE COMPLETE): `analyzeCapabilitySubtree` now calls `classifyCapabilityAgainstParent` for every child against its already-in-scope immediate parent (D-01 descendant half) — no new recursion, D-03 cycle-safety contract untouched; D-02 multi-parent independent-per-parent iteration verified via Tests K/L (Plan 02.3-01's `flatMap` loop already correct, no refactor needed). `fetchBusinessCapabilityChain` gained an `isRoot` parameter gating a new OUT-direction `(cap)-[:HAS_PARENT]->(parent:BusinessCapability)` Cypher match (tenant-scoped via `parentCompany`, mitigating T-02.3-04), populating `parentRequiredLevels` from real Neo4j data for the analysis root only. 37 sovereignty tests pass, `yarn tsc --noEmit` clean.
+- [Phase ?]: 03-01: analyzeBusinessCapability selfStatus computed from parentContradictionFindings/rootHasRealComparison instead of hardcoded GREY, so /sovereignty detail page and diagram markers never disagree
+- [Phase ?]: 03-01: YELLOW-over-GREEN precedence needs no new logic — falls out of markers.ts's existing isCapabilitySelfViolation-checked-first ternary ordering
 
 ### Pending Todos
 
@@ -127,6 +130,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-07T09:51:03.570Z
-Stopped at: Phase 03 context gathered
-Resume file: .planning/phases/03-business-capability-self-status-green-when-consistent-with-p/03-CONTEXT.md
+Last session: 2026-08-07T10:37:22.942Z
+Stopped at: Completed 03-01-PLAN.md
+Resume file: None
