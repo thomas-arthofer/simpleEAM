@@ -139,3 +139,14 @@ Multi-parent handling (D-02 from Phase 2/02.3) carries over unchanged: GREEN req
 Plans:
 
 - [x] 03-01-PLAN.md — Thread the "real comparison happened" signal from `evaluator.ts` through `markers.ts` so `projectMarkers()` resolves GREEN/YELLOW/GREY for root, descendant, and D-02 multi-parent cases
+
+### Phase 4: Extend sovereignty hierarchy checks to other EA element types
+
+**Goal:** [To be planned] Currently the chain-based sovereignty evaluation (explicit per-element ratings, parent/child requirement-chain consistency, GREEN/YELLOW/GREY self-status) has only been exercised end-to-end along one chain: BusinessCapability → Application → Infrastructure. Determine whether other enterprise-architecture element types and relationships in the data model also need to participate in this sovereignty hierarchy (e.g. business processes, other supporting/dependency edges), and what additional evaluator/marker/UI work is required for the full stack to be covered consistently — not just the currently-tested slice.
+**Requirements**: TBD
+**Depends on:** Phase 3
+**Plans:** 0 plans
+
+Plans:
+
+- [ ] TBD (run /gsd-plan-phase 4 to break down)

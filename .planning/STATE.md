@@ -120,6 +120,7 @@ None yet.
 - Phase 02.2 inserted after Phase 2: Sovereignty marker lifecycle: auto-add on drop, delete with element, non-selectable (URGENT)
 - Phase 02.3 inserted after Phase 2: Business capability requirement-chain consistency (parent vs child required levels, YELLOW status, extends D-05) (URGENT)
 - Phase 3 added after Phase 02.3: BusinessCapability self-status GREEN for parent-consistent requirements — three-valued self-status (GREEN=consistent with parent, YELLOW=contradiction per 02.3, GREY=no parent to compare, root inherently GREY), plus a full-chain-green special case for the self/downstream marker projection
+- Phase 4 added after Phase 3: Extend sovereignty hierarchy checks to other EA element types — sovereignty chain evaluation has only been exercised on BusinessCapability → Application → Infrastructure; determine whether other element types/relationships need to participate and what full-stack coverage requires
 
 ## Deferred Items
 

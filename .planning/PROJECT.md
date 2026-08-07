@@ -25,7 +25,7 @@ Enterprise architecture data and sovereignty assessments must be trustworthy eno
 
 ### Active
 
-None — all milestone requirements validated as of Phase 03 (last phase of milestone v1.0). Ready for `/gsd-complete-milestone`.
+- [ ] Extend the chain-based sovereignty hierarchy evaluation beyond the currently-tested BusinessCapability → Application → Infrastructure chain to other EA element types/relationships, if applicable (Phase 4).
 
 ### Out of Scope
 
@@ -51,13 +51,13 @@ The concept in `eam-konzept.md` is the source document for the sovereignty redes
 
 ## Key Decisions
 
-| Decision                                                                                | Rationale                                                                                                                | Outcome   |
-| --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | --------- |
-| Plan this milestone as two ordered phases                                               | The user explicitly prioritized setup stabilization before sovereignty refactoring                                       | — Pending |
-| Treat setup stabilization as behavior plus documentation work                           | The repo docs are outdated, but success also requires the actual Docker path to become reproducible without manual hacks | — Pending |
-| Implement sovereignty as explicit per-element ratings with chain-based violation checks | Inherited ratings make missing assessments look compliant and prevent trustworthy diagnostics                            | — Pending |
-| Include UI and diagram diagnostics in the sovereignty phase                             | The user wants both element-detail visibility and optional diagram markers, not backend-only logic changes             | Shipped — Phase 2/02.1/02.2 |
-| Thread a `hasRealComparison`/`comparedCapabilityIds` signal end-to-end so `analyzeBusinessCapability`'s own selfStatus and `projectMarkers()`'s diagram marker selfStatus are computed from the same data and can never disagree | A hardcoded `selfStatus: 'GREY'` in `analyzeBusinessCapability` meant the `/sovereignty` detail page and diagram markers could show contradicting colors for the same capability | Shipped — Phase 03 |
+| Decision                                                                                                                                                                                                                         | Rationale                                                                                                                                                                        | Outcome                     |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
+| Plan this milestone as two ordered phases                                                                                                                                                                                        | The user explicitly prioritized setup stabilization before sovereignty refactoring                                                                                               | — Pending                   |
+| Treat setup stabilization as behavior plus documentation work                                                                                                                                                                    | The repo docs are outdated, but success also requires the actual Docker path to become reproducible without manual hacks                                                         | — Pending                   |
+| Implement sovereignty as explicit per-element ratings with chain-based violation checks                                                                                                                                          | Inherited ratings make missing assessments look compliant and prevent trustworthy diagnostics                                                                                    | — Pending                   |
+| Include UI and diagram diagnostics in the sovereignty phase                                                                                                                                                                      | The user wants both element-detail visibility and optional diagram markers, not backend-only logic changes                                                                       | Shipped — Phase 2/02.1/02.2 |
+| Thread a `hasRealComparison`/`comparedCapabilityIds` signal end-to-end so `analyzeBusinessCapability`'s own selfStatus and `projectMarkers()`'s diagram marker selfStatus are computed from the same data and can never disagree | A hardcoded `selfStatus: 'GREY'` in `analyzeBusinessCapability` meant the `/sovereignty` detail page and diagram markers could show contradicting colors for the same capability | Shipped — Phase 03          |
 
 ## Evolution
 
