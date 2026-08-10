@@ -145,16 +145,16 @@ Plans:
 **Goal:** `BusinessProcess` becomes a full sovereignty requirement root: a new independent `SovereigntyRootType` mirroring `analyzeDataObject`'s achieved-chain evaluation against its `supportedByApplications` (D-02), plus the full 02.3/03 three-valued GREEN/YELLOW/GREY parent-consistency check against its own `parentProcess` hierarchy (D-04), evaluated entirely on its own — not nested inside any `BusinessCapability`'s chain (D-03). `Supplier` (Phase 2 D-08) stays deferred, unchanged (D-01/D-05).
 **Requirements**: SOVX-02, D-01, D-02, D-03, D-04, D-05 (04-CONTEXT.md decisions; SOVX-02 tracked in REQUIREMENTS.md)
 **Depends on:** Phase 3
-**Plans:** 3 plans
+**Plans:** 2/3 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 04-01-PLAN.md — Wave 1 tracer: BusinessProcess achieved-chain evaluation end-to-end (types, analyzeBusinessProcess, real Neo4j fetch, GraphQL rootType dispatch) — D-01, D-02
+- [x] 04-01-PLAN.md — Wave 1 tracer: BusinessProcess achieved-chain evaluation end-to-end (types, analyzeBusinessProcess, real Neo4j fetch, GraphQL rootType dispatch) — D-01, D-02
 
 **Wave 2** _(blocked on Wave 1 completion)_
 
-- [ ] 04-02-PLAN.md — Wave 2 expansion: parent-consistency against parentProcess (generalized classifyCapabilityAgainstParent, three-valued selfStatus), the critical markers.ts selfViolatingIds bug fix, companyRollup.ts BusinessProcess inclusion — D-04, D-05
+- [x] 04-02-PLAN.md — Wave 2 expansion: parent-consistency against parentProcess (generalized classifyCapabilityAgainstParent, three-valued selfStatus), the critical markers.ts selfViolatingIds bug fix, companyRollup.ts BusinessProcess inclusion — D-04, D-05
 
 **Wave 3** _(blocked on Wave 2 completion)_
 
