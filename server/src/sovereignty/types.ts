@@ -45,8 +45,11 @@ export interface Finding {
   readonly chainPath: readonly string[]
 }
 
-/** Requirement roots in Phase 2 scope (D-04 — BusinessProcess is out of scope). */
-export type SovereigntyRootType = 'businessCapability' | 'dataObject'
+/**
+ * Requirement roots. `'businessProcess'` was added in Phase 4 (D-01/D-02),
+ * superseding Phase 2's D-04 deferral of BusinessProcess.
+ */
+export type SovereigntyRootType = 'businessCapability' | 'dataObject' | 'businessProcess'
 
 /**
  * Canonical analysis result for a requirement root. `selfStatus` is always
@@ -175,4 +178,17 @@ export interface BusinessCapabilityChain extends SupportChain {
  */
 export interface DataObjectChain extends SupportChain {
   readonly rootType: 'dataObject'
+}
+
+/**
+ * A BusinessProcess's own requirements plus the Applications it is
+ * directly supported by (D-02 — flat, DataObject-shaped: no nested
+ * childProcesses achieved-chain walk, unlike BusinessCapability's
+ * childCapabilities rollup). BusinessProcess has no direct AIComponent
+ * relationship in schema.graphql, so `supportingAIComponents` is always
+ * `[]`. `parentRequiredLevels` (D-04 parent-consistency) is added by
+ * Phase 4 Plan 04-02 — this interface stays achieved-chain-only here.
+ */
+export interface BusinessProcessChain extends SupportChain {
+  readonly rootType: 'businessProcess'
 }

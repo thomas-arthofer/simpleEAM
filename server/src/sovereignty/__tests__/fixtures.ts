@@ -3,6 +3,7 @@ import type {
   AIComponentNode,
   ApplicationNode,
   BusinessCapabilityChain,
+  BusinessProcessChain,
   DataObjectChain,
   InfrastructureNode,
   RequirementLevels,
@@ -330,6 +331,109 @@ export const dataObjectChainFixture: DataObjectChain = {
         security: 'MEDIUM',
         control: 'HIGH',
       }),
+    }),
+  ],
+}
+
+/**
+ * D-02: a BusinessProcess root whose one supporting Application achieves the
+ * required resilience itself, but that Application's `hostedOn`
+ * Infrastructure achieves only LOW against the process's required HIGH —
+ * mirrors `redChainFixture`'s app-compliant/infra-violating RED shape.
+ */
+export const businessProcessRedFixture: BusinessProcessChain = {
+  rootId: 'process-onboarding',
+  rootType: 'businessProcess',
+  required: requirementLevels({
+    strategicAutonomy: 'MEDIUM',
+    resilience: 'HIGH',
+    security: 'MEDIUM',
+    control: 'MEDIUM',
+  }),
+  supportingAIComponents: [],
+  supportingApplications: [
+    applicationNode({
+      id: 'app-onboarding-service',
+      name: 'OnboardingService',
+      achieved: achievedLevels({
+        strategicAutonomy: 'MEDIUM',
+        resilience: 'HIGH',
+        security: 'MEDIUM',
+        control: 'MEDIUM',
+      }),
+      hostedOn: [
+        infrastructureNode({
+          id: 'infra-onboarding-vm',
+          name: 'OnboardingVM',
+          achieved: achievedLevels({
+            strategicAutonomy: 'MEDIUM',
+            resilience: 'LOW',
+            security: 'MEDIUM',
+            control: 'MEDIUM',
+          }),
+        }),
+      ],
+    }),
+  ],
+}
+
+/**
+ * D-02: a BusinessProcess root with one supporting Application that has no
+ * achieved values set at all (SOV-03) — expects every dimension with a
+ * required value to classify GREY, mirrors `greyChainFixture`.
+ */
+export const businessProcessGreyFixture: BusinessProcessChain = {
+  rootId: 'process-grey',
+  rootType: 'businessProcess',
+  required: requirementLevels({ control: 'MEDIUM' }),
+  supportingAIComponents: [],
+  supportingApplications: [
+    applicationNode({
+      id: 'app-process-unassessed',
+      name: 'UnassessedProcessApp',
+      achieved: achievedLevels(),
+      hostedOn: [],
+    }),
+  ],
+}
+
+/**
+ * D-02: achieved values satisfy (or exceed) the requirement on every
+ * dimension for both the Application and its Infrastructure — expects zero
+ * findings and a GREEN downstreamStatus, mirrors `greenChainFixture`.
+ */
+export const businessProcessGreenFixture: BusinessProcessChain = {
+  rootId: 'process-green',
+  rootType: 'businessProcess',
+  required: requirementLevels({
+    strategicAutonomy: 'HIGH',
+    resilience: 'HIGH',
+    security: 'HIGH',
+    control: 'HIGH',
+  }),
+  supportingAIComponents: [],
+  supportingApplications: [
+    applicationNode({
+      id: 'app-process-compliant',
+      name: 'CompliantProcessApp',
+      achieved: achievedLevels({
+        strategicAutonomy: 'HIGH',
+        resilience: 'VERY_HIGH',
+        security: 'HIGH',
+        control: 'HIGH',
+      }),
+      hostedOn: [
+        infrastructureNode({
+          id: 'infra-process-compliant',
+          name: 'CompliantProcessInfra',
+          achieved: achievedLevels({
+            strategicAutonomy: 'HIGH',
+            resilience: 'HIGH',
+            security: 'VERY_HIGH',
+            control: 'HIGH',
+          }),
+        }),
+      ],
     }),
   ],
 }

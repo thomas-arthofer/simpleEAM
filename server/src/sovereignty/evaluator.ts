@@ -4,6 +4,7 @@ import type {
   AIComponentNode,
   ApplicationNode,
   BusinessCapabilityChain,
+  BusinessProcessChain,
   DataObjectChain,
   Finding,
   InfrastructureNode,
@@ -413,4 +414,16 @@ export function analyzeBusinessCapability(chain: BusinessCapabilityChain): Sover
  */
 export function analyzeDataObject(chain: DataObjectChain): SovereigntyAnalysis {
   return analyzeSupportChain(chain, 'dataObject')
+}
+
+/**
+ * Analyzes a BusinessProcess's achieved-chain: own requirements vs. the
+ * Applications it is directly supported by (D-02). Shares
+ * `analyzeSupportChain`/`classifyNode`/`walkApplication` with
+ * `analyzeBusinessCapability`/`analyzeDataObject` — no new leaf-node
+ * walker is needed. Parent-consistency (`parentProcess`, D-04) lands in
+ * a follow-up phase-4 plan.
+ */
+export function analyzeBusinessProcess(chain: BusinessProcessChain): SovereigntyAnalysis {
+  return analyzeSupportChain(chain, 'businessProcess')
 }

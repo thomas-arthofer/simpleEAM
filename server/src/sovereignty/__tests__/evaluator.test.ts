@@ -1,5 +1,8 @@
-import { analyzeBusinessCapability, analyzeDataObject } from '../evaluator'
+import { analyzeBusinessCapability, analyzeBusinessProcess, analyzeDataObject } from '../evaluator'
 import {
+  businessProcessGreenFixture,
+  businessProcessGreyFixture,
+  businessProcessRedFixture,
   capabilityCycleFixture,
   capabilityCycleTriggeringFixture,
   compositeApplicationFixture,
@@ -407,5 +410,52 @@ describe('analyzeDataObject', () => {
     // No dimension is missing an achieved value in this fixture, so no GREY
     // findings are expected — only the one RED violation.
     expect(result.findings.every(f => f.status === 'RED')).toBe(true)
+  })
+})
+
+describe('analyzeBusinessProcess', () => {
+  it('produces exactly one RED finding when a supporting Application achieves the requirement but its hostedOn Infrastructure does not', () => {
+    const result = analyzeBusinessProcess(businessProcessRedFixture)
+
+    const redFindings = result.findings.filter(f => f.status === 'RED')
+    expect(redFindings).toHaveLength(1)
+    expect(redFindings[0]).toMatchObject({
+      violatingElementId: 'infra-onboarding-vm',
+      violatingElementType: 'infrastructure',
+      dimension: 'resilience',
+      status: 'RED',
+      requiredLevel: 'HIGH',
+      actualLevel: 'LOW',
+    })
+    expect(result.downstreamStatus).toBe('RED')
+  })
+
+  it('classifies a supporting Application with no achieved values as GREY, never GREEN by omission', () => {
+    const result = analyzeBusinessProcess(businessProcessGreyFixture)
+
+    expect(result.downstreamStatus).toBe('GREY')
+    expect(result.findings.length).toBeGreaterThan(0)
+    expect(result.findings.every(f => f.status === 'GREY')).toBe(true)
+  })
+
+  it('produces an empty findings array and GREEN downstreamStatus when fully satisfied', () => {
+    const result = analyzeBusinessProcess(businessProcessGreenFixture)
+
+    expect(result.findings).toHaveLength(0)
+    expect(result.downstreamStatus).toBe('GREEN')
+  })
+
+  it('always resolves selfStatus to GREY (no parent-consistency check yet — lands in Plan 04-02)', () => {
+    expect(analyzeBusinessProcess(businessProcessRedFixture).selfStatus).toBe('GREY')
+    expect(analyzeBusinessProcess(businessProcessGreyFixture).selfStatus).toBe('GREY')
+    expect(analyzeBusinessProcess(businessProcessGreenFixture).selfStatus).toBe('GREY')
+  })
+
+  it('sets rootType to businessProcess and capabilityIds/comparedCapabilityIds to the type-agnostic SupportChain shape', () => {
+    const result = analyzeBusinessProcess(businessProcessGreenFixture)
+
+    expect(result.rootType).toBe('businessProcess')
+    expect(result.capabilityIds).toEqual([businessProcessGreenFixture.rootId])
+    expect(result.comparedCapabilityIds).toEqual([])
   })
 })
