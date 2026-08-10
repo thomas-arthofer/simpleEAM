@@ -72,9 +72,21 @@ export function projectMarkers(analysis: SovereigntyAnalysis): Map<string, Sover
   // blocks in order — otherwise a later block's non-violating passthrough
   // for the same id would unconditionally reset an earlier block's genuine
   // YELLOW self-violation back to GREY (CR-01).
+  //
+  // Derived from `capabilityIds` membership (Phase 4 04-02 fix) rather than
+  // an enumerated `violatingElementType === 'businessCapability'` string
+  // check: the old hardcoded literal silently excluded every other
+  // requirement-root type's own self-violation findings (BusinessProcess's
+  // `violatingElementType: 'businessProcess'` parent-contradiction findings,
+  // D-04) from this set, downgrading a genuine YELLOW contradiction to
+  // GREEN/GREY. `capabilityIds` already identifies every requirement-root id
+  // in this analysis (Pattern 3, BusinessCapability and BusinessProcess
+  // today, extensible to a future third root type without another code
+  // change here) — a finding's `violatingElementId` is a self-violation
+  // exactly when that id is itself a requirement root.
   const selfViolatingIds = new Set(
     analysis.findings
-      .filter(f => f.violatingElementType === 'businessCapability')
+      .filter(f => capabilityIds.has(f.violatingElementId))
       .map(f => f.violatingElementId)
   )
 
@@ -171,7 +183,6 @@ export function projectMarkers(analysis: SovereigntyAnalysis): Map<string, Sover
       downstreamStatus: current.downstreamStatus,
     })
   }
-
 
   return markers
 }

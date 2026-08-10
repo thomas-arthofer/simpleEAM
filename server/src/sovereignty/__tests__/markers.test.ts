@@ -1,6 +1,9 @@
-import { analyzeBusinessCapability } from '../evaluator'
+import { analyzeBusinessCapability, analyzeBusinessProcess } from '../evaluator'
 import { DEFAULT_MARKER, projectMarkers, resolveMarker } from '../markers'
 import {
+  businessProcessParentAllExcludedFixture,
+  businessProcessParentContradictionFixture,
+  businessProcessParentNoContradictionFixture,
   diamondSharedCapabilityFixture,
   greenChainFixture,
   greyChainFixture,
@@ -165,5 +168,38 @@ describe('projectMarkers', () => {
     const markers = projectMarkers(analysis)
 
     expect(markers.get(multiParentOneEmptyOneConsistentFixture.rootId)?.selfStatus).toBe('GREEN')
+  })
+
+  // Critical regression (04-RESEARCH.md § selfViolatingIds Filter Gap): before
+  // the fix, `selfViolatingIds` hardcoded `f.violatingElementType ===
+  // 'businessCapability'`, so a BusinessProcess's genuine YELLOW
+  // parent-contradiction finding was silently swallowed into GREEN (its
+  // dimension was also a real comparison, so `comparedIds` resolved it
+  // GREEN) instead of surfacing as YELLOW. This test is the fix for that
+  // exact gap — it must fail before the `capabilityIds.has(...)` fix is
+  // applied and pass after.
+  it("gives a BusinessProcess YELLOW selfStatus when its own required level contradicts its parentProcess (D-04 critical fix)", () => {
+    const analysis = analyzeBusinessProcess(businessProcessParentContradictionFixture)
+    const markers = projectMarkers(analysis)
+
+    expect(markers.get(businessProcessParentContradictionFixture.rootId)?.selfStatus).toBe(
+      'YELLOW'
+    )
+  })
+
+  it('resolves GREEN for a BusinessProcess genuinely compared against its parentProcess and found consistent', () => {
+    const analysis = analyzeBusinessProcess(businessProcessParentNoContradictionFixture)
+    const markers = projectMarkers(analysis)
+
+    expect(markers.get(businessProcessParentNoContradictionFixture.rootId)?.selfStatus).toBe(
+      'GREEN'
+    )
+  })
+
+  it('resolves GREY for a BusinessProcess whose parentProcess is present but every dimension is excluded from comparison', () => {
+    const analysis = analyzeBusinessProcess(businessProcessParentAllExcludedFixture)
+    const markers = projectMarkers(analysis)
+
+    expect(markers.get(businessProcessParentAllExcludedFixture.rootId)?.selfStatus).toBe('GREY')
   })
 })
