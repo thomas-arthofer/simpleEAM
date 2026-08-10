@@ -1,5 +1,5 @@
 import { loadFullSupportChain } from '../repository'
-import { analyzeBusinessCapability, analyzeDataObject } from '../evaluator'
+import { analyzeBusinessCapability, analyzeBusinessProcess, analyzeDataObject } from '../evaluator'
 import { analyzeCompanyRollup } from '../companyRollup'
 import { projectMarkers, resolveMarker } from '../markers'
 import { sovereigntyAnalysisArgsSchema, sovereigntyCompanyRollupArgsSchema, sovereigntyMarkerNodesSchema } from '../validation'
@@ -126,7 +126,9 @@ export const sovereigntyResolvers = {
         const analysis =
           chain.rootType === 'businessCapability'
             ? analyzeBusinessCapability(chain)
-            : analyzeDataObject(chain)
+            : chain.rootType === 'businessProcess'
+              ? analyzeBusinessProcess(chain)
+              : analyzeDataObject(chain)
         return toGraphQLAnalysis(analysis)
       } finally {
         await session.close()
@@ -170,7 +172,9 @@ export const sovereigntyResolvers = {
         const analysis =
           chain.rootType === 'businessCapability'
             ? analyzeBusinessCapability(chain)
-            : analyzeDataObject(chain)
+            : chain.rootType === 'businessProcess'
+              ? analyzeBusinessProcess(chain)
+              : analyzeDataObject(chain)
         const markers = projectMarkers(analysis)
 
         return nodes.map(node => {

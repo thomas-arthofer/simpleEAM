@@ -3,6 +3,7 @@ import type {
   AIComponentNode,
   ApplicationNode,
   BusinessCapabilityChain,
+  BusinessProcessChain,
   DataObjectChain,
   InfrastructureNode,
   RequirementLevels,
@@ -504,6 +505,76 @@ async function loadDataObjectSupportChain(
 }
 
 /**
+ * Loads a BusinessProcess's own requirements plus the Applications it is
+ * directly supported by (`supportedByApplications`, D-02 \u2014 flat,
+ * DataObject-shaped: no nested childProcesses achieved-chain walk).
+ * BusinessProcess has no direct AIComponent relationship in schema.graphql,
+ * so `supportingAIComponents` is always `[]` \u2014 never fetched. Returns
+ * `null` when the BusinessProcess does not exist or is not owned by a
+ * company in `companyIds` (and the caller is not admin). Parent-consistency
+ * (`parentProcess`, D-04) is added by Phase 4 Plan 04-02.
+ */
+async function loadBusinessProcessSupportChain(
+  session: Session,
+  companyIds: readonly string[],
+  isAdmin: boolean,
+  rootId: string
+): Promise<BusinessProcessChain | null> {
+  const result = await session.run(
+    `
+    MATCH (proc:BusinessProcess {id: $rootId})-[:OWNED_BY]->(c:Company)
+    WHERE $isAdmin OR c.id IN $companyIds
+    WITH DISTINCT proc
+    OPTIONAL MATCH (proc)<-[:SUPPORTS]-(app:Application)
+    RETURN
+      proc.id AS id,
+      proc.sovereigntyReqStrategicAutonomy AS reqStrategicAutonomy,
+      proc.sovereigntyReqResilience AS reqResilience,
+      proc.sovereigntyReqSecurity AS reqSecurity,
+      proc.sovereigntyReqControl AS reqControl,
+      collect(DISTINCT app.id) AS appIds
+    `,
+    { rootId, companyIds: [...companyIds], isAdmin }
+  )
+
+  if (result.records.length === 0) return null
+
+  const row = result.records[0].toObject() as {
+    id: string | null
+    reqStrategicAutonomy: string | null
+    reqResilience: string | null
+    reqSecurity: string | null
+    reqControl: string | null
+    appIds: (string | null)[]
+  }
+  if (!row.id) return null
+
+  const required: RequirementLevels = {
+    strategicAutonomy: toMaturityLevel(row.reqStrategicAutonomy),
+    resilience: toMaturityLevel(row.reqResilience),
+    security: toMaturityLevel(row.reqSecurity),
+    control: toMaturityLevel(row.reqControl),
+  }
+
+  const cache = createNodeCache()
+  const inFlight = new Set<string>()
+
+  const supportingApplications: ApplicationNode[] = []
+  for (const appId of nonNullIds(row.appIds)) {
+    const app = await fetchApplication(session, appId, cache, inFlight)
+    if (app) supportingApplications.push(app)
+  }
+
+  return {
+    rootId: row.id,
+    rootType: 'businessProcess',
+    required,
+    supportingApplications,
+    supportingAIComponents: [],
+  }
+}
+
+/**
  * Loads a requirement root's (`BusinessCapability` or `DataObject`) own
  * requirements plus its full support chain, dispatching on `rootType`. This
  * is the only chain loader `resolvers.ts` calls — the single hop this module
@@ -522,9 +593,12 @@ export async function loadFullSupportChain(
   isAdmin: boolean,
   rootType: SovereigntyRootType,
   rootId: string
-): Promise<BusinessCapabilityChain | DataObjectChain | null> {
+): Promise<BusinessCapabilityChain | DataObjectChain | BusinessProcessChain | null> {
   if (rootType === 'businessCapability') {
     return loadBusinessCapabilitySupportChain(session, companyIds, isAdmin, rootId)
+  }
+  if (rootType === 'businessProcess') {
+    return loadBusinessProcessSupportChain(session, companyIds, isAdmin, rootId)
   }
   return loadDataObjectSupportChain(session, companyIds, isAdmin, rootId)
 }

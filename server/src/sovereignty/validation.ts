@@ -1,12 +1,13 @@
 import { z } from 'zod'
 
 /**
- * Requirement roots supported in Phase 2 (D-04): BusinessCapability and
- * DataObject only. Mirrors `SovereigntyRootType` in `./types.ts` — kept as a
+ * Requirement roots supported. BusinessCapability and DataObject were added
+ * in Phase 2 (D-04); `businessProcess` was added in Phase 4 (D-01/D-02).
+ * Mirrors `SovereigntyRootType` in `./types.ts` — kept as a
  * separate zod schema (not derived from the TS type) since zod schemas are
  * the runtime input boundary, not a mechanical mirror of compile-time types.
  */
-export const rootTypeSchema = z.enum(['businessCapability', 'dataObject'])
+export const rootTypeSchema = z.enum(['businessCapability', 'dataObject', 'businessProcess'])
 
 /**
  * Shared args shape for `Query.sovereigntyAnalysis` and the root-identifying
