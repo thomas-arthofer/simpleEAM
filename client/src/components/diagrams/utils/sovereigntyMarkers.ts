@@ -33,6 +33,7 @@ interface DiagramElement {
       | 'interface'
       | 'infrastructure'
       | 'applicationInterface'
+      | 'businessProcess'
     isMainElement?: boolean
     mainElementId?: string
     sovereigntyMarker?: 'fill' | 'ring'
@@ -72,11 +73,13 @@ const SOVEREIGNTY_STATUS_RANK: Record<SovereigntyStatus, number> = {
 export const worseStatus = (a: SovereigntyStatus, b: SovereigntyStatus): SovereigntyStatus =>
   SOVEREIGNTY_STATUS_RANK[b] > SOVEREIGNTY_STATUS_RANK[a] ? b : a
 
-// Only BusinessCapability/DataObject elements are valid sovereigntyMarkers
-// roots (02-02's rootType contract).
+// Only BusinessCapability/DataObject/BusinessProcess elements are valid
+// sovereigntyMarkers roots (02-02's rootType contract, extended in 04-03 for
+// BusinessProcess).
 const isMarkerRoot = (element: DiagramElement): boolean =>
   element.customData?.elementType === 'businessCapability' ||
-  element.customData?.elementType === 'dataObject'
+  element.customData?.elementType === 'dataObject' ||
+  element.customData?.elementType === 'businessProcess'
 
 /**
  * The definitive "no markers possible" signal for a whole diagram: true iff

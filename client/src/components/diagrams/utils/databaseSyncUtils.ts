@@ -24,6 +24,7 @@ interface DiagramElement {
       | 'infrastructure'
       | 'businessCapability'
       | 'applicationInterface'
+      | 'businessProcess'
     elementName?: string // Optimization: Just the name instead of complete originalElement
     originalElement?: any // Kept for backwards compatibility
     isMainElement?: boolean
