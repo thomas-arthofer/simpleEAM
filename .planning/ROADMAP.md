@@ -145,7 +145,7 @@ Plans:
 **Goal:** `BusinessProcess` becomes a full sovereignty requirement root: a new independent `SovereigntyRootType` mirroring `analyzeDataObject`'s achieved-chain evaluation against its `supportedByApplications` (D-02), plus the full 02.3/03 three-valued GREEN/YELLOW/GREY parent-consistency check against its own `parentProcess` hierarchy (D-04), evaluated entirely on its own — not nested inside any `BusinessCapability`'s chain (D-03). `Supplier` (Phase 2 D-08) stays deferred, unchanged (D-01/D-05).
 **Requirements**: SOVX-02, D-01, D-02, D-03, D-04, D-05 (04-CONTEXT.md decisions; SOVX-02 tracked in REQUIREMENTS.md)
 **Depends on:** Phase 3
-**Plans:** 3/3 plans executed
+**Plans:** 3/3 plans complete
 
 Plans:
 **Wave 1**

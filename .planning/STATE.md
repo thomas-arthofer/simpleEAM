@@ -2,18 +2,18 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 03
+current_phase: 04
 status: completed
-stopped_at: Completed 04-03-PLAN.md Tasks 1-2; Task 3 (manual-verify checkpoint) outstanding
-last_updated: "2026-08-10T08:04:57.423Z"
-last_activity: 2026-08-07
-last_activity_desc: Phase 03 complete
+stopped_at: Phase 04 complete — manual-verification checkpoint approved by user
+last_updated: "2026-08-10T08:35:00.000Z"
+last_activity: 2026-08-10
+last_activity_desc: Phase 04 complete
 progress:
   total_phases: 8
   completed_phases: 8
   total_plans: 19
   completed_plans: 19
-current_phase_name: BusinessCapability self-status GREEN for parent-consistent requirements
+current_phase_name: Extend sovereignty hierarchy checks to other EA element types
 ---
 
 # Project State
@@ -23,16 +23,16 @@ current_phase_name: BusinessCapability self-status GREEN for parent-consistent r
 See: .planning/PROJECT.md (updated 2026-07-22)
 
 **Core value:** Enterprise architecture data and sovereignty assessments must be trustworthy enough that operators can reproduce the platform and explain exactly where architectural obligations are or are not met.
-**Current focus:** All phases through 02.3 are complete and verified. Phase 02's UAT passed 4/4 (2026-08-07) after fixing two infra gaps (ai-server CA trust mount, ai-worker never started). Milestone v1.0 is fully closed — ready for `/gsd-complete-milestone` or a next milestone.
+**Current focus:** All phases through Phase 4 are complete and verified. Phase 4 extended the canonical sovereignty chain to `BusinessProcess` (achieved-chain + three-valued parent-consistency selfStatus + client UI), including a critical `markers.ts` bug fix (BusinessProcess self-violations were silently rendering GREEN instead of YELLOW). Manual verification checkpoint approved by the user 2026-08-10 (Processes tab and entity-edit dialog explicitly confirmed working). Milestone v1.0 is fully closed — ready for `/gsd-complete-milestone` or a next milestone/phase.
 
 ## Current Position
 
-Phase: 03
-Plan: Not started
+Phase: 04
+Plan: Not started (Phase 04 complete, no Phase 05 defined yet)
 Status: All phases complete
-Last activity: 2026-08-07 — Phase 03 complete
+Last activity: 2026-08-10 — Phase 04 complete
 
-Progress: [██████████] 100% (16/16 plans complete across phases)
+Progress: [██████████] 100% (19/19 plans complete across phases)
 
 ## Performance Metrics
 
@@ -104,6 +104,9 @@ Recent decisions affecting current work:
 - [Phase 02.3]: 02.3-02 (descendant + multi-parent + Neo4j fetch, PHASE COMPLETE): `analyzeCapabilitySubtree` now calls `classifyCapabilityAgainstParent` for every child against its already-in-scope immediate parent (D-01 descendant half) — no new recursion, D-03 cycle-safety contract untouched; D-02 multi-parent independent-per-parent iteration verified via Tests K/L (Plan 02.3-01's `flatMap` loop already correct, no refactor needed). `fetchBusinessCapabilityChain` gained an `isRoot` parameter gating a new OUT-direction `(cap)-[:HAS_PARENT]->(parent:BusinessCapability)` Cypher match (tenant-scoped via `parentCompany`, mitigating T-02.3-04), populating `parentRequiredLevels` from real Neo4j data for the analysis root only. 37 sovereignty tests pass, `yarn tsc --noEmit` clean.
 - [Phase ?]: 03-01: analyzeBusinessCapability selfStatus computed from parentContradictionFindings/rootHasRealComparison instead of hardcoded GREY, so /sovereignty detail page and diagram markers never disagree
 - [Phase ?]: 03-01: YELLOW-over-GREEN precedence needs no new logic — falls out of markers.ts's existing isCapabilitySelfViolation-checked-first ternary ordering
+- [Phase 4]: 04-01: `BusinessProcess` added as a third `SovereigntyRootType`; `analyzeBusinessProcess` reuses `analyzeSupportChain`/`walkApplication` verbatim for its achieved-chain half (no new leaf-walker needed).
+- [Phase 4]: 04-02: `classifyCapabilityAgainstParent` generalized (defaulted `violatingElementType` param) rather than duplicated, backward-compatible with both existing BusinessCapability call sites; BusinessProcess's `parentProcess` check is root-only (no recursive childProcesses walk/visited-set needed, confirmed against schema cardinality). Fixed a critical `markers.ts` bug: `selfViolatingIds` hardcoded `violatingElementType === 'businessCapability'`, silently rendering BusinessProcess YELLOW self-violations as GREEN — generalized to `capabilityIds.has(...)` membership, proven via a regression test that failed before the fix.
+- [Phase 4]: 04-03: BusinessProcess given a third "Processes" tab on `/sovereignty` (structural copy of `SovereigntyDataView.tsx`), entity-edit dialog wiring, and diagram-marker eligibility (`isMarkerRoot` allow-list). D-03 (no BusinessCapability↔BusinessProcess chain nesting) and D-05 (Supplier stays deferred) respected throughout. Manual-verification checkpoint approved 2026-08-10.
 - [Phase ?]: Phase 4: BusinessProcess client sovereignty UI wiring — SovereigntyProcessView.tsx (Processes tab), SovereigntyEntityDialog businessprocess branch, isMarkerRoot diagram-marker eligibility; databaseSyncUtils.ts's parallel DiagramElement union kept in sync (Rule 3 fix). Task 3 manual-verification checkpoint outstanding.
 
 ### Pending Todos

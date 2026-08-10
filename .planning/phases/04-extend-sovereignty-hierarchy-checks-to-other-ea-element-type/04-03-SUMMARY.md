@@ -42,7 +42,7 @@ requirements-completed: [D-01, D-04]
 
 coverage:
   - id: D1
-    description: "A user can see a list of BusinessProcesses on the /sovereignty page with a per-process self/downstream StatusChip and a findings panel, in a new third tab alongside the existing Capabilities/Data tabs"
+    description: 'A user can see a list of BusinessProcesses on the /sovereignty page with a per-process self/downstream StatusChip and a findings panel, in a new third tab alongside the existing Capabilities/Data tabs'
     requirement: 'D-01'
     verification:
       - kind: other
@@ -78,7 +78,7 @@ status: complete
 ## Performance
 
 - **Duration:** ~20 minutes
-- **Tasks:** 2/2 non-checkpoint tasks completed; Task 3 (manual-verification checkpoint) intentionally NOT performed — see below.
+- **Tasks:** 3/3 tasks complete. Task 3 (manual-verification checkpoint) was deferred at execution time (a code-execution agent cannot browser-verify) and was approved by the user in a follow-up session on 2026-08-10 after rebuilding/recreating the `server`/`client` Docker images (both are build-only, no source bind mount) so the running stack actually served this phase's code. User explicitly confirmed sub-checks 1 ("Processes" tab present) and 3 (finding chip opens the entity dialog) by name; sub-checks 2, 4, and 5 (findings panel rendering, live diagram fill/ring markers, YELLOW parent-contradiction consistency) were covered by the blanket "approved" resume signal without individual callouts.
 - **Files modified:** 8 (1 created, 7 modified)
 
 ## Accomplishments
@@ -121,6 +121,7 @@ Each non-checkpoint task was committed atomically:
 ### Auto-fixed Issues
 
 **1. [Rule 3 - Blocking issue] `databaseSyncUtils.ts`'s parallel `DiagramElement` type needed the same union extension**
+
 - **Found during:** Task 2, `yarn tsc --noEmit` verify step
 - **Issue:** `sovereigntyMarkers.ts` and `databaseSyncUtils.ts` each declare their own (unexported, structurally-identical) `DiagramElement` interface. Adding `'businessProcess'` to only `sovereigntyMarkers.ts`'s `customData.elementType` union caused `tsc` errors (`TS2719`) at 3 call sites in `databaseSyncUtils.ts` where a `DiagramElement[]` value crosses into a `sovereigntyMarkers.ts` function signature — TypeScript treats the two same-named-but-differently-declared interfaces as incompatible once their structural shapes diverge.
 - **Fix:** Added `'businessProcess'` to `databaseSyncUtils.ts`'s own `DiagramElement.customData.elementType` union (one line), restoring structural equivalence. No behavior change — this file was not in the plan's `<files>` list, but the plan's own read_first note on `sovereigntyMarkers.ts` explicitly documents these two files' `DiagramElement` types as "kept in sync."
@@ -142,24 +143,24 @@ None — no external service configuration required.
 - `cd client && yarn tsc --noEmit` — clean after both Task 1 and Task 2 (Task 2 required the `databaseSyncUtils.ts` Rule-3 fix before it passed).
 - No test commands were specified by the plan beyond `yarn tsc --noEmit`; no client-side test suite run was requested by 04-03-PLAN.md.
 
-## Outstanding: Manual-Verification Checkpoint (Task 3) — NOT PERFORMED
+## Manual-Verification Checkpoint (Task 3) — APPROVED
 
-Task 3 (`type="checkpoint:human-verify"`, `gate="blocking"`) requires a live browser session against real data and was intentionally **not** attempted by this execution — it is out of scope for a code-execution agent. It remains open and must be performed by a human (or a browser-automation-capable agent) before this plan can be considered fully verified end-to-end. Exact verification steps required (from the plan):
+Task 3 (`type="checkpoint:human-verify"`, `gate="blocking"`) required a live browser session against real data. It was intentionally not attempted during automated execution — out of scope for a code-execution agent — and remained open until this follow-up session. Before verification, the `server`/`client` Docker containers were rebuilt and recreated (both are build-only images with no source bind mount, so the previously running containers predated this phase's code). Verification steps required (from the plan):
 
-1. With `featureFlags.Sovereignty` enabled for the test company, open `/sovereignty` and confirm a "Processes" tab appears alongside "Capabilities"/"Data".
-2. Click into the Processes tab: confirm at least one BusinessProcess with a configured `sovereigntyReq*` value and a supporting Application renders a self/downstream StatusChip pair and (if non-compliant) a findings panel.
-3. Click a finding's violating-element chip or the BusinessProcess's own name chip — confirm the entity dialog opens with the correct BusinessProcess data pre-filled, and a save round-trips via `UPDATE_BUSINESS_PROCESS` without error.
-4. Open a diagram containing at least one BusinessProcess element; force a resync (Ctrl+R or reload); confirm the BusinessProcess element gets an inner fill ellipse and outer ring ellipse rendered, matching a BusinessCapability element's marker treatment on the same canvas.
-5. Confirm a BusinessProcess with a `parentProcess` whose required level is stricter than its own renders a YELLOW self-fill (not GREY) on both the diagram marker and the `/sovereignty` Processes tab's StatusChip, for the exact same BusinessProcess.
+1. With `featureFlags.Sovereignty` enabled for the test company, open `/sovereignty` and confirm a "Processes" tab appears alongside "Capabilities"/"Data". — **Confirmed by user.**
+2. Click into the Processes tab: confirm at least one BusinessProcess with a configured `sovereigntyReq*` value and a supporting Application renders a self/downstream StatusChip pair and (if non-compliant) a findings panel. — Covered by the user's blanket approval; not individually called out.
+3. Click a finding's violating-element chip or the BusinessProcess's own name chip — confirm the entity dialog opens with the correct BusinessProcess data pre-filled, and a save round-trips via `UPDATE_BUSINESS_PROCESS` without error. — **Confirmed by user** ("chip opens the dialog").
+4. Open a diagram containing at least one BusinessProcess element; force a resync (Ctrl+R or reload); confirm the BusinessProcess element gets an inner fill ellipse and outer ring ellipse rendered, matching a BusinessCapability element's marker treatment on the same canvas. — Covered by the user's blanket approval; not individually called out.
+5. Confirm a BusinessProcess with a `parentProcess` whose required level is stricter than its own renders a YELLOW self-fill (not GREY) on both the diagram marker and the `/sovereignty` Processes tab's StatusChip, for the exact same BusinessProcess. — Covered by the user's blanket approval; not individually called out.
 
-**Resume signal (per plan):** Type "approved" or describe issues found during manual verification.
+**Resume signal received:** "process view is there. chip opens the dialog. approved" (2026-08-10).
 
 ## Next Phase Readiness
 
 - All client-side wiring for BusinessProcess sovereignty surfaces (list/detail view, entity-edit dialog, diagram marker eligibility) is in place and `tsc`-clean.
 - Zero server-side files touched by this plan — confirmed by `git diff --cached --stat` on both task commits (`6ed24c5`, `7a0e4a4`), both scoped entirely to `client/`.
 - No BusinessCapability↔BusinessProcess chain-nesting UI was introduced (D-03) and no Supplier UI was introduced (D-05) — confirmed by manual review of all changed files.
-- **Blocker for phase completion:** Task 3's manual-verification checkpoint is outstanding and must be resolved (approved or issues addressed) before Phase 4 can be marked fully complete.
+- Task 3's manual-verification checkpoint is approved (see above). Phase 4 is complete.
 
 ---
 
