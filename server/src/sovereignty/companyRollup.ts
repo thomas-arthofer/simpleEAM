@@ -1,6 +1,6 @@
 import type { Session } from 'neo4j-driver'
 import { loadFullSupportChain } from './repository'
-import { analyzeBusinessCapability, analyzeDataObject } from './evaluator'
+import { analyzeBusinessCapability, analyzeBusinessProcess, analyzeDataObject } from './evaluator'
 import { SOVEREIGNTY_DIMENSIONS } from './types'
 import type { Finding, RequirementLevels, SovereigntyMaturityLevel } from './types'
 
@@ -28,6 +28,7 @@ export interface CompanyRollup {
 interface OwnedIds {
   readonly capabilityIds: readonly string[]
   readonly dataObjectIds: readonly string[]
+  readonly businessProcessIds: readonly string[]
 }
 
 async function loadOwnedIds(session: Session, companyId: string): Promise<OwnedIds> {
@@ -36,21 +37,28 @@ async function loadOwnedIds(session: Session, companyId: string): Promise<OwnedI
     MATCH (c:Company {id: $companyId})
     OPTIONAL MATCH (c)<-[:OWNED_BY]-(cap:BusinessCapability)
     OPTIONAL MATCH (c)<-[:OWNED_BY]-(obj:DataObject)
-    RETURN collect(DISTINCT cap.id) AS capabilityIds, collect(DISTINCT obj.id) AS dataObjectIds
+    OPTIONAL MATCH (c)<-[:OWNED_BY]-(proc:BusinessProcess)
+    RETURN
+      collect(DISTINCT cap.id) AS capabilityIds,
+      collect(DISTINCT obj.id) AS dataObjectIds,
+      collect(DISTINCT proc.id) AS businessProcessIds
     `,
     { companyId }
   )
 
-  if (result.records.length === 0) return { capabilityIds: [], dataObjectIds: [] }
+  if (result.records.length === 0)
+    return { capabilityIds: [], dataObjectIds: [], businessProcessIds: [] }
 
   const row = result.records[0].toObject() as {
     capabilityIds: (string | null)[]
     dataObjectIds: (string | null)[]
+    businessProcessIds: (string | null)[]
   }
 
   return {
     capabilityIds: row.capabilityIds.filter((id): id is string => Boolean(id)),
     dataObjectIds: row.dataObjectIds.filter((id): id is string => Boolean(id)),
+    businessProcessIds: row.businessProcessIds.filter((id): id is string => Boolean(id)),
   }
 }
 
@@ -82,8 +90,9 @@ function pushAchievedScores(findings: readonly Finding[], scores: number[]): voi
 
 /**
  * Company-level sovereignty rollup (SOV-05): batches 02-01's canonical
- * evaluator (`analyzeBusinessCapability`/`analyzeDataObject`) across every
- * BusinessCapability/DataObject the company owns, replacing the retired
+ * evaluator (`analyzeBusinessCapability`/`analyzeDataObject`/
+ * `analyzeBusinessProcess`, Phase 4 04-02) across every BusinessCapability/
+ * DataObject/BusinessProcess the company owns, replacing the retired
  * `ai-server` MATURITY_SCORE-averaging formula that queried entities
  * directly via separate GraphQL calls and silently dropped fully-GREY
  * entities from the achieved array. `expectedSovereigntyScore`/
@@ -96,7 +105,10 @@ export async function analyzeCompanyRollup(
   session: Session,
   companyId: string
 ): Promise<CompanyRollup> {
-  const { capabilityIds, dataObjectIds } = await loadOwnedIds(session, companyId)
+  const { capabilityIds, dataObjectIds, businessProcessIds } = await loadOwnedIds(
+    session,
+    companyId
+  )
 
   const requiredScores: number[] = []
   const achievedScores: number[] = []
@@ -129,6 +141,22 @@ export async function analyzeCompanyRollup(
     pushRequiredScores(chain.required, requiredScores)
     if (chain.rootType === 'dataObject') {
       const analysis = analyzeDataObject(chain)
+      pushAchievedScores(analysis.findings, achievedScores)
+    }
+  }
+
+  for (const businessProcessId of businessProcessIds) {
+    const chain = await loadFullSupportChain(
+      session,
+      [companyId],
+      false,
+      'businessProcess',
+      businessProcessId
+    )
+    if (!chain) continue
+    pushRequiredScores(chain.required, requiredScores)
+    if (chain.rootType === 'businessProcess') {
+      const analysis = analyzeBusinessProcess(chain)
       pushAchievedScores(analysis.findings, achievedScores)
     }
   }

@@ -13,10 +13,28 @@ jest.mock('../../db/neo4j-client', () => ({
  * unset (entirely GREY chain, no achieved values anywhere) — the exact
  * `<behavior>` case from 02-04-PLAN.md Task 1: the GREY chain must still
  * count toward `achievedSovereigntyScore` instead of being filtered out.
+ *
+ * `company-2` (Phase 4 04-02 Task 3): 1 fully-compliant BusinessCapability
+ * (`cap-compliant-2`) plus 1 BusinessProcess (`proc-red`) with a RED
+ * resilience violation — proves `analyzeCompanyRollup`'s achieved score
+ * reflects the BusinessProcess's violation, not just BusinessCapability/
+ * DataObject's.
  */
-const OWNED_IDS: Record<string, { capabilityIds: string[]; dataObjectIds: string[] }> = {
-  'company-1': { capabilityIds: ['cap-1', 'cap-2'], dataObjectIds: ['do-grey'] },
-  'company-empty': { capabilityIds: [], dataObjectIds: [] },
+const OWNED_IDS: Record<
+  string,
+  { capabilityIds: string[]; dataObjectIds: string[]; businessProcessIds: string[] }
+> = {
+  'company-1': {
+    capabilityIds: ['cap-1', 'cap-2'],
+    dataObjectIds: ['do-grey'],
+    businessProcessIds: [],
+  },
+  'company-2': {
+    capabilityIds: ['cap-compliant-2'],
+    dataObjectIds: [],
+    businessProcessIds: ['proc-red'],
+  },
+  'company-empty': { capabilityIds: [], dataObjectIds: [], businessProcessIds: [] },
 }
 
 const CHAIN_ROWS: Record<string, Record<string, unknown>> = {
@@ -50,6 +68,24 @@ const CHAIN_ROWS: Record<string, Record<string, unknown>> = {
     sourceAppIds: [],
     aiComponentIds: [],
   },
+  'cap-compliant-2': {
+    id: 'cap-compliant-2',
+    reqStrategicAutonomy: null,
+    reqResilience: null,
+    reqSecurity: null,
+    reqControl: 'HIGH',
+    appIds: ['app-compliant-2'],
+    aiComponentIds: [],
+    childIds: [],
+  },
+  'proc-red': {
+    id: 'proc-red',
+    reqStrategicAutonomy: null,
+    reqResilience: 'HIGH',
+    reqSecurity: null,
+    reqControl: null,
+    appIds: ['app-proc-red'],
+  },
 }
 
 const NODE_ROWS: Record<string, Record<string, unknown>> = {
@@ -73,6 +109,26 @@ const NODE_ROWS: Record<string, Record<string, unknown>> = {
     infraIds: [],
     componentIds: [],
   },
+  'app-compliant-2': {
+    id: 'app-compliant-2',
+    name: 'Compliant App 2',
+    strategicAutonomy: 'HIGH',
+    resilience: 'HIGH',
+    security: 'HIGH',
+    control: 'HIGH',
+    infraIds: [],
+    componentIds: [],
+  },
+  'app-proc-red': {
+    id: 'app-proc-red',
+    name: 'Process App Red',
+    strategicAutonomy: 'HIGH',
+    resilience: 'LOW',
+    security: 'HIGH',
+    control: 'HIGH',
+    infraIds: [],
+    componentIds: [],
+  },
 }
 
 function createStubSession() {
@@ -91,6 +147,7 @@ function createStubSession() {
         const owned = OWNED_IDS[params.companyId as string] ?? {
           capabilityIds: [],
           dataObjectIds: [],
+          businessProcessIds: [],
         }
         return { records: [{ toObject: () => owned }] }
       }
@@ -118,7 +175,7 @@ describe('analyzeCompanyRollup', () => {
     expect(result.sovereigntyScorePercent).toBe(25)
   })
 
-  it('returns all-null scores when the company owns zero graded BusinessCapabilities/DataObjects', async () => {
+  it('returns all-null scores when the company owns zero graded BusinessCapabilities/DataObjects/BusinessProcesses', async () => {
     const stubSession = createStubSession()
     ;(neo4jDriver.session as jest.Mock).mockReturnValue(stubSession)
 
@@ -128,5 +185,29 @@ describe('analyzeCompanyRollup', () => {
     expect(result.achievedSovereigntyScore).toBeNull()
     expect(result.sovereigntyGap).toBeNull()
     expect(result.sovereigntyScorePercent).toBeNull()
+  })
+
+  // Phase 4 04-02 Task 3 (SOV-05 cross-surface consistency): `company-2` owns
+  // one fully-compliant BusinessCapability (contributes zero achieved-score
+  // entries) and one BusinessProcess with a RED resilience violation. The
+  // combined achievedSovereigntyScore must reflect the BusinessProcess's RED
+  // finding — proving `analyzeCompanyRollup` folds BusinessProcess into the
+  // same min/max computation as BusinessCapability/DataObject, not excluding
+  // it.
+  it("includes a BusinessProcess's achieved/required scores in the company-wide rollup (Test B)", async () => {
+    const stubSession = createStubSession()
+    ;(neo4jDriver.session as jest.Mock).mockReturnValue(stubSession)
+
+    const result = await analyzeCompanyRollup(stubSession as never, 'company-2')
+
+    // requiredScores: cap-compliant-2 control=HIGH(4), proc-red resilience=HIGH(4) -> max=4
+    expect(result.expectedSovereigntyScore).toBe(4)
+    // achievedScores: cap-compliant-2 is fully compliant (contributes
+    // nothing); proc-red's app-proc-red RED resilience finding (LOW=2) is the
+    // only entry -> min=2. If BusinessProcess were excluded from the rollup,
+    // achievedScores would be empty and this would resolve null instead.
+    expect(result.achievedSovereigntyScore).toBe(2)
+    expect(result.sovereigntyGap).toBe(2)
+    expect(result.sovereigntyScorePercent).toBe(50)
   })
 })
