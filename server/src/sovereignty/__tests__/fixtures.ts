@@ -344,6 +344,7 @@ export const dataObjectChainFixture: DataObjectChain = {
 export const businessProcessRedFixture: BusinessProcessChain = {
   rootId: 'process-onboarding',
   rootType: 'businessProcess',
+  parentRequiredLevels: [],
   required: requirementLevels({
     strategicAutonomy: 'MEDIUM',
     resilience: 'HIGH',
@@ -385,6 +386,7 @@ export const businessProcessRedFixture: BusinessProcessChain = {
 export const businessProcessGreyFixture: BusinessProcessChain = {
   rootId: 'process-grey',
   rootType: 'businessProcess',
+  parentRequiredLevels: [],
   required: requirementLevels({ control: 'MEDIUM' }),
   supportingAIComponents: [],
   supportingApplications: [
@@ -405,6 +407,7 @@ export const businessProcessGreyFixture: BusinessProcessChain = {
 export const businessProcessGreenFixture: BusinessProcessChain = {
   rootId: 'process-green',
   rootType: 'businessProcess',
+  parentRequiredLevels: [],
   required: requirementLevels({
     strategicAutonomy: 'HIGH',
     resilience: 'HIGH',
@@ -436,6 +439,78 @@ export const businessProcessGreenFixture: BusinessProcessChain = {
       ],
     }),
   ],
+}
+
+/**
+ * D-04: a BusinessProcess root whose own required security (MEDIUM) is
+ * weaker than its direct `parentProcess`'s required security (HIGH) — the
+ * root-only tracer case, mirrors `rootParentContradictionFixture`. Expects
+ * exactly one YELLOW finding naming the process as the violating element,
+ * `chainPath: ['proc-parent-strict', 'process-root-weaker']`.
+ */
+export const businessProcessParentContradictionFixture: BusinessProcessChain = {
+  rootId: 'process-root-weaker',
+  rootType: 'businessProcess',
+  required: requirementLevels({ security: 'MEDIUM' }),
+  parentRequiredLevels: [
+    { id: 'proc-parent-strict', required: requirementLevels({ security: 'HIGH' }) },
+  ],
+  supportingAIComponents: [],
+  supportingApplications: [],
+}
+
+/**
+ * D-04: a BusinessProcess root whose own required security (LOW) is equal
+ * to or stricter than its direct `parentProcess`'s required security
+ * (MEDIUM) — no contradiction, so no finding and `selfStatus` resolves
+ * GREEN (a real comparison happened and passed), mirrors
+ * `rootParentNoContradictionFixture`.
+ */
+export const businessProcessParentNoContradictionFixture: BusinessProcessChain = {
+  rootId: 'process-root-stricter',
+  rootType: 'businessProcess',
+  required: requirementLevels({ security: 'LOW' }),
+  parentRequiredLevels: [
+    { id: 'proc-parent-looser', required: requirementLevels({ security: 'LOW' }) },
+  ],
+  supportingAIComponents: [],
+  supportingApplications: [],
+}
+
+/**
+ * D-04 / 03-CONTEXT.md D-01: a BusinessProcess root with a `parentProcess`,
+ * but the parent's own `required` is entirely null — every dimension is
+ * excluded from comparison regardless of the root's own values, so
+ * genuinely nothing was compared. `selfStatus` resolves GREY, distinct from
+ * both the "no parent at all" bucket and the "compared and passed" GREEN
+ * bucket — mirrors `rootParentAllExcludedFixture`.
+ */
+export const businessProcessParentAllExcludedFixture: BusinessProcessChain = {
+  rootId: 'process-root-all-excluded',
+  rootType: 'businessProcess',
+  required: requirementLevels({ security: 'HIGH', resilience: 'MEDIUM' }),
+  parentRequiredLevels: [{ id: 'proc-parent-vacuous', required: requirementLevels() }],
+  supportingAIComponents: [],
+  supportingApplications: [],
+}
+
+/**
+ * D-04 / 02.3 D-02: a BusinessProcess root with TWO `parentProcess` edges,
+ * only one stricter than the root's own required control level — expects
+ * exactly ONE finding, from the stricter parent only; the root is flagged
+ * "below ANY parent", not required to be below ALL — mirrors
+ * `multiParentOnlyOneStricterFixture`.
+ */
+export const businessProcessMultiParentFixture: BusinessProcessChain = {
+  rootId: 'process-root-multi',
+  rootType: 'businessProcess',
+  required: requirementLevels({ control: 'MEDIUM' }),
+  parentRequiredLevels: [
+    { id: 'proc-p-strict', required: requirementLevels({ control: 'HIGH' }) },
+    { id: 'proc-p-loose', required: requirementLevels({ control: 'LOW' }) },
+  ],
+  supportingAIComponents: [],
+  supportingApplications: [],
 }
 
 /**

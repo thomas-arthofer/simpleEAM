@@ -102,11 +102,19 @@ export function classifyNode(
  * genuinely compared" signal `markers.ts` needs to distinguish GREEN
  * (compared and consistent) from GREY (nothing to compare), since both cases
  * otherwise produce zero findings and are indistinguishable downstream.
+ *
+ * Generalized in Phase 4 Plan 04-02 to serve both BusinessCapability (its two
+ * existing call sites below, unchanged via the defaulted `violatingElementType`
+ * param) and BusinessProcess's root-only `parentProcess` check (D-04) — the
+ * first parameter is loosened to the minimal `{ rootId, required }` shape both
+ * chain types satisfy structurally, rather than duplicating this function as
+ * a parallel `classifyProcessAgainstParent` (04-RESEARCH.md Pattern 2).
  */
 export function classifyCapabilityAgainstParent(
-  chain: BusinessCapabilityChain,
+  chain: { readonly rootId: string; readonly required: RequirementLevels },
   parentEntry: { readonly id: string; readonly required: RequirementLevels },
-  chainPathPrefix: readonly string[]
+  chainPathPrefix: readonly string[],
+  violatingElementType: ViolatingElementType = 'businessCapability'
 ): { readonly findings: Finding[]; readonly hasRealComparison: boolean } {
   const findings: Finding[] = []
   let hasRealComparison = false
@@ -122,7 +130,7 @@ export function classifyCapabilityAgainstParent(
     if (maturityIndex(childRequired) < maturityIndex(parentRequired)) {
       findings.push({
         violatingElementId: chain.rootId,
-        violatingElementType: 'businessCapability',
+        violatingElementType,
         violatingElementName: chain.rootId,
         dimension,
         status: 'YELLOW',
@@ -417,13 +425,40 @@ export function analyzeDataObject(chain: DataObjectChain): SovereigntyAnalysis {
 }
 
 /**
- * Analyzes a BusinessProcess's achieved-chain: own requirements vs. the
- * Applications it is directly supported by (D-02). Shares
- * `analyzeSupportChain`/`classifyNode`/`walkApplication` with
- * `analyzeBusinessCapability`/`analyzeDataObject` — no new leaf-node
- * walker is needed. Parent-consistency (`parentProcess`, D-04) lands in
- * a follow-up phase-4 plan.
+ * Analyzes a BusinessProcess's achieved-chain (own requirements vs. the
+ * Applications it is directly supported by, D-02) PLUS its root-only
+ * `parentProcess` required-vs-required consistency check (D-04), composed
+ * via the generalized `classifyCapabilityAgainstParent` — mirrors
+ * `analyzeBusinessCapability`'s root-parent half exactly, but WITHOUT the
+ * `analyzeCapabilitySubtree` nested-descendant half: BusinessProcess has no
+ * `childProcesses` achieved-chain subtree to piggyback a descendant-vs-parent
+ * check onto (D-02 established it flat in Plan 04-01) — every BusinessProcess
+ * is analyzed as its own independent root, so the "child compared against
+ * its immediate parent" case is automatically covered whenever that child is
+ * itself queried as a root (04-RESEARCH.md Pitfall 1). `selfStatus` is
+ * three-valued (03-CONTEXT.md D-01/D-02): YELLOW on any parent contradiction,
+ * GREEN when no contradiction but at least one real (non-excluded) dimension
+ * was compared against a `parentProcess`, GREY only when genuinely nothing is
+ * comparable (no parentProcess at all, or every dimension excluded).
  */
 export function analyzeBusinessProcess(chain: BusinessProcessChain): SovereigntyAnalysis {
-  return analyzeSupportChain(chain, 'businessProcess')
+  const base = analyzeSupportChain(chain, 'businessProcess')
+
+  const parentResults = chain.parentRequiredLevels.map(parentEntry =>
+    classifyCapabilityAgainstParent(chain, parentEntry, [], 'businessProcess')
+  )
+  const parentContradictionFindings = parentResults.flatMap(r => r.findings)
+  const rootHasRealComparison = parentResults.some(r => r.hasRealComparison)
+  const combinedFindings = [...base.findings, ...parentContradictionFindings]
+
+  const selfStatus: SovereigntyStatus =
+    parentContradictionFindings.length > 0 ? 'YELLOW' : rootHasRealComparison ? 'GREEN' : 'GREY'
+
+  return {
+    ...base,
+    findings: combinedFindings,
+    selfStatus,
+    downstreamStatus: aggregateDownstreamStatus(combinedFindings),
+    comparedCapabilityIds: rootHasRealComparison ? [chain.rootId] : [],
+  }
 }

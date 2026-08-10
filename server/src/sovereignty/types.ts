@@ -20,14 +20,16 @@ export const SOVEREIGNTY_MATURITY_LEVELS = ['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VE
 export type SovereigntyMaturityLevel = (typeof SOVEREIGNTY_MATURITY_LEVELS)[number]
 
 /** Achieved-leaf entity types in scope for chain traversal (D-08 — no Supplier).
- * `'businessCapability'` (02.3 D-06) is the one exception: it names a capability
- * as the violating element in a parent-vs-child required-level contradiction
- * finding, not an achieved-value violation. */
+ * `'businessCapability'` (02.3 D-06) and `'businessProcess'` (Phase 4 D-04) are
+ * the two exceptions: each names a requirement root as the violating element in
+ * a parent-vs-child required-level contradiction finding, not an achieved-value
+ * violation. */
 export type ViolatingElementType =
   | 'application'
   | 'aiComponent'
   | 'infrastructure'
   | 'businessCapability'
+  | 'businessProcess'
 
 /**
  * A single sovereignty violation: names the violating element, dimension,
@@ -186,9 +188,21 @@ export interface DataObjectChain extends SupportChain {
  * childProcesses achieved-chain walk, unlike BusinessCapability's
  * childCapabilities rollup). BusinessProcess has no direct AIComponent
  * relationship in schema.graphql, so `supportingAIComponents` is always
- * `[]`. `parentRequiredLevels` (D-04 parent-consistency) is added by
- * Phase 4 Plan 04-02 — this interface stays achieved-chain-only here.
+ * `[]`.
  */
 export interface BusinessProcessChain extends SupportChain {
   readonly rootType: 'businessProcess'
+  /**
+   * Direct parents' (`HAS_PARENT_PROCESS`-OUT) own required levels only —
+   * never their full support chains (D-04, mirrors `BusinessCapabilityChain
+   * .parentRequiredLevels` verbatim). Root-only: every BusinessProcess is
+   * independently analyzed as its own root — there is no nested achieved-chain
+   * subtree to distinguish "root" from "descendant" for, unlike
+   * BusinessCapability, so this is always populated by the repository for
+   * every fetch, not gated by an `isRoot` parameter.
+   */
+  readonly parentRequiredLevels: readonly {
+    readonly id: string
+    readonly required: RequirementLevels
+  }[]
 }

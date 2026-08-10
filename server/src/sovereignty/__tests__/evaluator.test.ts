@@ -2,6 +2,10 @@ import { analyzeBusinessCapability, analyzeBusinessProcess, analyzeDataObject } 
 import {
   businessProcessGreenFixture,
   businessProcessGreyFixture,
+  businessProcessMultiParentFixture,
+  businessProcessParentAllExcludedFixture,
+  businessProcessParentContradictionFixture,
+  businessProcessParentNoContradictionFixture,
   businessProcessRedFixture,
   capabilityCycleFixture,
   capabilityCycleTriggeringFixture,
@@ -445,7 +449,7 @@ describe('analyzeBusinessProcess', () => {
     expect(result.downstreamStatus).toBe('GREEN')
   })
 
-  it('always resolves selfStatus to GREY (no parent-consistency check yet — lands in Plan 04-02)', () => {
+  it('resolves selfStatus to GREY on achieved-chain-only fixtures with no parentProcess (parentRequiredLevels: [])', () => {
     expect(analyzeBusinessProcess(businessProcessRedFixture).selfStatus).toBe('GREY')
     expect(analyzeBusinessProcess(businessProcessGreyFixture).selfStatus).toBe('GREY')
     expect(analyzeBusinessProcess(businessProcessGreenFixture).selfStatus).toBe('GREY')
@@ -457,5 +461,77 @@ describe('analyzeBusinessProcess', () => {
     expect(result.rootType).toBe('businessProcess')
     expect(result.capabilityIds).toEqual([businessProcessGreenFixture.rootId])
     expect(result.comparedCapabilityIds).toEqual([])
+  })
+})
+
+describe('analyzeBusinessProcess — parentProcess required-vs-required consistency (D-04)', () => {
+  it('produces exactly one YELLOW finding when the root is weaker than its direct parentProcess (Test 6)', () => {
+    const result = analyzeBusinessProcess(businessProcessParentContradictionFixture)
+
+    const yellowFindings = result.findings.filter(f => f.status === 'YELLOW')
+    expect(yellowFindings).toHaveLength(1)
+    expect(yellowFindings[0]).toMatchObject({
+      status: 'YELLOW',
+      violatingElementType: 'businessProcess',
+      violatingElementId: businessProcessParentContradictionFixture.rootId,
+      dimension: 'security',
+      requiredLevel: 'HIGH',
+      actualLevel: 'MEDIUM',
+      chainPath: ['proc-parent-strict', businessProcessParentContradictionFixture.rootId],
+    })
+    expect(result.selfStatus).toBe('YELLOW')
+  })
+
+  it('resolves GREEN when the root is genuinely compared against a parentProcess and found consistent (Test 7)', () => {
+    const result = analyzeBusinessProcess(businessProcessParentNoContradictionFixture)
+
+    expect(result.findings).toHaveLength(0)
+    expect(result.selfStatus).toBe('GREEN')
+    expect(result.comparedCapabilityIds).toContain(
+      businessProcessParentNoContradictionFixture.rootId
+    )
+  })
+
+  it('resolves GREY when there is no parentProcess at all (Test 8)', () => {
+    const result = analyzeBusinessProcess(businessProcessGreenFixture)
+
+    expect(result.selfStatus).toBe('GREY')
+    expect(result.comparedCapabilityIds).not.toContain(businessProcessGreenFixture.rootId)
+  })
+
+  it('resolves GREY when a parentProcess is present but every dimension is excluded from comparison (Test 9)', () => {
+    const result = analyzeBusinessProcess(businessProcessParentAllExcludedFixture)
+
+    expect(result.selfStatus).toBe('GREY')
+    expect(result.findings).toHaveLength(0)
+    expect(result.comparedCapabilityIds).not.toContain(
+      businessProcessParentAllExcludedFixture.rootId
+    )
+  })
+
+  it('emits exactly one finding when only one of two parentProcess edges is stricter (Test 10, D-02 independence)', () => {
+    const result = analyzeBusinessProcess(businessProcessMultiParentFixture)
+
+    expect(result.findings).toHaveLength(1)
+    expect(result.findings[0].chainPath[0]).toBe('proc-p-strict')
+  })
+
+  it('excludes a dimension entirely when either side is null (Test 11)', () => {
+    const fixture = {
+      ...businessProcessParentContradictionFixture,
+      parentRequiredLevels: [
+        {
+          id: 'proc-parent-strict',
+          required: {
+            ...businessProcessParentContradictionFixture.parentRequiredLevels[0].required,
+            security: null,
+          },
+        },
+      ],
+    }
+
+    const result = analyzeBusinessProcess(fixture)
+
+    expect(result.findings.filter(f => f.dimension === 'security')).toHaveLength(0)
   })
 })

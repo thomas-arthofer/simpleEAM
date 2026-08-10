@@ -509,10 +509,14 @@ async function loadDataObjectSupportChain(
  * directly supported by (`supportedByApplications`, D-02 \u2014 flat,
  * DataObject-shaped: no nested childProcesses achieved-chain walk).
  * BusinessProcess has no direct AIComponent relationship in schema.graphql,
- * so `supportingAIComponents` is always `[]` \u2014 never fetched. Returns
+ * so `supportingAIComponents` is always `[]` \u2014 never fetched. Also fetches
+ * `parentRequiredLevels` (D-04): a root-only `HAS_PARENT_PROCESS`-OUT upward
+ * fetch of the process's own direct parents' required levels, company-scoped
+ * identically to `fetchBusinessCapabilityChain`'s T-02.3-04 parent guard \u2014
+ * no `isRoot` parameter needed since every call to this function is already
+ * root-only (BusinessProcess has no recursive descendant walk). Returns
  * `null` when the BusinessProcess does not exist or is not owned by a
- * company in `companyIds` (and the caller is not admin). Parent-consistency
- * (`parentProcess`, D-04) is added by Phase 4 Plan 04-02.
+ * company in `companyIds` (and the caller is not admin).
  */
 async function loadBusinessProcessSupportChain(
   session: Session,
@@ -526,13 +530,16 @@ async function loadBusinessProcessSupportChain(
     WHERE $isAdmin OR c.id IN $companyIds
     WITH DISTINCT proc
     OPTIONAL MATCH (proc)<-[:SUPPORTS]-(app:Application)
+    OPTIONAL MATCH (proc)-[:HAS_PARENT_PROCESS]->(parent:BusinessProcess)-[:OWNED_BY]->(parentCompany:Company)
+    WHERE parent IS NULL OR $isAdmin OR parentCompany.id IN $companyIds
     RETURN
       proc.id AS id,
       proc.sovereigntyReqStrategicAutonomy AS reqStrategicAutonomy,
       proc.sovereigntyReqResilience AS reqResilience,
       proc.sovereigntyReqSecurity AS reqSecurity,
       proc.sovereigntyReqControl AS reqControl,
-      collect(DISTINCT app.id) AS appIds
+      collect(DISTINCT app.id) AS appIds,
+      collect(DISTINCT parent { .id, .sovereigntyReqStrategicAutonomy, .sovereigntyReqResilience, .sovereigntyReqSecurity, .sovereigntyReqControl }) AS parentRequiredRows
     `,
     { rootId, companyIds: [...companyIds], isAdmin }
   )
@@ -546,6 +553,13 @@ async function loadBusinessProcessSupportChain(
     reqSecurity: string | null
     reqControl: string | null
     appIds: (string | null)[]
+    parentRequiredRows: {
+      id: string | null
+      sovereigntyReqStrategicAutonomy: string | null
+      sovereigntyReqResilience: string | null
+      sovereigntyReqSecurity: string | null
+      sovereigntyReqControl: string | null
+    }[]
   }
   if (!row.id) return null
 
@@ -565,12 +579,25 @@ async function loadBusinessProcessSupportChain(
     if (app) supportingApplications.push(app)
   }
 
+  const parentRequiredLevels = (row.parentRequiredRows ?? [])
+    .filter((parentRow): parentRow is typeof parentRow & { id: string } => Boolean(parentRow?.id))
+    .map(parentRow => ({
+      id: parentRow.id,
+      required: {
+        strategicAutonomy: toMaturityLevel(parentRow.sovereigntyReqStrategicAutonomy),
+        resilience: toMaturityLevel(parentRow.sovereigntyReqResilience),
+        security: toMaturityLevel(parentRow.sovereigntyReqSecurity),
+        control: toMaturityLevel(parentRow.sovereigntyReqControl),
+      },
+    }))
+
   return {
     rootId: row.id,
     rootType: 'businessProcess',
     required,
     supportingApplications,
     supportingAIComponents: [],
+    parentRequiredLevels,
   }
 }
 
