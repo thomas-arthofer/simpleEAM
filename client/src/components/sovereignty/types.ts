@@ -4,6 +4,7 @@ export type EntityType =
   | 'aicomponent'
   | 'dataobject'
   | 'infrastructure'
+  | 'businessprocess'
 
 export interface EntityRef {
   id: string

@@ -9,10 +9,11 @@ import { useAuth } from '@/lib/auth'
 import { useCompanyContext } from '@/contexts/CompanyContext'
 import SovereigntyCapabilityView from '@/components/sovereignty/SovereigntyCapabilityView'
 import SovereigntyDataView from '@/components/sovereignty/SovereigntyDataView'
+import SovereigntyProcessView from '@/components/sovereignty/SovereigntyProcessView'
 import SovereigntyEntityDialog from '@/components/sovereignty/SovereigntyEntityDialog'
 import { EntityRef } from '@/components/sovereignty/types'
 
-type ViewType = 'capabilities' | 'data'
+type ViewType = 'capabilities' | 'data' | 'processes'
 
 export default function SovereigntyDetailPage() {
   const { authenticated, initialized } = useAuth()
@@ -72,6 +73,7 @@ export default function SovereigntyDetailPage() {
           >
             <Tab value="capabilities" label={t('capabilityView')} />
             <Tab value="data" label={t('dataView')} />
+            <Tab value="processes" label={t('processView')} />
           </Tabs>
         </CardContent>
 
@@ -80,6 +82,9 @@ export default function SovereigntyDetailPage() {
             <SovereigntyCapabilityView onEntityClick={setSelectedEntity} />
           )}
           {activeView === 'data' && <SovereigntyDataView onEntityClick={setSelectedEntity} />}
+          {activeView === 'processes' && (
+            <SovereigntyProcessView onEntityClick={setSelectedEntity} />
+          )}
         </CardContent>
       </Card>
 

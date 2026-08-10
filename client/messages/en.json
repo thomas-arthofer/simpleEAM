@@ -4115,6 +4115,7 @@
     "subtitle": "Breakdown of sovereignty scores per capability and data object",
     "capabilityView": "Capability View",
     "dataView": "Data View",
+    "processView": "Process View",
     "capability": "Capability",
     "dataObject": "Data Object",
     "expectedScore": "Expected Score",
@@ -4129,10 +4130,12 @@
       "application": "Application",
       "aicomponent": "AI Component",
       "dataobject": "Data Object",
-      "infrastructure": "Infrastructure"
+      "infrastructure": "Infrastructure",
+      "businessprocess": "Business Process"
     },
     "noCapabilities": "No capabilities found for selected company.",
     "noDataObjects": "No data objects found for selected company.",
+    "noBusinessProcesses": "No business processes found for selected company.",
     "noCompanySelected": "Please select a company to view sovereignty details.",
     "featureDisabled": "The Sovereignty feature is not enabled.",
     "selfStatusLabel": "This element",

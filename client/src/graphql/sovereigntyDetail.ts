@@ -20,6 +20,15 @@ export const GET_SOVEREIGNTY_DATA_OBJECTS_LIST = gql`
   }
 `
 
+export const GET_SOVEREIGNTY_BUSINESS_PROCESSES_LIST = gql`
+  query GetSovereigntyBusinessProcessesList($where: BusinessProcessWhere) {
+    businessProcesses(where: $where) {
+      id
+      name
+    }
+  }
+`
+
 // Canonical sovereignty findings query (02-01/02-02). Replaces the two
 // raw-entity-tree queries this file previously exposed — both detail views
 // now consume this single, evaluator-backed field instead of computing an

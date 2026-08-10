@@ -4070,6 +4070,7 @@
     "subtitle": "Aufschlüsselung der Souveränitätsbewertungen pro Fähigkeit und Datenobjekt",
     "capabilityView": "Fähigkeitsansicht",
     "dataView": "Datenansicht",
+    "processView": "Prozessansicht",
     "capability": "Fähigkeit",
     "dataObject": "Datenobjekt",
     "expectedScore": "Erwarteter Wert",
@@ -4084,10 +4085,12 @@
       "application": "Anwendung",
       "aicomponent": "KI-Komponente",
       "dataobject": "Datenobjekt",
-      "infrastructure": "Infrastruktur"
+      "infrastructure": "Infrastruktur",
+      "businessprocess": "Geschäftsprozess"
     },
     "noCapabilities": "Keine Fähigkeiten für das ausgewählte Unternehmen gefunden.",
     "noDataObjects": "Keine Datenobjekte für das ausgewählte Unternehmen gefunden.",
+    "noBusinessProcesses": "Keine Geschäftsprozesse für das ausgewählte Unternehmen gefunden.",
     "noCompanySelected": "Bitte wählen Sie ein Unternehmen aus, um Souveränitätsdetails zu sehen.",
     "featureDisabled": "Das Souveränitätsmerkmal ist nicht aktiviert.",
     "selfStatusLabel": "Eigenstatus",
