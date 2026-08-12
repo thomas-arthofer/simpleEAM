@@ -5,9 +5,9 @@ milestone_name: milestone
 current_phase: 04
 status: completed
 stopped_at: Phase 04 complete — manual-verification checkpoint approved by user
-last_updated: "2026-08-10T08:35:00.000Z"
-last_activity: 2026-08-10
-last_activity_desc: Phase 04 complete
+last_updated: '2026-08-12T12:00:00.000Z'
+last_activity: 2026-08-12
+last_activity_desc: 'Completed quick task 260812-jfs: sovereignty root selfStatus GREEN once filled in'
 progress:
   total_phases: 8
   completed_phases: 8
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-07-22)
 Phase: 04
 Plan: Not started (Phase 04 complete, no Phase 05 defined yet)
 Status: All phases complete
-Last activity: 2026-08-10 — Phase 04 complete
+Last activity: 2026-08-12 — Completed quick task 260812-jfs: sovereignty root selfStatus GREEN once filled in
 
 Progress: [██████████] 100% (19/19 plans complete across phases)
 
@@ -59,26 +59,27 @@ Progress: [██████████] 100% (19/19 plans complete across pha
 
 **Per-Plan Metrics:**
 
-| Plan           | Duration | Tasks   | Files   |
-| -------------- | -------- | ------- | ------- |
-| Phase 2 P03    | 45min    | 3 tasks | 6 files |
-| Phase 2 P04    | n/a      | 2 tasks | 7 files |
-| Phase 2 P05    | 35min    | 2 tasks | 4 files |
-| Phase 02.1 P01 | 15min    | 1 tasks | 1 files |
-| Phase 02.1 P02 | 20min    | 1 tasks | 2 files |
-| Phase 02.2 P01 | ~15min   | 3 tasks | 2 files |
-| Phase 02.2 P02 | ~10min   | 2 tasks | 2 files |
-| Phase 02.2 P03 | ~15min   | 2 tasks | 3 files |
-| Phase 02.2 P04 | ~20min   | 3 tasks | 2 files |
-| Phase 03 P01   | unknown  | 2 tasks | 6 files |
-| Phase 04 P03 | ~20 minutes | 2 tasks | 8 files |
+| Plan           | Duration    | Tasks   | Files   |
+| -------------- | ----------- | ------- | ------- |
+| Phase 2 P03    | 45min       | 3 tasks | 6 files |
+| Phase 2 P04    | n/a         | 2 tasks | 7 files |
+| Phase 2 P05    | 35min       | 2 tasks | 4 files |
+| Phase 02.1 P01 | 15min       | 1 tasks | 1 files |
+| Phase 02.1 P02 | 20min       | 1 tasks | 2 files |
+| Phase 02.2 P01 | ~15min      | 3 tasks | 2 files |
+| Phase 02.2 P02 | ~10min      | 2 tasks | 2 files |
+| Phase 02.2 P03 | ~15min      | 2 tasks | 3 files |
+| Phase 02.2 P04 | ~20min      | 3 tasks | 2 files |
+| Phase 03 P01   | unknown     | 2 tasks | 6 files |
+| Phase 04 P03   | ~20 minutes | 2 tasks | 8 files |
 
 ## Quick Tasks Completed
 
-| ID         | Description                                           | Date       | Status   | Commit  |
-| ---------- | ----------------------------------------------------- | ---------- | -------- | ------- |
-| 260731-et9 | Default arrow type to elbow in Add Related dialog     | 2026-07-31 | complete | e7bd5e8 |
-| 260803-cny | Cap json-file logging (50m×5) on all compose services | 2026-08-03 | complete | eb5414e |
+| ID         | Description                                                            | Date       | Status   | Commit  |
+| ---------- | ----------------------------------------------------------------------- | ---------- | -------- | ------- |
+| 260731-et9 | Default arrow type to elbow in Add Related dialog                     | 2026-07-31 | complete | e7bd5e8 |
+| 260803-cny | Cap json-file logging (50m×5) on all compose services                 | 2026-08-03 | complete | eb5414e |
+| 260812-jfs | Sovereignty root capability/process ring green once filled in (no parent) | 2026-08-12 | complete | 9d790c6 |
 
 ## Accumulated Context
 
