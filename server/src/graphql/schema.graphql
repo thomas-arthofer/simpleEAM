@@ -2246,8 +2246,11 @@ type SovereigntyFinding {
 
 """
 Canonical sovereignty analysis result for a BusinessCapability or DataObject
-root. `selfStatus` is always GREY for a root (D-05) — it owns no achieved
-rating of its own.
+root. A root owns no achieved rating of its own (D-05) — `selfStatus` is
+GREEN once its own required levels are compared against a parent (or, for a
+true hierarchy root with no parent at all, once they are simply filled in),
+YELLOW on a parent-vs-own contradiction, and GREY only when genuinely
+nothing is comparable and nothing is filled in.
 """
 type SovereigntyAnalysis {
   rootId: ID!

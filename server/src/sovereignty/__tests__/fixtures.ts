@@ -173,6 +173,24 @@ export const greenChainFixture: BusinessCapabilityChain = {
 }
 
 /**
+ * A true hierarchy root (no parent at all, `parentRequiredLevels: []`) with
+ * no required levels set on itself either — the one remaining GREY case
+ * after the revised rule: `redChainFixture`/`greyChainFixture`/
+ * `greenChainFixture` all have SOME required level set on the root and now
+ * resolve GREEN ("ausgefüllt"); this fixture proves "no parent AND nothing
+ * filled in" is still GREY.
+ */
+export const rootNoParentUnfilledFixture: BusinessCapabilityChain = {
+  rootId: 'cap-no-parent-unfilled',
+  rootType: 'businessCapability',
+  parentRequiredLevels: [],
+  required: requirementLevels(),
+  supportingAIComponents: [],
+  childCapabilities: [],
+  supportingApplications: [],
+}
+
+/**
  * D-01: an Infrastructure with 2 `parentInfrastructure` edges, one compliant
  * and one violating — expects the RED finding to name only the violating
  * parent, never a single "worst of" synthetic finding merging both edges.
@@ -442,6 +460,22 @@ export const businessProcessGreenFixture: BusinessProcessChain = {
 }
 
 /**
+ * A true hierarchy root (no `parentProcess` at all) with no required levels
+ * set on itself either — mirrors `rootNoParentUnfilledFixture`. The one
+ * remaining GREY case after the revised rule: `businessProcessRedFixture`/
+ * `businessProcessGreyFixture`/`businessProcessGreenFixture` all have SOME
+ * required level set on the root and now resolve GREEN ("ausgefüllt").
+ */
+export const businessProcessNoParentUnfilledFixture: BusinessProcessChain = {
+  rootId: 'process-no-parent-unfilled',
+  rootType: 'businessProcess',
+  parentRequiredLevels: [],
+  required: requirementLevels(),
+  supportingAIComponents: [],
+  supportingApplications: [],
+}
+
+/**
  * D-04: a BusinessProcess root whose own required security (MEDIUM) is
  * weaker than its direct `parentProcess`'s required security (HIGH) — the
  * root-only tracer case, mirrors `rootParentContradictionFixture`. Expects
@@ -633,11 +667,11 @@ export const rootParentNoContradictionFixture: BusinessCapabilityChain = {
  * 03-CONTEXT.md D-01: a root with a parent, but the parent's own `required`
  * is entirely null — every one of the 4 dimensions is excluded from
  * comparison regardless of the root's own values, so genuinely nothing was
- * compared. Distinct from BOTH the "no parent at all" GREY bucket
- * (`redChainFixture`/`greyChainFixture`/`greenChainFixture`) and the
- * "compared and passed" GREEN bucket (`rootParentNoContradictionFixture`) —
- * this fixture proves the "parent present but nothing genuinely comparable"
- * case stays GREY too, not GREEN by vacuous non-contradiction.
+ * compared. Distinct from BOTH the "no parent at all, nothing filled in"
+ * GREY bucket (`rootNoParentUnfilledFixture`) and the "compared and passed"
+ * GREEN bucket (`rootParentNoContradictionFixture`) — this fixture proves
+ * the "parent present but nothing genuinely comparable" case stays GREY
+ * too, not GREEN by vacuous non-contradiction.
  */
 export const rootParentAllExcludedFixture: BusinessCapabilityChain = {
   rootId: 'cap-root-all-excluded',

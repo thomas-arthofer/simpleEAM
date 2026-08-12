@@ -3,6 +3,7 @@ import {
   businessProcessGreenFixture,
   businessProcessGreyFixture,
   businessProcessMultiParentFixture,
+  businessProcessNoParentUnfilledFixture,
   businessProcessParentAllExcludedFixture,
   businessProcessParentContradictionFixture,
   businessProcessParentNoContradictionFixture,
@@ -22,6 +23,7 @@ import {
   nestedCapabilitySubtreeFixture,
   partialAchievedFixture,
   redChainFixture,
+  rootNoParentUnfilledFixture,
   rootParentAllExcludedFixture,
   rootParentContradictionFixture,
   rootParentNoContradictionFixture,
@@ -31,7 +33,11 @@ describe('analyzeBusinessCapability', () => {
   it('produces exactly one RED finding for the eam-konzept.md worked example', () => {
     const result = analyzeBusinessCapability(redChainFixture)
 
-    expect(result.selfStatus).toBe('GREY')
+    // Revised rule: a true hierarchy root (no parent) with its own required
+    // levels filled in resolves GREEN, not the eternal GREY konzept.md's
+    // original "innen neutral" text describes — grey must mean "not filled
+    // in", not "this root can never be green".
+    expect(result.selfStatus).toBe('GREEN')
     expect(result.downstreamStatus).toBe('RED')
 
     const redFindings = result.findings.filter(f => f.status === 'RED')
@@ -68,7 +74,9 @@ describe('analyzeBusinessCapability', () => {
 
     expect(result.findings).toHaveLength(0)
     expect(result.downstreamStatus).toBe('GREEN')
-    expect(result.selfStatus).toBe('GREY')
+    // Revised rule: no parent, but the root's own required levels are filled
+    // in, so selfStatus resolves GREEN too.
+    expect(result.selfStatus).toBe('GREEN')
   })
 
   it('produces one independent finding per parentInfrastructure edge, never a single "worst of" finding (D-01)', () => {
@@ -386,6 +394,25 @@ describe('analyzeBusinessCapability — comparedCapabilityIds / three-valued sel
     expect(result.comparedCapabilityIds).toContain(multiParentOneEmptyOneConsistentFixture.rootId)
     expect(result.findings).toHaveLength(0)
   })
+
+  // Revised rule: a true hierarchy root (no parent at all) is internally
+  // consistent by definition — nothing to contradict — so its own filled-in
+  // required levels are the GREEN-eligibility signal, not a parent
+  // comparison it can never have.
+  it('resolves GREEN and includes the root id in comparedCapabilityIds when there is no parent at all but the root has its own required levels filled in', () => {
+    const result = analyzeBusinessCapability(greenChainFixture)
+
+    expect(result.comparedCapabilityIds).toContain(greenChainFixture.rootId)
+    expect(result.selfStatus).toBe('GREEN')
+  })
+
+  it('resolves GREY and excludes the root id from comparedCapabilityIds when there is no parent at all and nothing is filled in', () => {
+    const result = analyzeBusinessCapability(rootNoParentUnfilledFixture)
+
+    expect(result.comparedCapabilityIds).not.toContain(rootNoParentUnfilledFixture.rootId)
+    expect(result.selfStatus).toBe('GREY')
+    expect(result.findings).toHaveLength(0)
+  })
 })
 
 describe('analyzeDataObject', () => {
@@ -449,10 +476,20 @@ describe('analyzeBusinessProcess', () => {
     expect(result.downstreamStatus).toBe('GREEN')
   })
 
-  it('resolves selfStatus to GREY on achieved-chain-only fixtures with no parentProcess (parentRequiredLevels: [])', () => {
-    expect(analyzeBusinessProcess(businessProcessRedFixture).selfStatus).toBe('GREY')
-    expect(analyzeBusinessProcess(businessProcessGreyFixture).selfStatus).toBe('GREY')
-    expect(analyzeBusinessProcess(businessProcessGreenFixture).selfStatus).toBe('GREY')
+  // Revised rule: a true hierarchy root (no parentProcess at all) is
+  // internally consistent by definition, so its own filled-in required
+  // levels resolve GREEN instead of the previous eternal GREY.
+  it('resolves selfStatus to GREEN on achieved-chain-only fixtures with no parentProcess but required levels filled in (parentRequiredLevels: [])', () => {
+    expect(analyzeBusinessProcess(businessProcessRedFixture).selfStatus).toBe('GREEN')
+    expect(analyzeBusinessProcess(businessProcessGreyFixture).selfStatus).toBe('GREEN')
+    expect(analyzeBusinessProcess(businessProcessGreenFixture).selfStatus).toBe('GREEN')
+  })
+
+  it('resolves selfStatus to GREY when there is no parentProcess at all and nothing is filled in', () => {
+    const result = analyzeBusinessProcess(businessProcessNoParentUnfilledFixture)
+
+    expect(result.selfStatus).toBe('GREY')
+    expect(result.comparedCapabilityIds).not.toContain(businessProcessNoParentUnfilledFixture.rootId)
   })
 
   it('sets rootType to businessProcess and capabilityIds/comparedCapabilityIds to the type-agnostic SupportChain shape', () => {
@@ -460,7 +497,9 @@ describe('analyzeBusinessProcess', () => {
 
     expect(result.rootType).toBe('businessProcess')
     expect(result.capabilityIds).toEqual([businessProcessGreenFixture.rootId])
-    expect(result.comparedCapabilityIds).toEqual([])
+    // No parentProcess, but required levels are filled in — the root is
+    // included (revised rule).
+    expect(result.comparedCapabilityIds).toEqual([businessProcessGreenFixture.rootId])
   })
 })
 
@@ -492,11 +531,18 @@ describe('analyzeBusinessProcess — parentProcess required-vs-required consiste
     )
   })
 
-  it('resolves GREY when there is no parentProcess at all (Test 8)', () => {
+  it('resolves GREEN when there is no parentProcess at all but the root has its own required levels filled in (Test 8, revised)', () => {
     const result = analyzeBusinessProcess(businessProcessGreenFixture)
 
+    expect(result.selfStatus).toBe('GREEN')
+    expect(result.comparedCapabilityIds).toContain(businessProcessGreenFixture.rootId)
+  })
+
+  it('resolves GREY when there is no parentProcess at all and nothing is filled in (Test 8b)', () => {
+    const result = analyzeBusinessProcess(businessProcessNoParentUnfilledFixture)
+
     expect(result.selfStatus).toBe('GREY')
-    expect(result.comparedCapabilityIds).not.toContain(businessProcessGreenFixture.rootId)
+    expect(result.comparedCapabilityIds).not.toContain(businessProcessNoParentUnfilledFixture.rootId)
   })
 
   it('resolves GREY when a parentProcess is present but every dimension is excluded from comparison (Test 9)', () => {

@@ -17,11 +17,14 @@ import {
 } from './fixtures'
 
 describe('projectMarkers', () => {
-  it('gives a BusinessCapability root a GREY selfStatus even when its downstreamStatus is RED (capability ring only)', () => {
+  it('gives a BusinessCapability root a GREEN selfStatus once its own required levels are filled in, even without a parent to compare against', () => {
     const analysis = analyzeBusinessCapability(redChainFixture)
     const markers = projectMarkers(analysis)
 
-    expect(markers.get('cap-abrechnung')).toEqual({ selfStatus: 'GREY', downstreamStatus: 'RED' })
+    expect(markers.get('cap-abrechnung')).toEqual({
+      selfStatus: 'GREEN',
+      downstreamStatus: 'RED',
+    })
   })
 
   it('gives every non-root element on a finding chainPath its own self and downstream status', () => {
@@ -36,11 +39,14 @@ describe('projectMarkers', () => {
     expect(markers.get('infra-vm-web-03')).toEqual({ selfStatus: 'RED', downstreamStatus: 'RED' })
   })
 
-  it('classifies an element with no achieved values as GREY self and GREY downstream, never GREEN by omission', () => {
+  it('classifies a non-root element with no achieved values as GREY self and GREY downstream, never GREEN by omission', () => {
     const analysis = analyzeBusinessCapability(greyChainFixture)
     const markers = projectMarkers(analysis)
 
-    expect(markers.get('cap-grey')).toEqual({ selfStatus: 'GREY', downstreamStatus: 'GREY' })
+    // cap-grey has its own required level filled in (control: MEDIUM) and no
+    // parent, so it resolves GREEN-self even though its downstream is GREY.
+    expect(markers.get('cap-grey')).toEqual({ selfStatus: 'GREEN', downstreamStatus: 'GREY' })
+    // app-unassessed has no achieved values at all — stays GREY regardless.
     expect(markers.get('app-unassessed')).toEqual({ selfStatus: 'GREY', downstreamStatus: 'GREY' })
   })
 
@@ -62,8 +68,9 @@ describe('projectMarkers', () => {
       downstreamStatus: 'GREEN',
     })
 
-    // The root itself is GREY-self with a GREEN ring when fully compliant.
-    expect(markers.get('cap-green')).toEqual({ selfStatus: 'GREY', downstreamStatus: 'GREEN' })
+    // The root itself is GREEN-self (own required levels filled in, no
+    // parent to contradict) with a GREEN ring when fully compliant.
+    expect(markers.get('cap-green')).toEqual({ selfStatus: 'GREEN', downstreamStatus: 'GREEN' })
   })
 
   // sovereignty-low-dc-green: a nested BusinessCapability child appearing
@@ -178,13 +185,11 @@ describe('projectMarkers', () => {
   // GREEN) instead of surfacing as YELLOW. This test is the fix for that
   // exact gap — it must fail before the `capabilityIds.has(...)` fix is
   // applied and pass after.
-  it("gives a BusinessProcess YELLOW selfStatus when its own required level contradicts its parentProcess (D-04 critical fix)", () => {
+  it('gives a BusinessProcess YELLOW selfStatus when its own required level contradicts its parentProcess (D-04 critical fix)', () => {
     const analysis = analyzeBusinessProcess(businessProcessParentContradictionFixture)
     const markers = projectMarkers(analysis)
 
-    expect(markers.get(businessProcessParentContradictionFixture.rootId)?.selfStatus).toBe(
-      'YELLOW'
-    )
+    expect(markers.get(businessProcessParentContradictionFixture.rootId)?.selfStatus).toBe('YELLOW')
   })
 
   it('resolves GREEN for a BusinessProcess genuinely compared against its parentProcess and found consistent', () => {

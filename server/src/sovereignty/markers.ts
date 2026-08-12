@@ -47,8 +47,12 @@ function worseStatus(a: SovereigntyStatus, b: SovereigntyStatus): SovereigntySta
  *   owns no achieved rating of its own): `selfStatus` is GREEN when a real
  *   comparison against a parent was made and found consistent, YELLOW on a
  *   parent-vs-own contradiction, GREY only when there is genuinely nothing
- *   to compare (03-CONTEXT.md D-01/D-02); a DataObject root (no parents)
- *   always stays GREY. `downstreamStatus` equals the analysis's own
+ *   to compare and nothing filled in (03-CONTEXT.md D-01/D-02, revised); a
+ *   BusinessCapability/BusinessProcess with no parent at all (a true
+ *   hierarchy root) resolves GREEN as soon as its own required levels are
+ *   filled in — it is internally consistent by definition, so grey must not
+ *   mean "will never be green" — while a DataObject root (no parent concept
+ *   at all) always stays GREY. `downstreamStatus` equals the analysis's own
  *   aggregate.
  * - Every other element that appears anywhere in a finding's `chainPath`
  *   gets its own `selfStatus` (worst status among findings where it is the

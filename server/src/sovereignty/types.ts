@@ -54,18 +54,23 @@ export interface Finding {
 export type SovereigntyRootType = 'businessCapability' | 'dataObject' | 'businessProcess'
 
 /**
- * Canonical analysis result for a requirement root. `selfStatus` is always
- * GREY for a root — a BusinessCapability/DataObject owns no achieved rating
- * of its own and can never be the cause of a violation, only affected by one
- * (D-05).
+ * Canonical analysis result for a requirement root. A BusinessCapability/
+ * DataObject owns no achieved rating of its own and can never be the cause
+ * of a violation, only affected by one (D-05). `selfStatus` is GREEN once a
+ * real parent comparison passed, or — for a true hierarchy root with no
+ * parent at all — once its own required levels are simply filled in
+ * (nothing to contradict without a parent); YELLOW on a parent-vs-own
+ * contradiction; GREY only when genuinely nothing is comparable and nothing
+ * is filled in.
  *
  * `capabilityIds` lists every BusinessCapability id that is part of this
  * analysis's own subtree — the root itself plus, recursively, every nested
- * `childCapabilities` id (D-11/D-05). A BusinessCapability never owns an
- * achieved rating, so D-05's "selfStatus is always GREY" guarantee applies
- * to every one of these ids, not only to `rootId` — this is what lets
+ * `childCapabilities` id (D-11/D-05). Every nested (non-root) id among these
+ * still resolves via its own real parent comparison only (the "filled in"
+ * exception above applies only to the analysis's own top-level root, which
+ * has no in-scope parent to compare against) — this is what lets
  * `projectMarkers` force GREY on a nested capability appearing mid-chain in
- * an ancestor's findings, not just on the analysis's own top-level root. For
+ * an ancestor's findings whenever it has no real comparison of its own. For
  * a DataObject analysis (no nesting), this is always exactly `[rootId]`.
  */
 export interface SovereigntyAnalysis {

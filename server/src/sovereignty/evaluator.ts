@@ -152,6 +152,16 @@ function aggregateDownstreamStatus(findings: readonly Finding[]): SovereigntySta
 }
 
 /**
+ * True when at least one of the four dimensions has a required level set —
+ * the "ausgefüllt" (filled in) signal a true hierarchy root (no parent to
+ * compare against at all) uses in place of a parent comparison (see
+ * `rootIsFilledIn` in `analyzeBusinessCapability`/`analyzeBusinessProcess`).
+ */
+function hasAnyRequirement(required: RequirementLevels): boolean {
+  return Object.values(required).some(level => level !== null)
+}
+
+/**
  * Recursively walks an Infrastructure and its `parentInfrastructure` edges.
  * `visited` is the set of element ids already on the current traversal path
  * (D-03): re-entering one of them stops silently (no finding, no recursion),
@@ -371,11 +381,15 @@ function analyzeCapabilitySubtree(
  * multi-parent `hostedOn` Infrastructure) and AIComponents, PLUS — recursively
  * — every nested child BusinessCapability's own support chain (D-11), each
  * evaluated against that child's own requirements. `selfStatus` is
- * three-valued (03-CONTEXT.md D-01/D-02): YELLOW if any parent-vs-own
- * required-level contradiction was found, GREEN if no contradiction but at
- * least one real (non-excluded) dimension was compared against a parent,
- * GREY only when there is genuinely nothing to compare (no parent at all, or
- * every dimension excluded on every parent).
+ * three-valued (03-CONTEXT.md D-01/D-02, revised): YELLOW if any parent-vs-own
+ * required-level contradiction was found, GREEN if no contradiction but
+ * either at least one real (non-excluded) dimension was compared against a
+ * parent OR (having no parent at all) the root's own required levels are
+ * filled in — a true hierarchy root is internally consistent by definition
+ * (no parent to contradict), so GREY must mean "not filled in yet", not
+ * "will never be green". GREY only when there is genuinely nothing to
+ * compare AND nothing filled in (every dimension excluded on every parent,
+ * or a parent-less root with no required levels set at all).
  */
 export function analyzeBusinessCapability(chain: BusinessCapabilityChain): SovereigntyAnalysis {
   const {
@@ -389,10 +403,15 @@ export function analyzeBusinessCapability(chain: BusinessCapabilityChain): Sover
   )
   const parentContradictionFindings = parentResults.flatMap(r => r.findings)
   const rootHasRealComparison = parentResults.some(r => r.hasRealComparison)
+  // A true hierarchy root (no parent at all) has nothing to be inconsistent
+  // with — its own filled-in required levels are the only meaningful signal.
+  const rootIsFilledIn =
+    chain.parentRequiredLevels.length === 0 && hasAnyRequirement(chain.required)
   const combinedFindings = [...findings, ...parentContradictionFindings]
-  const comparedCapabilityIds = rootHasRealComparison
-    ? [...nestedComparedIds, chain.rootId]
-    : nestedComparedIds
+  const comparedCapabilityIds =
+    rootHasRealComparison || rootIsFilledIn
+      ? [...nestedComparedIds, chain.rootId]
+      : nestedComparedIds
 
   // Blocker fix: this is the SAME data markers.ts independently derives its
   // own GREEN/GREY resolution from (via comparedCapabilityIds) — computing
@@ -401,7 +420,11 @@ export function analyzeBusinessCapability(chain: BusinessCapabilityChain): Sover
   // and the diagram markers (projectMarkers()'s SovereigntyMarker.selfStatus)
   // from ever disagreeing about the same capability.
   const selfStatus: SovereigntyStatus =
-    parentContradictionFindings.length > 0 ? 'YELLOW' : rootHasRealComparison ? 'GREEN' : 'GREY'
+    parentContradictionFindings.length > 0
+      ? 'YELLOW'
+      : rootHasRealComparison || rootIsFilledIn
+        ? 'GREEN'
+        : 'GREY'
 
   return {
     rootId: chain.rootId,
@@ -436,10 +459,12 @@ export function analyzeDataObject(chain: DataObjectChain): SovereigntyAnalysis {
  * is analyzed as its own independent root, so the "child compared against
  * its immediate parent" case is automatically covered whenever that child is
  * itself queried as a root (04-RESEARCH.md Pitfall 1). `selfStatus` is
- * three-valued (03-CONTEXT.md D-01/D-02): YELLOW on any parent contradiction,
- * GREEN when no contradiction but at least one real (non-excluded) dimension
- * was compared against a `parentProcess`, GREY only when genuinely nothing is
- * comparable (no parentProcess at all, or every dimension excluded).
+ * three-valued (03-CONTEXT.md D-01/D-02, revised): YELLOW on any parent
+ * contradiction, GREEN when no contradiction but either at least one real
+ * (non-excluded) dimension was compared against a `parentProcess` OR (having
+ * no parentProcess at all) the root's own required levels are filled in —
+ * mirrors `analyzeBusinessCapability`'s `rootIsFilledIn` exactly. GREY only
+ * when genuinely nothing is comparable and nothing is filled in.
  */
 export function analyzeBusinessProcess(chain: BusinessProcessChain): SovereigntyAnalysis {
   const base = analyzeSupportChain(chain, 'businessProcess')
@@ -449,16 +474,22 @@ export function analyzeBusinessProcess(chain: BusinessProcessChain): Sovereignty
   )
   const parentContradictionFindings = parentResults.flatMap(r => r.findings)
   const rootHasRealComparison = parentResults.some(r => r.hasRealComparison)
+  const rootIsFilledIn =
+    chain.parentRequiredLevels.length === 0 && hasAnyRequirement(chain.required)
   const combinedFindings = [...base.findings, ...parentContradictionFindings]
 
   const selfStatus: SovereigntyStatus =
-    parentContradictionFindings.length > 0 ? 'YELLOW' : rootHasRealComparison ? 'GREEN' : 'GREY'
+    parentContradictionFindings.length > 0
+      ? 'YELLOW'
+      : rootHasRealComparison || rootIsFilledIn
+        ? 'GREEN'
+        : 'GREY'
 
   return {
     ...base,
     findings: combinedFindings,
     selfStatus,
     downstreamStatus: aggregateDownstreamStatus(combinedFindings),
-    comparedCapabilityIds: rootHasRealComparison ? [chain.rootId] : [],
+    comparedCapabilityIds: rootHasRealComparison || rootIsFilledIn ? [chain.rootId] : [],
   }
 }
