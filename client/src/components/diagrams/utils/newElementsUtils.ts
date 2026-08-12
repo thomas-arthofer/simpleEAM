@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client'
+import { normalizeText } from './textContainerUtils'
 
 interface DiagramElement {
   id: string
@@ -185,7 +186,7 @@ export const detectNewElements = (elements: DiagramElement[]): NewElement[] => {
       continue
     }
 
-    const trimmedText = text.trim()
+    const trimmedText = normalizeText(text)
 
     // Für ArchiMate-Symbole: Einfache Validierung, da diese bereits vordefiniert sind
     // Nur sehr offensichtlich ungültige Texte ausschließen
