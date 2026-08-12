@@ -1,4 +1,6 @@
 import type { ElementType } from '@/graphql/library'
+import type { InfrastructureType } from '@/gql/generated'
+import { getInfrastructureTypeLabel } from '@/components/infrastructure/utils'
 import { generateElementId, generateSeed, getNextIndex } from './elementIdManager'
 import type { ExcalidrawElement, ElementCustomizations } from './capabilityMapTypes'
 
@@ -129,28 +131,6 @@ function getFontFamilyString(fontFamily: number): string {
 }
 
 /**
- * Creates a canvas context for text measurement
- */
-function createMeasurementCanvas(): CanvasRenderingContext2D {
-  const canvas = document.createElement('canvas')
-  const ctx = canvas.getContext('2d')
-  if (!ctx) {
-    throw new Error('Could not create canvas context')
-  }
-  return ctx
-}
-
-/**
- * Measures text width using canvas API with proper font
- */
-function measureTextWidth(text: string, fontSize: number, fontFamily: number): number {
-  const ctx = createMeasurementCanvas()
-  const fontFamilyString = getFontFamilyString(fontFamily)
-  ctx.font = `${fontSize}px ${fontFamilyString}`
-  return ctx.measureText(text).width
-}
-
-/**
  * Measures the height of wrapped text (multiple lines)
  */
 function measureWrappedTextHeight(text: string, fontSize: number): number {
@@ -225,68 +205,36 @@ const DEFAULT_FONT_SIZE = 20
 /**
  * Wraps text using proper font measurement.
  * This ensures accurate wrapping for any font family.
+ *
+ * NOTE: line-wrapping is intentionally disabled — labels are never split
+ * into multiple `\n`-joined lines by this codebase's own logic.
  */
 function wrapTextForExcalidraw(
   text: string,
-  maxWidth: number,
-  fontSize: number,
-  fontFamily: number
+  _maxWidth: number,
+  _fontSize: number,
+  _fontFamily: number
 ): string {
   if (!text || text.trim() === '') {
     return text
   }
 
-  // Check if text fits in one line
-  const singleLineWidth = measureTextWidth(text, fontSize, fontFamily)
-  if (singleLineWidth <= maxWidth) {
-    return text
+  return text.trim()
+}
+
+/**
+ * Builds the diagram display name for an element, prefixing Infrastructure
+ * elements with their Infrastructure Type label (e.g. "Virtual Machine - SRLX0018").
+ */
+export function getInfrastructureDisplayName(
+  name: string,
+  elementType: string,
+  infrastructureType?: string | null
+): string {
+  if (elementType === 'infrastructure' && infrastructureType) {
+    return `${getInfrastructureTypeLabel(infrastructureType as InfrastructureType)} - ${name}`
   }
-
-  // Split into words and wrap
-  const words = text.split(/\s+/).filter(word => word.trim())
-  const lines: string[] = []
-  let currentLine = ''
-
-  for (const word of words) {
-    const testLine = currentLine ? `${currentLine} ${word}` : word
-    const testWidth = measureTextWidth(testLine, fontSize, fontFamily)
-
-    if (testWidth <= maxWidth) {
-      currentLine = testLine
-    } else {
-      if (currentLine) {
-        lines.push(currentLine)
-      }
-
-      // Check if single word is too long
-      const wordWidth = measureTextWidth(word, fontSize, fontFamily)
-      if (wordWidth > maxWidth) {
-        // Break word by characters
-        let chars = ''
-        for (const char of word) {
-          const testChars = chars + char
-          const charWidth = measureTextWidth(testChars, fontSize, fontFamily)
-          if (charWidth <= maxWidth) {
-            chars = testChars
-          } else {
-            if (chars) {
-              lines.push(chars)
-            }
-            chars = char
-          }
-        }
-        currentLine = chars
-      } else {
-        currentLine = word
-      }
-    }
-  }
-
-  if (currentLine) {
-    lines.push(currentLine)
-  }
-
-  return lines.join('\n')
+  return name
 }
 
 // ============================================================================
@@ -419,6 +367,11 @@ export function createLibraryItemFromDatabaseElement<T extends { id: string; nam
   params: CreateLibraryItemFromDatabaseElementParams<T>
 ): ExcalidrawLibraryItem | null {
   const { template, element, elementType, defaultFontFamily, verticalAlign = 'middle' } = params
+  const referenceName = getInfrastructureDisplayName(
+    element.name,
+    elementType,
+    (element as any).infrastructureType
+  )
   if (!template?.elements?.length) {
     return null
   }
@@ -465,7 +418,7 @@ export function createLibraryItemFromDatabaseElement<T extends { id: string; nam
     elementType,
     referenceId: element.id,
     referenceType: elementType,
-    referenceName: element.name,
+    referenceName,
     verticalAlign,
   }
 
@@ -481,7 +434,7 @@ export function createLibraryItemFromDatabaseElement<T extends { id: string; nam
   return {
     id: `db-${elementType}-${element.id}`,
     status: 'published',
-    name: element.name,
+    name: referenceName,
     elements: clonedElements,
   }
 }
@@ -715,6 +668,12 @@ export function createCanvasElementsFromTemplate<T extends { id: string; name: s
     defaultFontFamily = 5,
   } = params
 
+  const referenceName = getInfrastructureDisplayName(
+    element.name,
+    elementType,
+    (element as any).infrastructureType
+  )
+
   if (!template?.elements?.length) {
     console.warn(`No template found for element type: ${elementType}`)
     return []
@@ -803,7 +762,7 @@ export function createCanvasElementsFromTemplate<T extends { id: string; name: s
     {
       elementType,
       referenceId: element.id,
-      referenceName: element.name,
+      referenceName,
       customizations,
     }
   )
@@ -841,7 +800,7 @@ export function createCanvasElementsFromTemplate<T extends { id: string; name: s
 
   // Apply text customizations
   applyTextCustomizations(template.elements, clonedElements, templateById, cloneById, idMapping, {
-    referenceName: element.name,
+    referenceName,
     customizations,
     defaultFontFamily,
     elementType,
