@@ -2229,6 +2229,18 @@ enum SovereigntyDimensionEnum {
 }
 
 """
+One human-readable step in a SovereigntyFinding's chainPath (SOV-04 chain
+readability): the element's id, display name, and entity type, resolved
+from the same chain data the evaluator already walked — never a fresh
+lookup, so it can never disagree with the finding it labels.
+"""
+type SovereigntyChainNode {
+  id: ID!
+  name: String!
+  type: String!
+}
+
+"""
 A single sovereignty chain violation: names the violating element, dimension,
 required/actual maturity, and the chain path from the requirement root down to
 the violating element (SOV-04).
@@ -2242,6 +2254,11 @@ type SovereigntyFinding {
   requiredLevel: SovereigntyMaturity
   actualLevel: SovereigntyMaturity
   chainPath: [String!]!
+  """
+  `chainPath` resolved to human-readable {id, name, type} steps — prefer
+  this over `chainPath` for display (SOV-04 chain readability).
+  """
+  chainNodes: [SovereigntyChainNode!]!
 }
 
 """

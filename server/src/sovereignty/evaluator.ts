@@ -111,7 +111,7 @@ export function classifyNode(
  * a parallel `classifyProcessAgainstParent` (04-RESEARCH.md Pattern 2).
  */
 export function classifyCapabilityAgainstParent(
-  chain: { readonly rootId: string; readonly required: RequirementLevels },
+  chain: { readonly rootId: string; readonly name?: string; readonly required: RequirementLevels },
   parentEntry: { readonly id: string; readonly required: RequirementLevels },
   chainPathPrefix: readonly string[],
   violatingElementType: ViolatingElementType = 'businessCapability'
@@ -131,7 +131,9 @@ export function classifyCapabilityAgainstParent(
       findings.push({
         violatingElementId: chain.rootId,
         violatingElementType,
-        violatingElementName: chain.rootId,
+        // Falls back to the raw id only for fixtures/data with no `name`
+        // fetched (SOV-04 chain readability — see `SupportChain.name`).
+        violatingElementName: chain.name ?? chain.rootId,
         dimension,
         status: 'YELLOW',
         requiredLevel: parentRequired,

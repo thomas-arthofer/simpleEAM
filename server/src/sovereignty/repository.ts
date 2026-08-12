@@ -294,7 +294,7 @@ async function fetchBusinessCapabilityChain(
     WHERE parent IS NULL OR $isAdmin OR parentCompany.id IN $companyIds`
     : ''
   const parentReturnClause = isRoot
-    ? `collect(DISTINCT parent { .id, .sovereigntyReqStrategicAutonomy, .sovereigntyReqResilience, .sovereigntyReqSecurity, .sovereigntyReqControl }) AS parentRequiredRows`
+    ? `collect(DISTINCT parent { .id, .name, .sovereigntyReqStrategicAutonomy, .sovereigntyReqResilience, .sovereigntyReqSecurity, .sovereigntyReqControl }) AS parentRequiredRows`
     : '[] AS parentRequiredRows'
 
   const result = await session.run(
@@ -308,6 +308,7 @@ async function fetchBusinessCapabilityChain(
     ${parentMatchClause}
     RETURN
       cap.id AS id,
+      cap.name AS name,
       cap.sovereigntyReqStrategicAutonomy AS reqStrategicAutonomy,
       cap.sovereigntyReqResilience AS reqResilience,
       cap.sovereigntyReqSecurity AS reqSecurity,
@@ -327,6 +328,7 @@ async function fetchBusinessCapabilityChain(
 
   const row = result.records[0].toObject() as {
     id: string | null
+    name: string | null
     reqStrategicAutonomy: string | null
     reqResilience: string | null
     reqSecurity: string | null
@@ -336,6 +338,7 @@ async function fetchBusinessCapabilityChain(
     childIds: (string | null)[]
     parentRequiredRows: {
       id: string | null
+      name: string | null
       sovereigntyReqStrategicAutonomy: string | null
       sovereigntyReqResilience: string | null
       sovereigntyReqSecurity: string | null
@@ -383,6 +386,7 @@ async function fetchBusinessCapabilityChain(
     .filter((parentRow): parentRow is typeof parentRow & { id: string } => Boolean(parentRow?.id))
     .map(parentRow => ({
       id: parentRow.id,
+      name: parentRow.name ?? parentRow.id,
       required: {
         strategicAutonomy: toMaturityLevel(parentRow.sovereigntyReqStrategicAutonomy),
         resilience: toMaturityLevel(parentRow.sovereigntyReqResilience),
@@ -393,6 +397,7 @@ async function fetchBusinessCapabilityChain(
 
   const node: BusinessCapabilityChain = {
     rootId: row.id,
+    name: row.name ?? row.id,
     rootType: 'businessCapability',
     required,
     supportingApplications,
@@ -447,6 +452,7 @@ async function loadDataObjectSupportChain(
     OPTIONAL MATCH (obj)<-[:TRAINED_WITH]-(aiComponent:AIComponent)
     RETURN
       obj.id AS id,
+      obj.name AS name,
       obj.sovereigntyReqStrategicAutonomy AS reqStrategicAutonomy,
       obj.sovereigntyReqResilience AS reqResilience,
       obj.sovereigntyReqSecurity AS reqSecurity,
@@ -462,6 +468,7 @@ async function loadDataObjectSupportChain(
 
   const row = result.records[0].toObject() as {
     id: string | null
+    name: string | null
     reqStrategicAutonomy: string | null
     reqResilience: string | null
     reqSecurity: string | null
@@ -497,6 +504,7 @@ async function loadDataObjectSupportChain(
 
   return {
     rootId: row.id,
+    name: row.name ?? row.id,
     rootType: 'dataObject',
     required,
     supportingApplications,
@@ -534,12 +542,13 @@ async function loadBusinessProcessSupportChain(
     WHERE parent IS NULL OR $isAdmin OR parentCompany.id IN $companyIds
     RETURN
       proc.id AS id,
+      proc.name AS name,
       proc.sovereigntyReqStrategicAutonomy AS reqStrategicAutonomy,
       proc.sovereigntyReqResilience AS reqResilience,
       proc.sovereigntyReqSecurity AS reqSecurity,
       proc.sovereigntyReqControl AS reqControl,
       collect(DISTINCT app.id) AS appIds,
-      collect(DISTINCT parent { .id, .sovereigntyReqStrategicAutonomy, .sovereigntyReqResilience, .sovereigntyReqSecurity, .sovereigntyReqControl }) AS parentRequiredRows
+      collect(DISTINCT parent { .id, .name, .sovereigntyReqStrategicAutonomy, .sovereigntyReqResilience, .sovereigntyReqSecurity, .sovereigntyReqControl }) AS parentRequiredRows
     `,
     { rootId, companyIds: [...companyIds], isAdmin }
   )
@@ -548,6 +557,7 @@ async function loadBusinessProcessSupportChain(
 
   const row = result.records[0].toObject() as {
     id: string | null
+    name: string | null
     reqStrategicAutonomy: string | null
     reqResilience: string | null
     reqSecurity: string | null
@@ -555,6 +565,7 @@ async function loadBusinessProcessSupportChain(
     appIds: (string | null)[]
     parentRequiredRows: {
       id: string | null
+      name: string | null
       sovereigntyReqStrategicAutonomy: string | null
       sovereigntyReqResilience: string | null
       sovereigntyReqSecurity: string | null
@@ -583,6 +594,7 @@ async function loadBusinessProcessSupportChain(
     .filter((parentRow): parentRow is typeof parentRow & { id: string } => Boolean(parentRow?.id))
     .map(parentRow => ({
       id: parentRow.id,
+      name: parentRow.name ?? parentRow.id,
       required: {
         strategicAutonomy: toMaturityLevel(parentRow.sovereigntyReqStrategicAutonomy),
         resilience: toMaturityLevel(parentRow.sovereigntyReqResilience),
@@ -593,6 +605,7 @@ async function loadBusinessProcessSupportChain(
 
   return {
     rootId: row.id,
+    name: row.name ?? row.id,
     rootType: 'businessProcess',
     required,
     supportingApplications,

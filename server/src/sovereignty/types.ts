@@ -25,11 +25,7 @@ export type SovereigntyMaturityLevel = (typeof SOVEREIGNTY_MATURITY_LEVELS)[numb
  * a parent-vs-child required-level contradiction finding, not an achieved-value
  * violation. */
 export type ViolatingElementType =
-  | 'application'
-  | 'aiComponent'
-  | 'infrastructure'
-  | 'businessCapability'
-  | 'businessProcess'
+  'application' | 'aiComponent' | 'infrastructure' | 'businessCapability' | 'businessProcess'
 
 /**
  * A single sovereignty violation: names the violating element, dimension,
@@ -150,6 +146,14 @@ export interface AIComponentNode {
  */
 export interface SupportChain {
   readonly rootId: string
+  /**
+   * Optional so existing test fixtures (which never render a root's own
+   * name) keep compiling unchanged; `evaluator.ts`/`chainLabels.ts` both
+   * fall back to `rootId` when absent. The repository always populates this
+   * for real data (SOV-04 chain readability) — a raw id name is a
+   * missing-data fallback, never the intended production display.
+   */
+  readonly name?: string
   readonly required: RequirementLevels
   readonly supportingApplications: readonly ApplicationNode[]
   readonly supportingAIComponents: readonly AIComponentNode[]
@@ -174,6 +178,7 @@ export interface BusinessCapabilityChain extends SupportChain {
    */
   readonly parentRequiredLevels: readonly {
     readonly id: string
+    readonly name?: string
     readonly required: RequirementLevels
   }[]
 }
@@ -208,6 +213,7 @@ export interface BusinessProcessChain extends SupportChain {
    */
   readonly parentRequiredLevels: readonly {
     readonly id: string
+    readonly name?: string
     readonly required: RequirementLevels
   }[]
 }

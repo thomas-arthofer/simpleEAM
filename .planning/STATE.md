@@ -75,11 +75,12 @@ Progress: [██████████] 100% (19/19 plans complete across pha
 
 ## Quick Tasks Completed
 
-| ID         | Description                                                            | Date       | Status   | Commit  |
-| ---------- | ----------------------------------------------------------------------- | ---------- | -------- | ------- |
-| 260731-et9 | Default arrow type to elbow in Add Related dialog                     | 2026-07-31 | complete | e7bd5e8 |
-| 260803-cny | Cap json-file logging (50m×5) on all compose services                 | 2026-08-03 | complete | eb5414e |
+| ID         | Description                                                               | Date       | Status   | Commit  |
+| ---------- | ------------------------------------------------------------------------- | ---------- | -------- | ------- |
+| 260731-et9 | Default arrow type to elbow in Add Related dialog                         | 2026-07-31 | complete | e7bd5e8 |
+| 260803-cny | Cap json-file logging (50m×5) on all compose services                     | 2026-08-03 | complete | eb5414e |
 | 260812-jfs | Sovereignty root capability/process ring green once filled in (no parent) | 2026-08-12 | complete | 9d790c6 |
+| 260812-jtq | Sovereignty chain UUIDs should show element name and type instead of raw UUIDs | 2026-08-12 | complete | pending |
 
 ## Accumulated Context
 

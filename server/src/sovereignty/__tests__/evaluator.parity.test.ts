@@ -66,8 +66,7 @@ function createStubSession() {
   return {
     run: jest.fn(async (_query: string, params: Record<string, unknown>) => {
       const id = (params.rootId ?? params.appId ?? params.infraId ?? params.aiComponentId) as
-        | string
-        | undefined
+        string | undefined
       const row = id ? FIXTURE_ROWS[id] : undefined
       if (!row) return { records: [] }
       return { records: [{ toObject: () => row }] }
@@ -103,10 +102,18 @@ describe('SOV-05: resolver path vs direct module call parity', () => {
       findings: Array<Record<string, unknown> & { dimension: string }>
     }
 
-    const normalizedResolverFindings = resolverResult.findings.map(finding => ({
-      ...finding,
-      dimension: DIMENSION_REVERSE_MAP[finding.dimension],
-    }))
+    const normalizedResolverFindings = resolverResult.findings.map(finding => {
+      // `chainNodes` (SOV-04 chain readability) is an additive GraphQL-only
+      // enrichment computed from `chainPath` + `collectChainLabels` — it has
+      // no counterpart on the internal `Finding` type, so it is stripped
+      // before the byte-identical comparison below, exactly like the
+      // `dimension` enum normalization above.
+      const { chainNodes: _chainNodes, ...rest } = finding
+      return {
+        ...rest,
+        dimension: DIMENSION_REVERSE_MAP[finding.dimension],
+      }
+    })
 
     expect(resolverResult.rootId).toEqual(directResult.rootId)
     expect(resolverResult.rootType).toEqual(directResult.rootType)

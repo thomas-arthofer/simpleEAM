@@ -2,7 +2,12 @@ import { loadFullSupportChain } from '../repository'
 import { analyzeBusinessCapability, analyzeBusinessProcess, analyzeDataObject } from '../evaluator'
 import { analyzeCompanyRollup } from '../companyRollup'
 import { projectMarkers, resolveMarker } from '../markers'
-import { sovereigntyAnalysisArgsSchema, sovereigntyCompanyRollupArgsSchema, sovereigntyMarkerNodesSchema } from '../validation'
+import { collectChainLabels, type ChainNodeLabel } from '../chainLabels'
+import {
+  sovereigntyAnalysisArgsSchema,
+  sovereigntyCompanyRollupArgsSchema,
+  sovereigntyMarkerNodesSchema,
+} from '../validation'
 import type { Finding, SovereigntyAnalysis, SovereigntyDimension } from '../types'
 import neo4jDriver from '../../db/neo4j-client'
 
@@ -77,17 +82,31 @@ const DIMENSION_ENUM_MAP: Record<SovereigntyDimension, string> = {
   control: 'CONTROL',
 }
 
-function toGraphQLFinding(finding: Finding) {
+function toGraphQLFinding(finding: Finding, labels: ReadonlyMap<string, ChainNodeLabel>) {
   return {
     ...finding,
     dimension: DIMENSION_ENUM_MAP[finding.dimension],
+    // Falls back to the raw id/violating-element-type only when a chain id
+    // has no label (should not happen — defense against a stale/partial
+    // `labels` map, never trusted to silently hide a real gap).
+    chainNodes: finding.chainPath.map(id => {
+      const label = labels.get(id)
+      return {
+        id,
+        name: label?.name ?? id,
+        type: label?.type ?? finding.violatingElementType,
+      }
+    }),
   }
 }
 
-function toGraphQLAnalysis(analysis: SovereigntyAnalysis) {
+function toGraphQLAnalysis(
+  analysis: SovereigntyAnalysis,
+  labels: ReadonlyMap<string, ChainNodeLabel>
+) {
   return {
     ...analysis,
-    findings: analysis.findings.map(toGraphQLFinding),
+    findings: analysis.findings.map(finding => toGraphQLFinding(finding, labels)),
   }
 }
 
@@ -129,7 +148,7 @@ export const sovereigntyResolvers = {
             : chain.rootType === 'businessProcess'
               ? analyzeBusinessProcess(chain)
               : analyzeDataObject(chain)
-        return toGraphQLAnalysis(analysis)
+        return toGraphQLAnalysis(analysis, collectChainLabels(chain))
       } finally {
         await session.close()
       }

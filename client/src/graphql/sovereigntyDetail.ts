@@ -49,6 +49,11 @@ export const GET_SOVEREIGNTY_ANALYSIS = gql`
         requiredLevel
         actualLevel
         chainPath
+        chainNodes {
+          id
+          name
+          type
+        }
       }
     }
   }

@@ -31,6 +31,18 @@ const VIOLATING_ELEMENT_TYPE_MAP: Record<string, EntityType> = {
   businessProcess: 'businessprocess',
 }
 
+// chainLabels.ts's chain node `type` (evaluator's ViolatingElementType plus
+// the SovereigntyRootType strings) to sovereigntyDetail's `entityTypes` i18n
+// key casing (SOV-04 chain readability).
+const CHAIN_NODE_TYPE_I18N_KEY: Record<string, string> = {
+  application: 'application',
+  aiComponent: 'aicomponent',
+  infrastructure: 'infrastructure',
+  businessCapability: 'capability',
+  dataObject: 'dataobject',
+  businessProcess: 'businessprocess',
+}
+
 interface BusinessProcessListItem {
   id: string
   name: string
@@ -45,6 +57,7 @@ interface SovereigntyFinding {
   requiredLevel: string | null
   actualLevel: string | null
   chainPath: string[]
+  chainNodes: { id: string; name: string; type: string }[]
 }
 
 interface SovereigntyAnalysisResult {
@@ -144,7 +157,14 @@ function FindingsPanel({
               color="text.secondary"
               sx={{ display: 'block', mt: 0.25 }}
             >
-              {t('chainContext', { chainPath: finding.chainPath.join(' → ') })}
+              {t('chainContext', {
+                chainPath: finding.chainNodes
+                  .map(
+                    node =>
+                      `${t(`entityTypes.${CHAIN_NODE_TYPE_I18N_KEY[node.type] ?? node.type}` as never)}: ${node.name}`
+                  )
+                  .join(' → '),
+              })}
             </Typography>
           </Paper>
         )
