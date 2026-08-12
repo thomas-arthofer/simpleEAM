@@ -248,6 +248,16 @@ function ApplicationFormWrapper({
         endOfLifeDate: { set: applicationData.endOfLifeDate },
         timeCategory: { set: applicationData.timeCategory },
         sevenRStrategy: { set: applicationData.sevenRStrategy },
+        sovereigntyAchStrategicAutonomy: {
+          set: applicationData.sovereigntyAchStrategicAutonomy ?? null,
+        },
+        sovereigntyAchResilience: { set: applicationData.sovereigntyAchResilience ?? null },
+        sovereigntyAchSecurity: { set: applicationData.sovereigntyAchSecurity ?? null },
+        sovereigntyAchControl: { set: applicationData.sovereigntyAchControl ?? null },
+        sovereigntyAchStrategicAutonomyEvidence: {
+          set: applicationData.sovereigntyAchStrategicAutonomyEvidence ?? null,
+        },
+        lastSovereigntyAssessmentAt: { set: applicationData.lastSovereigntyAssessmentAt ?? null },
       }
 
       // Transform owner relationship
@@ -388,6 +398,9 @@ function ApplicationFormWrapper({
           input,
         },
       })
+      if (result.errors && result.errors.length > 0) {
+        throw new Error(result.errors.map(e => e.message).join('; '))
+      }
       console.log('🟢 [ApplicationFormWrapper] Mutation completed successfully:', result)
       console.log('🔵 [ApplicationFormWrapper] Calling onClose()...')
       onClose()
@@ -494,6 +507,16 @@ function CapabilityFormWrapper({
         introductionDate: { set: capabilityData.introductionDate },
         endDate: { set: capabilityData.endDate },
         tags: { set: capabilityData.tags },
+        sovereigntyReqStrategicAutonomy: {
+          set: capabilityData.sovereigntyReqStrategicAutonomy ?? null,
+        },
+        sovereigntyReqResilience: { set: capabilityData.sovereigntyReqResilience ?? null },
+        sovereigntyReqSecurity: { set: capabilityData.sovereigntyReqSecurity ?? null },
+        sovereigntyReqControl: { set: capabilityData.sovereigntyReqControl ?? null },
+        sovereigntyReqWeight: { set: capabilityData.sovereigntyReqWeight ?? null },
+        sovereigntyReqStrategicAutonomyRationale: {
+          set: capabilityData.sovereigntyReqStrategicAutonomyRationale ?? null,
+        },
       }
 
       // Transform owner relationship
@@ -560,6 +583,9 @@ function CapabilityFormWrapper({
           input,
         },
       })
+      if (result.errors && result.errors.length > 0) {
+        throw new Error(result.errors.map(e => e.message).join('; '))
+      }
       console.log('🟢 [CapabilityFormWrapper] Mutation completed successfully:', result)
       console.log('🔵 [CapabilityFormWrapper] Calling onClose()...')
       onClose()
@@ -674,6 +700,9 @@ function InterfaceFormWrapper({
           input,
         },
       })
+      if (result.errors && result.errors.length > 0) {
+        throw new Error(result.errors.map(e => e.message).join('; '))
+      }
       console.log('🟢 [InterfaceFormWrapper] Mutation completed successfully:', result)
       console.log('🔵 [InterfaceFormWrapper] Calling onClose()...')
       onClose()
@@ -751,15 +780,11 @@ function InfrastructureFormWrapper({
       const input: Record<string, any> = {
         name: { set: infrastructureData.name },
         description: { set: infrastructureData.description },
-        type: { set: (formData as any).type },
+        infrastructureType: { set: infrastructureData.infrastructureType },
         status: { set: infrastructureData.status },
         location: { set: infrastructureData.location },
         capacity: { set: infrastructureData.capacity },
         vendor: { set: infrastructureData.vendor },
-        model: { set: (formData as any).model },
-        serialNumber: { set: (formData as any).serialNumber },
-        purchaseDate: { set: (formData as any).purchaseDate },
-        warrantyEndDate: { set: (formData as any).warrantyEndDate },
       }
 
       // Transform owner relationship
@@ -792,6 +817,9 @@ function InfrastructureFormWrapper({
           input,
         },
       })
+      if (result.errors && result.errors.length > 0) {
+        throw new Error(result.errors.map(e => e.message).join('; '))
+      }
       console.log('🟢 [InfrastructureFormWrapper] Mutation completed successfully:', result)
       console.log('🔵 [InfrastructureFormWrapper] Calling onClose()...')
       onClose()
@@ -870,6 +898,16 @@ function DataObjectFormWrapper({
         dataClassification: { set: dataObjectData.classification },
         format: { set: dataObjectData.format },
         retentionPeriod: { set: (formData as any).retentionPeriod },
+        sovereigntyReqStrategicAutonomy: {
+          set: dataObjectData.sovereigntyReqStrategicAutonomy ?? null,
+        },
+        sovereigntyReqResilience: { set: dataObjectData.sovereigntyReqResilience ?? null },
+        sovereigntyReqSecurity: { set: dataObjectData.sovereigntyReqSecurity ?? null },
+        sovereigntyReqControl: { set: dataObjectData.sovereigntyReqControl ?? null },
+        sovereigntyReqWeight: { set: dataObjectData.sovereigntyReqWeight ?? null },
+        sovereigntyReqStrategicAutonomyRationale: {
+          set: dataObjectData.sovereigntyReqStrategicAutonomyRationale ?? null,
+        },
       }
 
       // Transform owner relationship
@@ -911,6 +949,9 @@ function DataObjectFormWrapper({
           input,
         },
       })
+      if (result.errors && result.errors.length > 0) {
+        throw new Error(result.errors.map(e => e.message).join('; '))
+      }
       console.log('🟢 [DataObjectFormWrapper] Mutation completed successfully:', result)
       console.log('🔵 [DataObjectFormWrapper] Calling onClose()...')
       onClose()
@@ -1023,6 +1064,20 @@ function AiComponentFormWrapper({
         updateInput.costs = { set: baseData.costs }
       }
 
+      // Sovereignty fields
+      updateInput.sovereigntyAchStrategicAutonomy = {
+        set: baseData.sovereigntyAchStrategicAutonomy ?? null,
+      }
+      updateInput.sovereigntyAchResilience = { set: baseData.sovereigntyAchResilience ?? null }
+      updateInput.sovereigntyAchSecurity = { set: baseData.sovereigntyAchSecurity ?? null }
+      updateInput.sovereigntyAchControl = { set: baseData.sovereigntyAchControl ?? null }
+      updateInput.sovereigntyAchStrategicAutonomyEvidence = {
+        set: baseData.sovereigntyAchStrategicAutonomyEvidence ?? null,
+      }
+      updateInput.lastSovereigntyAssessmentAt = {
+        set: baseData.lastSovereigntyAssessmentAt ?? null,
+      }
+
       // Handle owners relationship (single owner)
       if (ownerId !== undefined) {
         if (ownerId) {
@@ -1127,6 +1182,9 @@ function AiComponentFormWrapper({
           update: updateInput,
         },
       })
+      if (result.errors && result.errors.length > 0) {
+        throw new Error(result.errors.map(e => e.message).join('; '))
+      }
       console.log('🟢 [AiComponentFormWrapper] Mutation completed successfully:', result)
       console.log('🔵 [AiComponentFormWrapper] Calling onClose()...')
       onClose()
