@@ -6,7 +6,7 @@ import {
   findLinkedTextElement,
   ensureTextContainerBindings,
 } from './textContainerUtils'
-import { updateCanvasElementName } from './architectureElements'
+import { updateCanvasElementName, getInfrastructureDisplayName } from './architectureElements'
 import { syncSovereigntyMarkers } from './sovereigntyMarkers'
 
 interface DiagramElement {
@@ -389,6 +389,11 @@ export const validateAndSyncElementsForImport = async (
     }
 
     const databaseName = currentData.name
+    const displayName = getInfrastructureDisplayName(
+      databaseName,
+      elementType,
+      currentData.infrastructureType
+    )
 
     // WICHTIG: Finde ALLE Elemente mit derselben databaseId
     const allElementsWithSameDbId = elements.filter(el => el.customData?.databaseId === databaseId)
@@ -411,7 +416,7 @@ export const validateAndSyncElementsForImport = async (
       // Handle undefined/null values correctly
       const normalizedCurrentElementName = normalizeText(currentElementName)
       const normalizedDisplayedName = normalizeText(displayedName)
-      const normalizedDatabaseName = normalizeText(databaseName)
+      const normalizedDatabaseName = normalizeText(displayName)
 
       // Debug: Show comparison values only when update is potentially needed
       const isDisplayedNameDifferent =
@@ -420,19 +425,19 @@ export const validateAndSyncElementsForImport = async (
         currentElementName && normalizedCurrentElementName !== normalizedDatabaseName
 
       // Update only when there is actually a discrepancy
-      const nameUpdateNeeded = databaseName && (isDisplayedNameDifferent || isOriginalNameDifferent)
+      const nameUpdateNeeded = displayName && (isDisplayedNameDifferent || isOriginalNameDifferent)
 
       if (nameUpdateNeeded) {
         // Update elementName with new data (optimized)
-        elementInstance.customData.elementName = databaseName
-        elementInstance.customData.lastSyncedName = databaseName
+        elementInstance.customData.elementName = displayName
+        elementInstance.customData.lastSyncedName = displayName
 
         // IMPORTANT: Also directly update the associated text element
         if (textElement) {
           // Use the abstraction layer to properly wrap and position the text
           const updatedTextElement = updateCanvasElementName(
             elementInstance as any,
-            databaseName,
+            displayName,
             elements as any
           )
 
@@ -554,6 +559,11 @@ export const syncDiagramOnOpenSimple = async (
     }
 
     const databaseName = currentData.name
+    const displayName = getInfrastructureDisplayName(
+      databaseName,
+      elementType,
+      currentData.infrastructureType
+    )
 
     // WICHTIG: Finde ALLE Elemente mit derselben databaseId
     const allElementsWithSameDbId = elements.filter(el => el.customData?.databaseId === databaseId)
@@ -577,7 +587,7 @@ export const syncDiagramOnOpenSimple = async (
         // IMPORTANT: Pass the existing font family to preserve user's font choice
         const updatedTextElement = updateCanvasElementName(
           elementInstance as any,
-          databaseName,
+          displayName,
           elements as any,
           textElement.fontFamily || 5
         )
@@ -587,8 +597,8 @@ export const syncDiagramOnOpenSimple = async (
           ...elementInstance,
           customData: {
             ...elementInstance.customData,
-            elementName: databaseName,
-            lastSyncedName: databaseName,
+            elementName: displayName,
+            lastSyncedName: displayName,
             // Store original database name on first sync (for hyphen preservation)
             originalDatabaseName: elementInstance.customData.originalDatabaseName || databaseName,
             // Store original diagram text if not already stored
@@ -659,7 +669,11 @@ export const syncDiagramOnOpen = async (
 
   // D-09: only issues a sovereigntyMarkers query/render when explicitly gated in
   if (sovereigntyOptions) {
-    updatedElements = await syncSovereigntyMarkers(apolloClient, updatedElements, sovereigntyOptions)
+    updatedElements = await syncSovereigntyMarkers(
+      apolloClient,
+      updatedElements,
+      sovereigntyOptions
+    )
   }
 
   return {
