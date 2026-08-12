@@ -785,6 +785,18 @@ function InfrastructureFormWrapper({
         location: { set: infrastructureData.location },
         capacity: { set: infrastructureData.capacity },
         vendor: { set: infrastructureData.vendor },
+        sovereigntyAchStrategicAutonomy: {
+          set: infrastructureData.sovereigntyAchStrategicAutonomy ?? null,
+        },
+        sovereigntyAchResilience: { set: infrastructureData.sovereigntyAchResilience ?? null },
+        sovereigntyAchSecurity: { set: infrastructureData.sovereigntyAchSecurity ?? null },
+        sovereigntyAchControl: { set: infrastructureData.sovereigntyAchControl ?? null },
+        sovereigntyAchStrategicAutonomyEvidence: {
+          set: infrastructureData.sovereigntyAchStrategicAutonomyEvidence ?? null,
+        },
+        lastSovereigntyAssessmentAt: {
+          set: infrastructureData.lastSovereigntyAssessmentAt ?? null,
+        },
       }
 
       // Transform owner relationship
