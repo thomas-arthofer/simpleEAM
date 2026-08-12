@@ -795,6 +795,11 @@ const ExcalidrawWrapper = dynamic(
                   console.log('🟢 [ExcalidrawWrapper] Element text updated in diagram')
                 }
               }
+
+              // Re-sync from the database so sovereignty markers and other
+              // derived data reflect the just-saved change, same as Ctrl+R.
+              console.log('🔵 [ExcalidrawWrapper] Triggering auto-sync after element save...')
+              void onManualSync?.()
             }}
           />
         </div>
