@@ -74,7 +74,13 @@
         "HIGH": "Haut",
         "VERY_HIGH": "Très élevé"
       },
-      "tooltip": "Level\tDurchsetzung\nVery High\ttechnisch erzwungen, keine Drittstaat-/Drittpartei-Abhängigkeit, periodisch nachgewiesen (Test/Audit)\nHigh\ttechnisch erzwungen, Restabhängigkeit benannt und kompensiert\nMedium\tvertraglich zugesichert, technisch nicht erzwungen\nLow\tnur Absichtserklärung/Herstellerangabe, faktische Abhängigkeit dominiert\nNone\tkeine Handlungsoption, Dritter entscheidet einseitig"
+      "tooltip": "Very High - technisch erzwungen, keine Drittstaat-/Drittpartei-Abhängigkeit, periodisch nachgewiesen (Test/Audit)\nHigh - technisch erzwungen, Restabhängigkeit benannt und kompensiert\nMedium - vertraglich zugesichert, technisch nicht erzwungen\nLow - nur Absichtserklärung/Herstellerangabe, faktische Abhängigkeit dominiert\nNone - keine Handlungsoption, Dritter entscheidet einseitig",
+      "criteria": {
+        "strategicAutonomy": "Kriterienbasis\n- Jurisdiktion von Betreiber und Konzernmutter, extraterritoriale Rechtsunterwerfung (CLOUD Act, FISA 702)\n- Exit-Kosten: proprietäre APIs, Datenformate, geschätzte Migrationsdauer in Personenmonaten\n- Substituierbarkeit: Anzahl gleichwertiger Alternativen, Open-Source-Basis, offene Standards\n- Lieferkette: Silizium, Firmware, Lizenzmodell, Kill-Switch- und Exportkontrollrisiko\n- Roadmap-Einfluss, Abhängigkeit von Vendor-Feature-Entscheidungen",
+        "resilience": "Kriterienbasis\n- Autarkiedauer bei Trennung vom Anbieter (Disconnected Operations in Stunden/Tagen)\n- Abhängigkeit von externen Control Planes: Identity, Lizenzserver, DNS, Update-/Signaturdienste\n- Redundanztopologie, SPOFs, Multi-AZ/Region/Provider\n- RTO/RPO getestet, nicht dokumentiert. Frequenz der Failover-Übungen\n- Wiederanlauf ohne Herstellerbeteiligung möglich, Know-how intern vs. beim Partner",
+        "security": "Kriterienbasis\n- Key-Custody-Modell: Provider-managed, BYOK, HYOK/External Key Store, Confidential Computing\n- Administrativer Zugriff des Betreiberpersonals: unbeschränkt, genehmigungspflichtig, Vier-Augen, technisch ausgeschlossen\n- Zertifizierungsstand: ISO 27001, C5, EUCS/SecNumCloud-Äquivalent\n- Auditierbarkeit: Logs im eigenen Zugriff, Government-Access-Transparenzberichte\n- Supply-Chain-Integrität: SBOM, Signaturen, reproducible builds",
+        "control": "Kriterienbasis\n- Speicherort von Daten und Metadaten (Telemetrie, Backups, Supportdaten, oft der Bruchpunkt)\n- Betriebspersonal: eigenes, EU-ansässig, Follow-the-Sun aus Drittstaaten\n- Änderungshoheit: Zwangsupdates, Rollout-Zeitpunkte, Deprecation-Fristen\n- Vertragliche Durchgriffsrechte: Auditrecht, Gerichtsstand, Kündigungs- und Datenrückgabefristen\n- IAM- und Policy-Hoheit, Konfiguration as Code vs. Anbieterportal"
+      }
     }
   },
   "navigation": {
