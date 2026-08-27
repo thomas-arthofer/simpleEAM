@@ -29,6 +29,7 @@ export const buildSovereigntyRequirementFields = (
       tabId,
       options,
       size: { xs: 12, md: 6 },
+      tooltip: tCommon('sovereignty.tooltip'),
     },
     {
       name: 'sovereigntyReqResilience',
@@ -37,6 +38,7 @@ export const buildSovereigntyRequirementFields = (
       tabId,
       options,
       size: { xs: 12, md: 6 },
+      tooltip: tCommon('sovereignty.tooltip'),
     },
     {
       name: 'sovereigntyReqSecurity',
@@ -45,6 +47,7 @@ export const buildSovereigntyRequirementFields = (
       tabId,
       options,
       size: { xs: 12, md: 6 },
+      tooltip: tCommon('sovereignty.tooltip'),
     },
     {
       name: 'sovereigntyReqControl',
@@ -53,6 +56,7 @@ export const buildSovereigntyRequirementFields = (
       tabId,
       options,
       size: { xs: 12, md: 6 },
+      tooltip: tCommon('sovereignty.tooltip'),
     },
     {
       name: 'sovereigntyReqStrategicAutonomyRationale',
@@ -110,6 +114,7 @@ export const buildSovereigntyAchievedFields = (
       tabId,
       options,
       size: { xs: 12, md: 6 },
+      tooltip: tCommon('sovereignty.tooltip'),
     },
     {
       name: 'sovereigntyAchResilience',
@@ -118,6 +123,7 @@ export const buildSovereigntyAchievedFields = (
       tabId,
       options,
       size: { xs: 12, md: 6 },
+      tooltip: tCommon('sovereignty.tooltip'),
     },
     {
       name: 'sovereigntyAchSecurity',
@@ -126,6 +132,7 @@ export const buildSovereigntyAchievedFields = (
       tabId,
       options,
       size: { xs: 12, md: 6 },
+      tooltip: tCommon('sovereignty.tooltip'),
     },
     {
       name: 'sovereigntyAchControl',
@@ -134,6 +141,7 @@ export const buildSovereigntyAchievedFields = (
       tabId,
       options,
       size: { xs: 12, md: 6 },
+      tooltip: tCommon('sovereignty.tooltip'),
     },
     {
       name: 'sovereigntyAchStrategicAutonomyEvidence',

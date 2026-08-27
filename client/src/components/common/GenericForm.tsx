@@ -22,6 +22,8 @@ import {
   DialogContentText,
   Checkbox,
   FormControlLabel,
+  InputAdornment,
+  Tooltip,
 } from '@mui/material'
 import {
   Save as SaveIcon,
@@ -29,6 +31,7 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   ArrowBack as ArrowBackIcon,
+  InfoOutlined,
 } from '@mui/icons-material'
 import type { SxProps, Theme } from '@mui/material'
 import { useTranslations } from 'next-intl'
@@ -94,6 +97,7 @@ export interface FieldConfig {
   defaultValue?: any
   placeholder?: string
   helperText?: string
+  tooltip?: string
   inputType?: string // HTML input type, e.g. 'password'
   customRender?: (field: any, disabled: boolean) => React.ReactNode
   validators?: any
@@ -255,14 +259,14 @@ const GenericForm: React.FC<GenericFormProps> = ({
 
   // Styles to make disabled text fields readable (black text instead of gray)
   // and hide dropdown arrows, remove border changes on hover/focus in view mode
-  const disabledTextFieldSx = {
+  const disabledTextFieldSx: SxProps<Theme> = {
     '& .MuiInputBase-input.Mui-disabled': {
-      WebkitTextFillColor: 'rgba(0, 0, 0, 0.87)',
-      color: 'rgba(0, 0, 0, 0.87)',
+      WebkitTextFillColor: (theme: Theme) => theme.palette.text.primary,
+      color: (theme: Theme) => theme.palette.text.primary,
       cursor: 'default',
     },
     '& .MuiInputLabel-root.Mui-disabled': {
-      color: 'rgba(0, 0, 0, 0.6)',
+      color: (theme: Theme) => theme.palette.text.secondary,
     },
     // Hide dropdown arrow for select fields
     '& .MuiSelect-icon.Mui-disabled': {
@@ -280,42 +284,42 @@ const GenericForm: React.FC<GenericFormProps> = ({
     '& .MuiOutlinedInput-root.Mui-disabled': {
       cursor: 'default',
       '& fieldset': {
-        borderColor: 'rgba(0, 0, 0, 0.23) !important',
+        borderColor: (theme: Theme) => `${theme.palette.divider} !important`,
       },
       '&:hover fieldset': {
-        borderColor: 'rgba(0, 0, 0, 0.23) !important',
+        borderColor: (theme: Theme) => `${theme.palette.divider} !important`,
       },
       '&.Mui-focused fieldset': {
-        borderColor: 'rgba(0, 0, 0, 0.23) !important',
+        borderColor: (theme: Theme) => `${theme.palette.divider} !important`,
       },
     },
     // Remove border color changes for readOnly autocomplete fields (not disabled but view mode)
     '& .MuiOutlinedInput-root.Mui-readOnly': {
       '& fieldset': {
-        borderColor: 'rgba(0, 0, 0, 0.23)',
+        borderColor: (theme: Theme) => theme.palette.divider,
       },
       '&:hover fieldset': {
-        borderColor: 'rgba(0, 0, 0, 0.23)',
+        borderColor: (theme: Theme) => theme.palette.divider,
       },
       '&.Mui-focused fieldset': {
-        borderColor: 'rgba(0, 0, 0, 0.23)',
+        borderColor: (theme: Theme) => theme.palette.divider,
       },
     },
   }
 
   // Additional styles for view mode to prevent clicking and keep chips clickable
-  const viewModeFieldSx = {
+  const viewModeFieldSx: SxProps<Theme> = {
     ...disabledTextFieldSx,
     '& .MuiOutlinedInput-root': {
       cursor: 'default',
       '& fieldset': {
-        borderColor: 'rgba(0, 0, 0, 0.23) !important',
+        borderColor: (theme: Theme) => `${theme.palette.divider} !important`,
       },
       '&:hover fieldset': {
-        borderColor: 'rgba(0, 0, 0, 0.23) !important',
+        borderColor: (theme: Theme) => `${theme.palette.divider} !important`,
       },
       '&.Mui-focused fieldset': {
-        borderColor: 'rgba(0, 0, 0, 0.23) !important',
+        borderColor: (theme: Theme) => `${theme.palette.divider} !important`,
       },
       '& input': {
         pointerEvents: 'none',
@@ -668,6 +672,17 @@ const GenericForm: React.FC<GenericFormProps> = ({
                           <Box sx={{ mr: 1, display: 'flex', alignItems: 'center' }}>
                             {field.icon}
                           </Box>
+                        ),
+                      }),
+                      ...(field.tooltip && {
+                        endAdornment: (
+                          <InputAdornment position="end" sx={{ mr: 2 }}>
+                            <Tooltip title={field.tooltip} arrow placement="top">
+                              <InfoOutlined
+                                sx={{ fontSize: 18, color: 'action.active', cursor: 'help' }}
+                              />
+                            </Tooltip>
+                          </InputAdornment>
                         ),
                       }),
                     }}
@@ -1045,7 +1060,7 @@ const GenericForm: React.FC<GenericFormProps> = ({
                                         }
                                       : undefined,
                                     '& .MuiChip-label': {
-                                      color: 'rgba(0, 0, 0, 0.87)',
+                                      color: (theme: Theme) => theme.palette.text.primary,
                                     },
                                   }}
                                 />

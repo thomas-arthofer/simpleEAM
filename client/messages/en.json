@@ -73,7 +73,8 @@
         "MEDIUM": "Medium",
         "HIGH": "High",
         "VERY_HIGH": "Very High"
-      }
+      },
+      "tooltip": "Level\tDurchsetzung\nVery High\ttechnisch erzwungen, keine Drittstaat-/Drittpartei-Abhängigkeit, periodisch nachgewiesen (Test/Audit)\nHigh\ttechnisch erzwungen, Restabhängigkeit benannt und kompensiert\nMedium\tvertraglich zugesichert, technisch nicht erzwungen\nLow\tnur Absichtserklärung/Herstellerangabe, faktische Abhängigkeit dominiert\nNone\tkeine Handlungsoption, Dritter entscheidet einseitig"
     }
   },
   "navigation": {
