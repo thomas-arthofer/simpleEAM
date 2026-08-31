@@ -20,12 +20,12 @@ against a single **chain premise**:
 
 An element's chain color is the worst-of-four-dimensions verdict:
 
-| Color  | Meaning |
-| ------ | ------- |
-| GREEN  | Data complete AND premise holds on every dimension (deviation = 0) |
+| Color  | Meaning                                                                                                    |
+| ------ | ---------------------------------------------------------------------------------------------------------- |
+| GREEN  | Data complete AND premise holds on every dimension (deviation = 0)                                         |
 | YELLOW | Provable premise violation with worst-dimension deviation of exactly 1 step on the sovereignty scale (0–4) |
-| RED    | Provable premise violation with worst-dimension deviation ≥ 2 steps |
-| GREY   | Insufficient data (some required or achieved missing) AND no provable violation on any dimension |
+| RED    | Provable premise violation with worst-dimension deviation ≥ 2 steps                                        |
+| GREY   | Insufficient data (some required or achieved missing) AND no provable violation on any dimension           |
 
 Precedence: a provable violation on any dimension **dominates** data gaps on
 other dimensions — YELLOW/RED can be assigned before the chain is fully
@@ -46,7 +46,7 @@ math (they surface as `fill` when they are the min-achieved that breaks a
 chain, and as `ring` up-propagation via `worseStatus`).
 
 The `SOVEREIGNTY_STATUSES` GraphQL enum stays exactly
-`['RED', 'YELLOW', 'GREY', 'GREEN']` — no new value added. Only the *semantic*
+`['RED', 'YELLOW', 'GREY', 'GREEN']` — no new value added. Only the _semantic_
 of `YELLOW` shifts (from "parent-vs-own required contradiction" to
 "chain deviation of exactly 1 step").
 
@@ -100,7 +100,7 @@ of `YELLOW` shifts (from "parent-vs-own required contradiction" to
 - **D-04:** `fill` = "this element itself fulfils the chain premise" (the
   element's own local chain-color w.r.t. its personal role in the chain — for a
   root it's the whole chain rooted at this element; for a downstream element
-  it's whether *this* element is the min-Achieved breaking a chain it sits in).
+  it's whether _this_ element is the min-Achieved breaking a chain it sits in).
   `ring` = the worst chain-color from anywhere strictly below this element in
   the graph (blast radius; enables the "red ring, green fill" reading — "I am
   fine but something below me is broken"). Both channels compute using the
@@ -130,7 +130,7 @@ of `YELLOW` shifts (from "parent-vs-own required contradiction" to
 - **D-06:** Whether the underlying `classifyCapabilityAgainstParent` finding
   entries (and its BP counterpart) stay in `SovereigntyAnalysis.findings` for
   the detail-view findings list, get retired entirely, or get repurposed into
-  a per-dimension explanation of *why* `effective-Req` is what it is, is left
+  a per-dimension explanation of _why_ `effective-Req` is what it is, is left
   to research/planning. The functional replacement — folding the strictest
   ancestor requirement into the chain premise — must exist regardless. — **Reversibility:** reversible.
 
@@ -165,6 +165,7 @@ of `YELLOW` shifts (from "parent-vs-own required contradiction" to
 </decisions>
 
 <canonical_refs>
+
 ## Canonical References
 
 **Downstream agents MUST read these before planning or implementing.**
@@ -249,7 +250,7 @@ of `YELLOW` shifts (from "parent-vs-own required contradiction" to
   `client/src/components/sovereignty/SovereigntyDataView.tsx`,
   `client/src/components/sovereignty/SovereigntyProcessView.tsx` — detail-view
   renderers that consume `SovereigntyAnalysis.findings` and marker fill/ring.
-  Under the new rule, the *findings list* text may need updating (esp. if
+  Under the new rule, the _findings list_ text may need updating (esp. if
   D-06 retires parent-consistency finding entries), but no structural UI
   change was requested.
 - `client/src/components/diagrams/**` — marker overlay renders `fill` +
@@ -258,6 +259,7 @@ of `YELLOW` shifts (from "parent-vs-own required contradiction" to
 </canonical_refs>
 
 <code_context>
+
 ## Existing Code Insights
 
 ### Reusable Assets
@@ -304,7 +306,7 @@ of `YELLOW` shifts (from "parent-vs-own required contradiction" to
 
 - The user's `Max(BC-Requirement)` in NOTES.md is now definitively read as
   `max over the requirement-root's own required level AND every ancestor's
-  required level` per dimension (D-05). This resolves an ambiguity in the raw
+required level` per dimension (D-05). This resolves an ambiguity in the raw
   NOTES.md formula.
 - The intermediate color must stay called **YELLOW** in code (the enum value
   is unchanged). "Orange" in NOTES.md was a UI-color / naming mixup and does
@@ -312,8 +314,8 @@ of `YELLOW` shifts (from "parent-vs-own required contradiction" to
   look amber/orange — that is a rendering detail, not a status-taxonomy
   change.
 - "Red outside, green inside" is the canonical explanatory example for the
-  fill/ring split — the target reading is *"this element is fine locally
-  (green fill) but a downstream element is breaking a chain (red ring)"*.
+  fill/ring split — the target reading is _"this element is fine locally
+  (green fill) but a downstream element is breaking a chain (red ring)"_.
 
 </specifics>
 
@@ -339,5 +341,5 @@ of `YELLOW` shifts (from "parent-vs-own required contradiction" to
 
 ---
 
-*Phase: 05-rework-chain-colors*
-*Context gathered: 2026-08-31*
+_Phase: 05-rework-chain-colors_
+_Context gathered: 2026-08-31_

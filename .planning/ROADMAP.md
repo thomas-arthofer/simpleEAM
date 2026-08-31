@@ -159,3 +159,23 @@ Plans:
 **Wave 3** _(blocked on Wave 2 completion)_
 
 - [x] 04-03-PLAN.md — Wave 3 client wiring: SovereigntyProcessView + third /sovereignty tab, entity-edit dialog branch, diagram marker eligibility — D-01, D-04
+
+### Phase 5: Rework Chain Colors
+
+**Goal:** Redefine the sovereignty marker color computation so each requirement-root chain (BusinessCapability / DataObject / BusinessProcess) is scored against a single chain premise `effective-Req[d] ≤ min-Achieved-in-chain[d]`, where `effective-Req[d] = max` of the root's own required and every ancestor's required. Aggregate worst-of-4-dimensions to one color per element (GREEN/YELLOW/RED/GREY, with provable violation dominating data gaps). Absorb the Phase 02.3 / 03 / 04 parent-consistency signal into `effective-Req` and retire `classifyCapabilityAgainstParent` (D-06 Option a). No GraphQL schema change; only the `YELLOW` semantic shifts.
+**Requirements**: D-01, D-02, D-03, D-04, D-05, D-06 (CONTEXT-driven; no REQUIREMENTS.md IDs)
+**Depends on:** Phase 4
+**Plans:** 3 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 05-01-PLAN.md — Wave 1 tracer: BC single-dimension chain-premise end-to-end (types + repository ancestor walk + classifyNode deviation math) — D-01, D-02, D-03, D-05
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 05-02-PLAN.md — Wave 2 expansion: 4-dim aggregation, BP + DO parity, projectMarkers rewrite, D-06 retirement, companyRollup YELLOW fix, full test rewire — D-01, D-02, D-03, D-04, D-05, D-06
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 05-03-PLAN.md — Wave 3 polish: client detail-view findingRow dispatch + DE/EN i18n copy — D-04
