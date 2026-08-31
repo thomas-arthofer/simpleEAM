@@ -4,12 +4,12 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 04
 status: completed
-stopped_at: Phase 04 complete — manual-verification checkpoint approved by user
-last_updated: '2026-08-12T12:00:00.000Z'
+stopped_at: Phase 5 context gathered
+last_updated: "2026-08-31T12:10:21.247Z"
 last_activity: 2026-08-12
-last_activity_desc: 'Completed quick task 260812-jfs: sovereignty root selfStatus GREEN once filled in'
+last_activity_desc: "Completed quick task 260812-jfs: sovereignty root selfStatus GREEN once filled in"
 progress:
-  total_phases: 8
+  total_phases: 9
   completed_phases: 8
   total_plans: 19
   completed_plans: 19
@@ -129,6 +129,7 @@ None yet.
 - Phase 02.3 inserted after Phase 2: Business capability requirement-chain consistency (parent vs child required levels, YELLOW status, extends D-05) (URGENT)
 - Phase 3 added after Phase 02.3: BusinessCapability self-status GREEN for parent-consistent requirements — three-valued self-status (GREEN=consistent with parent, YELLOW=contradiction per 02.3, GREY=no parent to compare, root inherently GREY), plus a full-chain-green special case for the self/downstream marker projection
 - Phase 4 added after Phase 3: Extend sovereignty hierarchy checks to other EA element types — sovereignty chain evaluation has only been exercised on BusinessCapability → Application → Infrastructure; determine whether other element types/relationships need to participate and what full-stack coverage requires
+- Phase 5 added: Rework Chain Colors
 
 ## Deferred Items
 
@@ -140,6 +141,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-10T08:04:57.409Z
-Stopped at: Completed 04-03-PLAN.md Tasks 1-2; Task 3 (manual-verify checkpoint) outstanding
-Resume file: .planning/phases/04-extend-sovereignty-hierarchy-checks-to-other-ea-element-type/04-03-PLAN.md
+Last session: 2026-08-31T12:10:21.230Z
+Stopped at: Phase 5 context gathered
+Resume file: .planning/phases/05-rework-chain-colors/05-CONTEXT.md
