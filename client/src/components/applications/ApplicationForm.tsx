@@ -1,11 +1,10 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { useForm, useStore } from '@tanstack/react-form'
+import { useForm } from '@tanstack/react-form'
 import { z } from 'zod'
 import { useQuery } from '@apollo/client'
 import { useTranslations } from 'next-intl'
-import { Alert } from '@mui/material'
 import {
   Assignment as PlanningIcon,
   RocketLaunch as LaunchIcon,
@@ -603,27 +602,6 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
       }
     }
   }
-
-  const selectedComponentIds = useStore(form.store, state => state.values.componentIds) as
-    | string[]
-    | undefined
-  const hasComponentRelationships = (selectedComponentIds?.length ?? 0) > 0
-
-  const selectedComponents = React.useMemo(() => {
-    const selectedIds = new Set(selectedComponentIds ?? [])
-    return (availableApplications || []).filter(app => selectedIds.has(app.id))
-  }, [availableApplications, selectedComponentIds])
-
-  const componentsWithSovereigntyValuesCount = React.useMemo(() => {
-    return selectedComponents.filter(component => {
-      return (
-        component.sovereigntyAchStrategicAutonomy != null ||
-        component.sovereigntyAchResilience != null ||
-        component.sovereigntyAchSecurity != null ||
-        component.sovereigntyAchControl != null
-      )
-    }).length
-  }, [selectedComponents])
 
   // Tabs für das Formular definieren
   const tabs: TabConfig[] = [
@@ -1369,37 +1347,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
       onChipClick: createChipClickHandler('depictedInDiagrams'),
     },
     ...(isSovereigntyEnabled
-      ? hasComponentRelationships
-        ? [
-            {
-              name: 'sovereigntyInheritedFromComponentsNotice',
-              label: '',
-              type: 'custom' as const,
-              tabId: 'sovereignty',
-              size: 12,
-              customRender: () => (
-                <Alert severity="info" sx={{ mt: 0.5 }}>
-                  {t('sovereigntyInheritedFromComponents')}
-                </Alert>
-              ),
-            },
-            {
-              name: 'sovereigntyComponentsAvailabilityInfo',
-              label: '',
-              type: 'custom' as const,
-              tabId: 'sovereignty',
-              size: 12,
-              customRender: () => (
-                <Alert severity={componentsWithSovereigntyValuesCount > 0 ? 'success' : 'warning'}>
-                  {t('componentsSovereigntyDataCount', {
-                    withValues: componentsWithSovereigntyValuesCount,
-                    total: selectedComponents.length,
-                  })}
-                </Alert>
-              ),
-            },
-          ]
-        : buildSovereigntyAchievedFields((key: string) => tCommon(key as any))
+      ? buildSovereigntyAchievedFields((key: string) => tCommon(key as any))
       : []),
 
     // Prinzipien (Tab: principles)

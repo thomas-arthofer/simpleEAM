@@ -1188,8 +1188,6 @@
       "editTitle": "Applikation bearbeiten",
       "viewTitle": "Applikation Details",
       "entityName": "Anwendung",
-      "sovereigntyInheritedFromComponents": "Die Souveränitätsbewertung wird aus den Komponenten übernommen. Die Souveränitätsfelder sind für diese Applikation ausgeblendet.",
-      "componentsSovereigntyDataCount": "{withValues} von {total} Komponenten haben gesetzte Souveränitätswerte.",
       "validation": {
         "nameMin": "Der Name muss mindestens 3 Zeichen lang sein",
         "nameMax": "Der Name darf maximal 100 Zeichen lang sein",

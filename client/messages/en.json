@@ -1184,8 +1184,6 @@
       "editTitle": "Edit Application",
       "viewTitle": "Application Details",
       "entityName": "Application",
-      "sovereigntyInheritedFromComponents": "Sovereignty assessment is inherited from components. Sovereignty fields are hidden for this application.",
-      "componentsSovereigntyDataCount": "{withValues} of {total} components have sovereignty values set.",
       "validation": {
         "nameMin": "Name must be at least 3 characters long",
         "nameMax": "Name must not exceed 100 characters",

@@ -1184,8 +1184,6 @@
       "editTitle": "Modifier la candidature",
       "viewTitle": "Détails de la demande",
       "entityName": "Application",
-      "sovereigntyInheritedFromComponents": "L’évaluation de la souveraineté est héritée des composants. Les champs de souveraineté sont masqués pour cette application.",
-      "componentsSovereigntyDataCount": "{withValues} des {total} composants ont des valeurs de souveraineté définies.",
       "validation": {
         "nameMin": "Le nom doit comporter au moins 3 caractères",
         "nameMax": "Le nom ne doit pas dépasser 100 caractères",
