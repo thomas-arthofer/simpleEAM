@@ -32,7 +32,7 @@ export function createApolloClient(initialToken?: string, graphqlUrl?: string) {
   })
 
   // Error-Handling-Link
-  const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) => {
+  const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
     if (graphQLErrors) {
       console.error(`[Apollo GraphQL Error] Operation: ${operation.operationName}`, graphQLErrors)
       graphQLErrors.forEach(({ message, locations, path }) => {
@@ -60,8 +60,10 @@ export function createApolloClient(initialToken?: string, graphqlUrl?: string) {
           window.dispatchEvent(new CustomEvent('authError'))
         }
       }
-      // On network errors we can retry
-      return forward(operation)
+      // Intentionally NO forward(operation) here: an unconditional retry on any
+      // network error creates a tight infinite loop when the failure is
+      // persistent (see quick task 260901-alf). Real retry semantics belong in
+      // a dedicated @apollo/client/link/retry link, not the error link.
     }
   })
 

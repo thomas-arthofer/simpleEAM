@@ -160,10 +160,29 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           // from Keycloak instance, so no further action needed
         }
 
-        // Auth error listener - create client without token
+        // Auth error listener - force a real re-authentication via Keycloak.
+        // Never swap in a tokenless Apollo client — that turns a single 401
+        // into an infinite retry loop (see quick task 260901-alf): every
+        // remounted useQuery re-fires without a token, the server returns
+        // Unauthenticated again, and this handler fires forever.
         const handleAuthError = () => {
-          const unauthenticatedClient = createApolloClient(undefined, graphqlConfig.url)
-          setClient(unauthenticatedClient)
+          if (!keycloak) return
+          keycloak
+            .updateToken(-1)
+            .then(refreshed => {
+              if (refreshed && keycloak) {
+                window.dispatchEvent(
+                  new CustomEvent('tokenRefreshed', {
+                    detail: { token: keycloak.token },
+                  })
+                )
+              } else {
+                void keycloak?.login()
+              }
+            })
+            .catch(() => {
+              void keycloak?.login()
+            })
         }
 
         window.addEventListener('tokenRefreshed', handleTokenRefresh as EventListener)
