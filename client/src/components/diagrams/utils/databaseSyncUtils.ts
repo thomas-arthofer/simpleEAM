@@ -44,6 +44,7 @@ interface DiagramElement {
   strokeStyle?: string
   text?: string
   rawText?: string
+  originalText?: string
   [key: string]: any
 }
 
@@ -731,7 +732,8 @@ export const syncDiagramOnSave = async (
       continue
     }
 
-    const rawCurrentText = textElement.text || textElement.rawText || ''
+    const rawCurrentText =
+      textElement.originalText || textElement.rawText || textElement.text || ''
     const currentName = normalizeText(rawCurrentText)
     const lastSyncedName = normalizeText(
       element.customData.lastSyncedName ||
@@ -807,7 +809,8 @@ export const detectNameChanges = (diagramData: any): NameChange[] => {
       continue
     }
 
-    const currentDisplayName = textElement.text || textElement.rawText || ''
+    const currentDisplayName =
+      textElement.originalText || textElement.rawText || textElement.text || ''
     const normalizedCurrentName = normalizeText(currentDisplayName)
 
     const lastSyncedName = normalizeText(

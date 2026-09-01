@@ -262,8 +262,10 @@ export function stripInfrastructureTypePrefix(name: string): string {
   if (!name) return name
   const collapsed = name
     .replace(/\u00AD/g, '')
-    // Preserve real hyphens across a wrap: "Foo-\nBar" → "Foo-Bar".
-    .replace(/-\s*\r?\n\s*/g, '-')
+    // Real hyphenation across a wrap ("On-Premise-\nRechenzentrum") — preserve
+    // the hyphen. Anchoring on letters both sides distinguishes this from the
+    // structural separator " - " where the '-' is padded by spaces.
+    .replace(/([a-zA-ZäöüÄÖÜß])-\s*\r?\n\s*([a-zA-ZäöüÄÖÜß])/g, '$1-$2')
     .replace(/\r?\n/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
