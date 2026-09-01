@@ -2,18 +2,18 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 05
-current_phase_name: Rework Chain Colors
+current_phase: 06
+current_phase_name: Diagramm Add all related
 status: planning
-stopped_at: Phase 5 context gathered
-last_updated: "2026-09-01T08:31:09.667Z"
+stopped_at: Phase 05 complete
+last_updated: "2026-09-01T15:00:00.000Z"
 last_activity: 2026-09-01
-last_activity_desc: Phase 04 complete, transitioned to Phase 05
+last_activity_desc: Phase 05 complete (3/3 plans), transitioned to Phase 06
 progress:
   total_phases: 10
-  completed_phases: 8
-  total_plans: 22
-  completed_plans: 19
+  completed_phases: 9
+  total_plans: 25
+  completed_plans: 22
 ---
 
 # Project State
@@ -23,16 +23,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-22)
 
 **Core value:** Enterprise architecture data and sovereignty assessments must be trustworthy enough that operators can reproduce the platform and explain exactly where architectural obligations are or are not met.
-**Current focus:** Phase 04 — extend-sovereignty-hierarchy-checks-to-other-ea-element-type
+**Current focus:** Phase 06 — diagramm-add-all-related
 
 ## Current Position
 
-Phase: 05 — Rework Chain Colors
+Phase: 06 — Diagramm Add all related
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-09-01 — Phase 04 complete, transitioned to Phase 05
+Last activity: 2026-09-01 — Phase 05 complete (chain-premise semantics landed; D-06 retired)
 
-Progress: [██████████] 100% (19/19 plans complete across phases)
+Progress: [██████████] 100% (22/22 plans complete across phases)
 
 ## Performance Metrics
 
@@ -52,6 +52,7 @@ Progress: [██████████] 100% (19/19 plans complete across pha
 | 01.1  | 1     | -     | -        |
 | 03    | 1     | -     | -        |
 | 04 | 3 | - | - |
+| 05 | 3 | - | - |
 
 **Recent Trend:**
 
