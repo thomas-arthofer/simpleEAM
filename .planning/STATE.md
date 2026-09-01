@@ -83,7 +83,7 @@ Progress: [██████████] 100% (19/19 plans complete across pha
 | 260812-jtq | Sovereignty chain UUIDs should show element name and type instead of raw UUIDs | 2026-08-12 | complete | pending |
 | 260812-o0s | Diagram: no line-wrap on new labels; Infrastructure Type prefix on labels      | 2026-08-12 | complete | 10030a3 |
 | 260901-rar | Restart API stack after reboot (root cause: apoc.jar perms in neo4j entrypoint) | 2026-09-01 | complete | ca2cdb7 |
-| 260901-alf | Fix client auth-refresh loop after 401 (never swap Apollo client to a tokenless one; no unbounded network-error forward) | 2026-09-01 | complete | pending |
+| 260901-alf | Fix client auth-refresh loop after 401 (never swap Apollo client to a tokenless one; no unbounded network-error forward) | 2026-09-01 | complete | b7816ab |
 
 ## Accumulated Context
 
