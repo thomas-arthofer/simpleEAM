@@ -6,7 +6,7 @@ current_phase: 06
 current_phase_name: Diagramm Add all related
 status: planning
 stopped_at: Phase 05 complete
-last_updated: "2026-09-01T15:00:00.000Z"
+last_updated: '2026-09-01T15:00:00.000Z'
 last_activity: 2026-09-01
 last_activity_desc: Phase 05 complete (3/3 plans), transitioned to Phase 06
 progress:
@@ -51,8 +51,8 @@ Progress: [██████████] 100% (22/22 plans complete across pha
 | 02.1  | 2     | -     | -        |
 | 01.1  | 1     | -     | -        |
 | 03    | 1     | -     | -        |
-| 04 | 3 | - | - |
-| 05 | 3 | - | - |
+| 04    | 3     | -     | -        |
+| 05    | 3     | -     | -        |
 
 **Recent Trend:**
 
@@ -77,16 +77,17 @@ Progress: [██████████] 100% (22/22 plans complete across pha
 
 ## Quick Tasks Completed
 
-| ID         | Description                                                                    | Date       | Status   | Commit  |
-| ---------- | ------------------------------------------------------------------------------ | ---------- | -------- | ------- |
-| 260731-et9 | Default arrow type to elbow in Add Related dialog                              | 2026-07-31 | complete | e7bd5e8 |
-| 260803-cny | Cap json-file logging (50m×5) on all compose services                          | 2026-08-03 | complete | eb5414e |
-| 260812-jfs | Sovereignty root capability/process ring green once filled in (no parent)      | 2026-08-12 | complete | 9d790c6 |
-| 260812-jtq | Sovereignty chain UUIDs should show element name and type instead of raw UUIDs | 2026-08-12 | complete | pending |
-| 260812-o0s | Diagram: no line-wrap on new labels; Infrastructure Type prefix on labels      | 2026-08-12 | complete | 10030a3 |
-| 260901-rar | Restart API stack after reboot (root cause: apoc.jar perms in neo4j entrypoint) | 2026-09-01 | complete | ca2cdb7 |
-| 260901-ctm | Break CompanyContext cross-tab localStorage ping-pong (auto-select branches no longer write localStorage) | 2026-09-01 | complete | a86b8c0 |
+| ID         | Description                                                                                                              | Date       | Status   | Commit  |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------ | ---------- | -------- | ------- |
+| 260731-et9 | Default arrow type to elbow in Add Related dialog                                                                        | 2026-07-31 | complete | e7bd5e8 |
+| 260803-cny | Cap json-file logging (50m×5) on all compose services                                                                    | 2026-08-03 | complete | eb5414e |
+| 260812-jfs | Sovereignty root capability/process ring green once filled in (no parent)                                                | 2026-08-12 | complete | 9d790c6 |
+| 260812-jtq | Sovereignty chain UUIDs should show element name and type instead of raw UUIDs                                           | 2026-08-12 | complete | pending |
+| 260812-o0s | Diagram: no line-wrap on new labels; Infrastructure Type prefix on labels                                                | 2026-08-12 | complete | 10030a3 |
+| 260901-rar | Restart API stack after reboot (root cause: apoc.jar perms in neo4j entrypoint)                                          | 2026-09-01 | complete | ca2cdb7 |
+| 260901-ctm | Break CompanyContext cross-tab localStorage ping-pong (auto-select branches no longer write localStorage)                | 2026-09-01 | complete | a86b8c0 |
 | 260901-alf | Fix client auth-refresh loop after 401 (never swap Apollo client to a tokenless one; no unbounded network-error forward) | 2026-09-01 | complete | b7816ab |
+| 260901-gxv | Infrastructure: remove parent-inheritance UI gate so each layer keeps its own sovereignty fields (D-02, matches Apps fix) | 2026-09-01 | complete | 5ee6af4 |
 
 ## Accumulated Context
 
