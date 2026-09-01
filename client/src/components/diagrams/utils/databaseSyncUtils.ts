@@ -6,7 +6,11 @@ import {
   findLinkedTextElement,
   ensureTextContainerBindings,
 } from './textContainerUtils'
-import { updateCanvasElementName, getInfrastructureDisplayName, stripInfrastructureTypePrefix } from './architectureElements'
+import {
+  updateCanvasElementName,
+  getInfrastructureDisplayName,
+  stripInfrastructureTypePrefix,
+} from './architectureElements'
 import { syncSovereigntyMarkers } from './sovereigntyMarkers'
 
 interface DiagramElement {
@@ -352,7 +356,9 @@ export const updateElementName = async (
         // "<TypeLabel> - <name>". Strip that display-only prefix so the DB
         // never persists it as part of the actual entity name.
         name: prepareTextForDatabase(
-          normalizedElementType === 'infrastructure' ? stripInfrastructureTypePrefix(newName) : newName
+          normalizedElementType === 'infrastructure'
+            ? stripInfrastructureTypePrefix(newName)
+            : newName
         ),
       },
     })
@@ -725,7 +731,8 @@ export const syncDiagramOnSave = async (
       continue
     }
 
-    const currentName = normalizeText(textElement.text || textElement.rawText)
+    const rawCurrentText = textElement.text || textElement.rawText || ''
+    const currentName = normalizeText(rawCurrentText)
     const lastSyncedName = normalizeText(
       element.customData.lastSyncedName ||
         element.customData.elementName ||
@@ -734,8 +741,17 @@ export const syncDiagramOnSave = async (
 
     // Check if the name has changed (with normalized text)
     if (currentName && currentName.trim() !== '' && currentName !== lastSyncedName) {
-      // IMPORTANT: Normalize the name before saving (remove line breaks)
-      const normalizedName = currentName.trim().replace(/\n/g, ' ').replace(/\s+/g, ' ')
+      // For infrastructure, strip the diagram-only "<TypeLabel> - " prefix from
+      // the RAW text before normalizeText runs — normalizeText collapses `-\n`
+      // to nothing and would corrupt labels like "On-Premise-Rechenzentrum".
+      const nameForDatabase =
+        element.customData.elementType === 'infrastructure'
+          ? stripInfrastructureTypePrefix(rawCurrentText)
+          : rawCurrentText
+      const normalizedName = normalizeText(nameForDatabase)
+        .trim()
+        .replace(/\n/g, ' ')
+        .replace(/\s+/g, ' ')
 
       const success = await updateElementName(
         apolloClient,
@@ -806,8 +822,17 @@ export const detectNameChanges = (diagramData: any): NameChange[] => {
       normalizedCurrentName.trim() !== '' &&
       normalizedCurrentName !== lastSyncedName
     ) {
-      // Prepare name for database (remove line breaks and hyphenation)
-      const newDatabaseName = normalizedCurrentName.trim().replace(/\n/g, ' ').replace(/\s+/g, ' ')
+      // For infrastructure, strip the diagram-only "<TypeLabel> - " prefix from
+      // the RAW display text (before normalizeText) — normalizeText collapses
+      // `-\n` to nothing and would corrupt labels like "On-Premise-Rechenzentrum".
+      const nameForDatabase =
+        element.customData.elementType === 'infrastructure'
+          ? stripInfrastructureTypePrefix(currentDisplayName)
+          : currentDisplayName
+      const newDatabaseName = normalizeText(nameForDatabase)
+        .trim()
+        .replace(/\n/g, ' ')
+        .replace(/\s+/g, ' ')
 
       nameChanges.push({
         elementId: element.id,

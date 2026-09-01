@@ -249,13 +249,27 @@ const INFRASTRUCTURE_TYPE_PREFIXES: readonly string[] = Object.values(Infrastruc
  * Strips a known Infrastructure Type label prefix (as produced by
  * `getInfrastructureDisplayName`) from `name`. Used on the save path so the
  * database `Infrastructure.name` never gets the diagram-only prefix persisted.
- * Returns `name` unchanged if no known prefix matches.
+ *
+ * Tolerates Excalidraw line-wrap artifacts inside the prefix: a soft break
+ * like "On-Premise-\nRechenzentrum" is collapsed to "On-Premise-Rechenzentrum"
+ * for matching (preserving the real hyphen), so the caller can pass the raw
+ * text-element `.text` (with wrap `\n`s) without first running `normalizeText`
+ * — which would delete the hyphen and defeat prefix detection.
+ *
+ * Returns `name` unchanged (identity) if no known prefix matches.
  */
 export function stripInfrastructureTypePrefix(name: string): string {
   if (!name) return name
+  const collapsed = name
+    .replace(/\u00AD/g, '')
+    // Preserve real hyphens across a wrap: "Foo-\nBar" → "Foo-Bar".
+    .replace(/-\s*\r?\n\s*/g, '-')
+    .replace(/\r?\n/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
   for (const prefix of INFRASTRUCTURE_TYPE_PREFIXES) {
-    if (name.startsWith(prefix)) {
-      return name.slice(prefix.length)
+    if (collapsed.startsWith(prefix)) {
+      return collapsed.slice(prefix.length)
     }
   }
   return name
