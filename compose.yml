@@ -23,6 +23,10 @@ services:
         fi
         find /plugins -maxdepth 1 -type f -name 'apoc*.jar' -delete
         cp "$$APJAR" /plugins/apoc.jar
+        # entrypoint runs as root; neo4j process runs as uid 7474 and must be able
+        # to read the jar, otherwise Java surfaces the perm error as
+        # "ZipException: apoc.jar invalid" and the DB crash-loops on boot.
+        chmod 0644 /plugins/apoc.jar
         exec /startup/docker-entrypoint.sh neo4j
     restart: unless-stopped
     logging: *default-logging
