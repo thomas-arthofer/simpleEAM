@@ -5,6 +5,7 @@
 **Produced for:** `gsd-planner` (Phase 5)
 
 <user_constraints>
+
 ## User Constraints (from CONTEXT.md)
 
 ### Locked Decisions
@@ -85,6 +86,7 @@ WITH cap,
 ```
 
 **Why "effective-Req" over "ancestor list"**:
+
 - The evaluator only needs the folded max; storing the raw ancestor list forces every consumer (evaluator, `chainLabels`, tests) to re-fold it. Anti-Pattern 3 says "one classifier, reused everywhere" — the fold is a classification step, do it once at the boundary.
 - If D-06 goes with option (c) later (repurpose `classifyCapabilityAgainstParent` as an explanation panel), we can layer an ADDITIVE `ancestorRequiredLevels: { id, name, required }[]` field alongside `effectiveRequiredLevels` at that point — the change is compatible.
 
@@ -112,18 +114,21 @@ Same for `BusinessProcessChain` (via `HAS_PARENT_PROCESS*0..`). `DataObjectChain
 ### 1.3 Cypher extension — quoted current code + delta
 
 Current one-hop for BC ([`repository.ts` line ~292](server/src/sovereignty/repository.ts)):
+
 ```cypher
 OPTIONAL MATCH (cap)-[:HAS_PARENT]->(parent:BusinessCapability)-[:OWNED_BY]->(parentCompany:Company)
 WHERE parent IS NULL OR $isAdmin OR parentCompany.id IN $companyIds
 ```
 
 Phase 5 replacement:
+
 ```cypher
 OPTIONAL MATCH (cap)-[:HAS_PARENT*0..]->(ancestor:BusinessCapability)-[:OWNED_BY]->(ancestorCompany:Company)
 WHERE $isAdmin OR ancestorCompany.id IN $companyIds
 ```
 
 Then in the RETURN clause, fold via UNWIND per dimension:
+
 ```cypher
 WITH cap, collect(DISTINCT ancestor) AS ancestors
 UNWIND ancestors AS a
@@ -160,11 +165,11 @@ The current `parentCompany.id IN $companyIds` filter (T-02.3-04) applies unchang
 
 **Relocate deviation into `classifyNode`** ([`evaluator.ts` line 44](server/src/sovereignty/evaluator.ts#L44)). Today's classifier emits only two verdicts:
 
-| Today | Phase 5 |
-|-------|---------|
-| `achieved === null` → GREY finding | Same (GREY finding) |
-| `achieved < required` → RED finding | **Compute deviation index; RED if ≥2 steps, YELLOW if 1 step** |
-| `achieved ≥ required` → no finding (implicit GREEN) | Same |
+| Today                                               | Phase 5                                                        |
+| --------------------------------------------------- | -------------------------------------------------------------- |
+| `achieved === null` → GREY finding                  | Same (GREY finding)                                            |
+| `achieved < required` → RED finding                 | **Compute deviation index; RED if ≥2 steps, YELLOW if 1 step** |
+| `achieved ≥ required` → no finding (implicit GREEN) | Same                                                           |
 
 The `deviation` is computed on the `SOVEREIGNTY_MATURITY_LEVELS` scale using existing `maturityIndex` — no hardcoded "4":
 
@@ -194,7 +199,7 @@ The prose in CONTEXT.md talks about "min-Achieved-in-chain[d]", but the existing
 ```ts
 function analyzeCapabilitySubtree(
   chain: BusinessCapabilityChain,
-  parentEffectiveReq: RequirementLevels,   // NEW parameter
+  parentEffectiveReq: RequirementLevels, // NEW parameter
   visited: ReadonlySet<string>
 ): CapabilitySubtreeResult {
   const effectiveReq = maxByDimension(chain.required, parentEffectiveReq)
@@ -216,6 +221,7 @@ For the analysis root, `parentEffectiveReq` is the repository-fetched `chain.eff
 ### 3.1 STATUS_RANK and worseStatus — unchanged
 
 The ranking `GREEN < GREY < YELLOW < RED` remains monotone under the new semantics:
+
 - YELLOW = provable violation, small deviation.
 - RED = provable violation, large deviation.
 - GREY = data gap without provable violation.
@@ -228,6 +234,7 @@ D-02's precedence rule ("provable violation on any dim dominates data gaps on ot
 Three chunks of `projectMarkers` ([`markers.ts` lines 63-190](server/src/sovereignty/markers.ts#L63-L190)) exist only to encode the three-valued parent-consistency `selfStatus` that D-05 absorbs:
 
 1. **`selfViolatingIds` computation** (lines 76-98):
+
    ```ts
    const selfViolatingIds = new Set(
      analysis.findings
@@ -235,22 +242,33 @@ Three chunks of `projectMarkers` ([`markers.ts` lines 63-190](server/src/soverei
        .map(f => f.violatingElementId)
    )
    ```
+
    Under D-05, requirement roots never appear as `violatingElementId` in findings (their premise is evaluated against `effective-Req` at chain-classification time; no self-finding is emitted). **DELETE.**
 
 2. **`comparedIds` GREEN-eligibility signal** (line 108, plus the entire `SovereigntyAnalysis.comparedCapabilityIds` field it consumes):
+
    ```ts
    const comparedIds = new Set(analysis.comparedCapabilityIds)
    ```
+
    Under D-05, the "compared and consistent" vs "nothing to compare" distinction dies — GREEN eligibility is now "premise fulfilled with complete data". **DELETE.**
 
 3. **`isCapabilitySelfViolation` ternary** (lines 141-155):
+
    ```ts
    selfStatus: isCapabilitySelfViolation
-     ? isViolatingElement ? worseStatus(current.selfStatus, finding.status) : current.selfStatus
+     ? isViolatingElement
+       ? worseStatus(current.selfStatus, finding.status)
+       : current.selfStatus
      : isCapability
-       ? comparedIds.has(id) ? 'GREEN' : 'GREY'
-       : isViolatingElement ? worseStatus(current.selfStatus, finding.status) : current.selfStatus
+       ? comparedIds.has(id)
+         ? 'GREEN'
+         : 'GREY'
+       : isViolatingElement
+         ? worseStatus(current.selfStatus, finding.status)
+         : current.selfStatus
    ```
+
    Collapses to the simple non-capability branch: `isViolatingElement ? worseStatus(...) : current.selfStatus`. **SIMPLIFY.**
 
 4. **`capabilityIds` GREEN-backfill loop** (lines 173-190):
@@ -276,7 +294,7 @@ export function projectMarkers(analysis: SovereigntyAnalysis): Map<string, Sover
 
   // Root always exists in the map (never omitted)
   markers.set(analysis.rootId, {
-    selfStatus: analysis.selfStatus,       // fill for the root = whole-chain premise
+    selfStatus: analysis.selfStatus, // fill for the root = whole-chain premise
     downstreamStatus: analysis.downstreamStatus,
   })
 
@@ -340,17 +358,18 @@ Ring = worseStatus over findings whose `chainPath` contains this element below i
 
 ### Options
 
-| # | Option | Pros | Cons |
-|---|--------|------|------|
-| **(a)** | **Remove entirely** — delete `classifyCapabilityAgainstParent`; remove its two call sites in `analyzeBusinessCapability` and `analyzeBusinessProcess` and the descendant-vs-parent call in `analyzeCapabilitySubtree`; drop `parentRequiredLevels` from types + repository | Smallest post-Phase-5 surface. No dead code. `Finding[]` retains its single meaning ("premise violation of a chain element"). `Finding.violatingElementType` no longer needs the two exceptional values `'businessCapability'` / `'businessProcess'` — could revert to leaf-only types (04-CONTEXT.md D-04 exception unwinds). | Loses "why is effective-Req X" traceability from the detail view. Users lose a diagnostic surface. Slightly larger delete diff. |
-| **(b)** | **Keep as-is** in `findings` (informational only, ignored by marker projection) | Zero-diff evaluator; detail-view untouched. | Semantic confusion: findings now mix "premise violations" (drives marker color) and "structural parent hints" (no marker impact). Requires explicit `markers.ts` filter to ignore the informational ones — reintroduces the exact "isViolatingElement type check" pattern Phase 4 04-02 fixed. High regression risk. |
-| **(c)** | **Repurpose as `effectiveRequirementSources` field** — retire the YELLOW findings; add a new additive field to `SovereigntyAnalysis`: `readonly effectiveRequirementSources: { dimension, level, sourceElementId, sourceElementName }[]` explaining per-dim WHERE effective-Req came from | Preserves traceability. Cleanest UX: "Resilience required HIGH because ancestor X requires HIGH". | Additive scope creep — new field, new resolver work, new detail-view rendering, new i18n. Not required by any P5 D-01..D-05 decision. |
+| #       | Option                                                                                                                                                                                                                                                                                    | Pros                                                                                                                                                                                                                                                                                                                           | Cons                                                                                                                                                                                                                                                                                                                 |
+| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **(a)** | **Remove entirely** — delete `classifyCapabilityAgainstParent`; remove its two call sites in `analyzeBusinessCapability` and `analyzeBusinessProcess` and the descendant-vs-parent call in `analyzeCapabilitySubtree`; drop `parentRequiredLevels` from types + repository                | Smallest post-Phase-5 surface. No dead code. `Finding[]` retains its single meaning ("premise violation of a chain element"). `Finding.violatingElementType` no longer needs the two exceptional values `'businessCapability'` / `'businessProcess'` — could revert to leaf-only types (04-CONTEXT.md D-04 exception unwinds). | Loses "why is effective-Req X" traceability from the detail view. Users lose a diagnostic surface. Slightly larger delete diff.                                                                                                                                                                                      |
+| **(b)** | **Keep as-is** in `findings` (informational only, ignored by marker projection)                                                                                                                                                                                                           | Zero-diff evaluator; detail-view untouched.                                                                                                                                                                                                                                                                                    | Semantic confusion: findings now mix "premise violations" (drives marker color) and "structural parent hints" (no marker impact). Requires explicit `markers.ts` filter to ignore the informational ones — reintroduces the exact "isViolatingElement type check" pattern Phase 4 04-02 fixed. High regression risk. |
+| **(c)** | **Repurpose as `effectiveRequirementSources` field** — retire the YELLOW findings; add a new additive field to `SovereigntyAnalysis`: `readonly effectiveRequirementSources: { dimension, level, sourceElementId, sourceElementName }[]` explaining per-dim WHERE effective-Req came from | Preserves traceability. Cleanest UX: "Resilience required HIGH because ancestor X requires HIGH".                                                                                                                                                                                                                              | Additive scope creep — new field, new resolver work, new detail-view rendering, new i18n. Not required by any P5 D-01..D-05 decision.                                                                                                                                                                                |
 
 ### Recommendation
 
 **Option (a): remove entirely.**
 
 Rationale:
+
 1. **YAGNI / Nyquist:** D-05 is functionally complete without any of these findings. Nothing in D-01..D-05 requires the "why" trace. If users demand it later, option (c) is the ADDITIVE follow-up — non-blocking, non-regressive.
 2. **Findings' semantic clarity:** the existing `Finding` type ([`types.ts` line 33](server/src/sovereignty/types.ts#L33)) is documented as "one violation, one dimension, one violating element". Option (b) makes findings polysemous. Phase 2's Anti-Pattern 3 warns exactly against this.
 3. **Delete surface:** deleting `classifyCapabilityAgainstParent` also removes the special-case `violatingElementType === 'businessCapability' | 'businessProcess'` handling that has already caused one critical bug (Phase 4 04-02 `selfViolatingIds` filter regression). Fewer branches, less bug surface.
@@ -362,18 +381,18 @@ Deprecation path: `parentRequiredLevels` field on `BusinessCapabilityChain` / `B
 
 Line counts and file structure verified against actual files ([`wc -l server/src/sovereignty/__tests__/*.ts`](server/src/sovereignty/__tests__/) — 969 fixtures, 583 evaluator tests, 210 markers tests, 213 companyRollup tests, 176 parity, 43 cycles).
 
-| File | Action | Scope estimate |
-|------|--------|----------------|
-| [`server/src/sovereignty/__tests__/fixtures.ts`](server/src/sovereignty/__tests__/fixtures.ts) | **Update in place + add ~5 new fixtures** | Rename `rootParentContradictionFixture` → `ancestorStricterFixture` (or delete). Same for BP counterparts. `descendantParentContradictionFixture` retires (D-05 removes the descendant-vs-parent classifier). Adds: `deviationOneStepFixture` (HIGH req, MEDIUM ach → YELLOW), `deviationTwoStepFixture` (HIGH req, LOW ach → RED), `deviationBoundaryFixture` (NONE-vs-VERY_HIGH ≥2), `precedenceViolationOverGapFixture` (one dim RED, one dim GREY → RED wins), `ancestorMaxWinsFixture` (BC requires MEDIUM, grandparent requires HIGH → effective HIGH used against leaf). Keep unchanged: `cyclicApplicationFixture`, `compositeApplicationFixture`, `multiParentInfrastructureFixture`, `partialAchievedFixture`, `dataObjectChainFixture`, `nestedCapabilitySubtreeFixture`. |
-| [`server/src/sovereignty/__tests__/evaluator.test.ts`](server/src/sovereignty/__tests__/evaluator.test.ts) | **Rewrite 3 describe blocks; keep 2 unchanged** | KEEP: "analyzeBusinessCapability" achieved-chain basics (redChain/greyChain/greenChain), "analyzeDataObject" basics, "compositeApplication"/"multiParent"/"partialAchieved" tests, cycle tests. REWRITE: "parent-vs-child required-level contradiction" (Test A–N) → convert to "effective-Req ancestor propagation" cases. RETIRE: "comparedCapabilityIds / three-valued selfStatus" describe block (that field is deleted). REWRITE: "analyzeBusinessProcess" — selfStatus tests: today asserts GREEN when own req filled in AND parent consistent; Phase 5 asserts GREEN when whole-chain premise holds. Roughly ~40 assertions change values, ~30 stay identical. |
-| [`server/src/sovereignty/__tests__/markers.test.ts`](server/src/sovereignty/__tests__/markers.test.ts) | **Rewrite 10 of ~15 tests** | The "GREY-self forever for nested BCs" invariant DIES (nested BCs now get real fill). The Test E / F / N (parent-consistency selfStatus tests) DIE. The tests for `resolveMarker`/`DEFAULT_MARKER` stay. Add new: "downstream App inherits YELLOW fill when its achieved is 1 step below effective-Req of its root", "downstream Infra inherits RED fill at ≥2 step deviation", "ring propagates worst-of-below unchanged". Precedence regression test ("YELLOW beats GREY on same element") STAYS as-is — value-change only. |
-| [`server/src/sovereignty/__tests__/companyRollup.test.ts`](server/src/sovereignty/__tests__/companyRollup.test.ts) | **Update in place — assertion values change** | `pushAchievedScores` today skips YELLOW findings ([`companyRollup.ts` line 86](server/src/sovereignty/companyRollup.ts#L86)); Phase 5's evaluator now emits YELLOW findings for 1-step deviations. This is a **hidden bug** the planner must fix in the rollup: YELLOW findings must contribute their `actualLevel` to `achievedScores` too, otherwise the rollup silently ignores them. Test "counts an entirely-GREY DataObject chain toward achievedSovereigntyScore" numeric values re-verify; new test case for a company with a 1-step-deviation YELLOW finding. |
-| [`server/src/sovereignty/__tests__/evaluator.parity.test.ts`](server/src/sovereignty/__tests__/evaluator.parity.test.ts) | **Update in place — assertion values change** | `redChainFixture`'s expected findings still stand (RED at infra-vm-web-03, resilience). Byte-identical parity check preserved. If `SovereigntyAnalysis.comparedCapabilityIds` is dropped from the type (D-06 option a), the resolver DTO shape drops it too — parity assertion continues to work as long as both direct and resolver call ignore that field. |
-| [`server/src/sovereignty/__tests__/evaluator.cycles.test.ts`](server/src/sovereignty/__tests__/evaluator.cycles.test.ts) | **Update in place — assertion values may change** | `bFindings` count logic assumes today's classifier — if `classifyNode` now emits YELLOW for 1-step deviations, `app-cycle-b`'s security LOW-vs-MEDIUM (was 1 step) shifts from RED to YELLOW. Assertion value update, semantic behavior unchanged. |
-| [`client/src/components/sovereignty/SovereigntyCapabilityView.tsx`](client/src/components/sovereignty/SovereigntyCapabilityView.tsx) | **No structural change; text only** | See §7. |
-| [`client/src/components/sovereignty/SovereigntyDataView.tsx`](client/src/components/sovereignty/SovereigntyDataView.tsx) | **No structural change; text only** | See §7. |
-| [`client/src/components/sovereignty/SovereigntyProcessView.tsx`](client/src/components/sovereignty/SovereigntyProcessView.tsx) | **No structural change; text only** | See §7. |
-| [`client/messages/de.json`](client/messages/de.json), [`client/messages/en.json`](client/messages/en.json) | **Update `sovereigntyDetail` group** | New/updated keys for `greenEmptyBody`, `greyEmptyBody`, `findingRow`, and add YELLOW/RED distinction copy ("deviation of 1 step" vs "deviation of ≥2 steps"). See §7 for exact keys. |
+| File                                                                                                                                 | Action                                            | Scope estimate                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [`server/src/sovereignty/__tests__/fixtures.ts`](server/src/sovereignty/__tests__/fixtures.ts)                                       | **Update in place + add ~5 new fixtures**         | Rename `rootParentContradictionFixture` → `ancestorStricterFixture` (or delete). Same for BP counterparts. `descendantParentContradictionFixture` retires (D-05 removes the descendant-vs-parent classifier). Adds: `deviationOneStepFixture` (HIGH req, MEDIUM ach → YELLOW), `deviationTwoStepFixture` (HIGH req, LOW ach → RED), `deviationBoundaryFixture` (NONE-vs-VERY_HIGH ≥2), `precedenceViolationOverGapFixture` (one dim RED, one dim GREY → RED wins), `ancestorMaxWinsFixture` (BC requires MEDIUM, grandparent requires HIGH → effective HIGH used against leaf). Keep unchanged: `cyclicApplicationFixture`, `compositeApplicationFixture`, `multiParentInfrastructureFixture`, `partialAchievedFixture`, `dataObjectChainFixture`, `nestedCapabilitySubtreeFixture`. |
+| [`server/src/sovereignty/__tests__/evaluator.test.ts`](server/src/sovereignty/__tests__/evaluator.test.ts)                           | **Rewrite 3 describe blocks; keep 2 unchanged**   | KEEP: "analyzeBusinessCapability" achieved-chain basics (redChain/greyChain/greenChain), "analyzeDataObject" basics, "compositeApplication"/"multiParent"/"partialAchieved" tests, cycle tests. REWRITE: "parent-vs-child required-level contradiction" (Test A–N) → convert to "effective-Req ancestor propagation" cases. RETIRE: "comparedCapabilityIds / three-valued selfStatus" describe block (that field is deleted). REWRITE: "analyzeBusinessProcess" — selfStatus tests: today asserts GREEN when own req filled in AND parent consistent; Phase 5 asserts GREEN when whole-chain premise holds. Roughly ~40 assertions change values, ~30 stay identical.                                                                                                                |
+| [`server/src/sovereignty/__tests__/markers.test.ts`](server/src/sovereignty/__tests__/markers.test.ts)                               | **Rewrite 10 of ~15 tests**                       | The "GREY-self forever for nested BCs" invariant DIES (nested BCs now get real fill). The Test E / F / N (parent-consistency selfStatus tests) DIE. The tests for `resolveMarker`/`DEFAULT_MARKER` stay. Add new: "downstream App inherits YELLOW fill when its achieved is 1 step below effective-Req of its root", "downstream Infra inherits RED fill at ≥2 step deviation", "ring propagates worst-of-below unchanged". Precedence regression test ("YELLOW beats GREY on same element") STAYS as-is — value-change only.                                                                                                                                                                                                                                                        |
+| [`server/src/sovereignty/__tests__/companyRollup.test.ts`](server/src/sovereignty/__tests__/companyRollup.test.ts)                   | **Update in place — assertion values change**     | `pushAchievedScores` today skips YELLOW findings ([`companyRollup.ts` line 86](server/src/sovereignty/companyRollup.ts#L86)); Phase 5's evaluator now emits YELLOW findings for 1-step deviations. This is a **hidden bug** the planner must fix in the rollup: YELLOW findings must contribute their `actualLevel` to `achievedScores` too, otherwise the rollup silently ignores them. Test "counts an entirely-GREY DataObject chain toward achievedSovereigntyScore" numeric values re-verify; new test case for a company with a 1-step-deviation YELLOW finding.                                                                                                                                                                                                               |
+| [`server/src/sovereignty/__tests__/evaluator.parity.test.ts`](server/src/sovereignty/__tests__/evaluator.parity.test.ts)             | **Update in place — assertion values change**     | `redChainFixture`'s expected findings still stand (RED at infra-vm-web-03, resilience). Byte-identical parity check preserved. If `SovereigntyAnalysis.comparedCapabilityIds` is dropped from the type (D-06 option a), the resolver DTO shape drops it too — parity assertion continues to work as long as both direct and resolver call ignore that field.                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| [`server/src/sovereignty/__tests__/evaluator.cycles.test.ts`](server/src/sovereignty/__tests__/evaluator.cycles.test.ts)             | **Update in place — assertion values may change** | `bFindings` count logic assumes today's classifier — if `classifyNode` now emits YELLOW for 1-step deviations, `app-cycle-b`'s security LOW-vs-MEDIUM (was 1 step) shifts from RED to YELLOW. Assertion value update, semantic behavior unchanged.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| [`client/src/components/sovereignty/SovereigntyCapabilityView.tsx`](client/src/components/sovereignty/SovereigntyCapabilityView.tsx) | **No structural change; text only**               | See §7.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| [`client/src/components/sovereignty/SovereigntyDataView.tsx`](client/src/components/sovereignty/SovereigntyDataView.tsx)             | **No structural change; text only**               | See §7.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| [`client/src/components/sovereignty/SovereigntyProcessView.tsx`](client/src/components/sovereignty/SovereigntyProcessView.tsx)       | **No structural change; text only**               | See §7.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| [`client/messages/de.json`](client/messages/de.json), [`client/messages/en.json`](client/messages/en.json)                           | **Update `sovereigntyDetail` group**              | New/updated keys for `greenEmptyBody`, `greyEmptyBody`, `findingRow`, and add YELLOW/RED distinction copy ("deviation of 1 step" vs "deviation of ≥2 steps"). See §7 for exact keys.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 
 ## 7. Client Detail-View Impact
 
@@ -391,6 +410,7 @@ if (analysis.downstreamStatus === 'GREY' && analysis.findings.length === 0) {
 Both branches keep working under new semantics — GREEN downstream still means "premise holds", GREY-empty still means "no data / no findings". **No structural JSX or query change required.** Confirmed by inspecting all three views — they render identically-shaped `SovereigntyAnalysis`.
 
 **Text changes (i18n only):**
+
 - `greyEmptyBody` — update copy from "no comparison could be made" to "no data available and no violation detected".
 - Findings row copy — the message `findingRow` currently just prints `required` vs `actual`. New YELLOW findings need an explanation of "1-step deviation"; RED needs "≥2-step". Options: (a) new i18n keys per status; (b) inline the deviation delta in the copy. Recommend (a): `findingRowYellow`, `findingRowRed`, `findingRowGrey`, dispatched from the `finding.status` at render time. Small render change.
 
@@ -435,30 +455,30 @@ Nyquist validation gate is **enabled** (`workflow.nyquist_validation: true` in `
 
 ### Test Framework
 
-| Property | Value |
-|----------|-------|
-| Framework | Jest (existing) — [`server/jest.config.js`](server/jest.config.js) |
-| Config file | `server/jest.config.js` |
-| Quick run command | `cd server && yarn jest src/sovereignty --testPathPattern=<file> -x` |
-| Full suite command | `cd server && yarn jest src/sovereignty` |
+| Property           | Value                                                                |
+| ------------------ | -------------------------------------------------------------------- |
+| Framework          | Jest (existing) — [`server/jest.config.js`](server/jest.config.js)   |
+| Config file        | `server/jest.config.js`                                              |
+| Quick run command  | `cd server && yarn jest src/sovereignty --testPathPattern=<file> -x` |
+| Full suite command | `cd server && yarn jest src/sovereignty`                             |
 
 ### Phase Requirement → Test Map
 
 Phase 5 has no REQUIREMENTS.md IDs; the acceptance criteria come from CONTEXT.md D-01..D-05.
 
-| CTX ID | Behavior | Test Type | Automated Command | File |
-|--------|----------|-----------|-------------------|------|
-| D-01 | Worst-of-4-dim aggregation per element | unit | `yarn jest markers.test.ts -t "worst-of-dim"` | 🆕 new case in `markers.test.ts` |
-| D-02 | Deviation-1 → YELLOW; deviation-≥2 → RED; scale-independent | unit | `yarn jest evaluator.test.ts -t "deviation"` | 🆕 new cases against `deviationOneStepFixture`, `deviationTwoStepFixture` |
-| D-02 | Data-gap dominance: any RED/YELLOW beats any GREY | unit | `yarn jest markers.test.ts -t "precedence"` | 🆕 uses `precedenceViolationOverGapFixture` |
-| D-03 | Rule applies uniformly to BC/DO/BP | unit | `yarn jest evaluator.test.ts -t "uniform"` | 🆕 parallel cases per rootType |
-| D-04 | Downstream leaf fill = its own deviation vs effective-Req; ring = worseStatus of below | unit | `yarn jest markers.test.ts -t "downstream leaf"` | 🆕 new cases |
-| D-05 | Effective-Req = max over ancestor chain — multi-level BC | unit | `yarn jest evaluator.test.ts -t "ancestor max"` | 🆕 `ancestorMaxWinsFixture` |
-| D-05 | Effective-Req = max over ancestor chain — multi-level BP via HAS_PARENT_PROCESS | unit | `yarn jest evaluator.test.ts -t "process ancestor max"` | 🆕 BP counterpart fixture |
-| D-05 | DataObject: effective-Req = own required (no parent) | unit | `yarn jest evaluator.test.ts -t "dataObject"` | ✅ existing `dataObjectChainFixture` — assertion value changes |
-| Integration | Repository → evaluator → markers → resolver end-to-end chain-premise | integration | `yarn jest evaluator.parity.test.ts` | ✅ existing — assertion values update |
-| Integration | Cycle safety preserved under new ancestor walk | integration | `yarn jest evaluator.cycles.test.ts` | ✅ existing — assertion values update |
-| Companyrollup | YELLOW findings contribute to achievedSovereigntyScore | unit | `yarn jest companyRollup.test.ts -t "YELLOW"` | 🆕 new test in `companyRollup.test.ts` |
+| CTX ID        | Behavior                                                                               | Test Type   | Automated Command                                       | File                                                                      |
+| ------------- | -------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------- | ------------------------------------------------------------------------- |
+| D-01          | Worst-of-4-dim aggregation per element                                                 | unit        | `yarn jest markers.test.ts -t "worst-of-dim"`           | 🆕 new case in `markers.test.ts`                                          |
+| D-02          | Deviation-1 → YELLOW; deviation-≥2 → RED; scale-independent                            | unit        | `yarn jest evaluator.test.ts -t "deviation"`            | 🆕 new cases against `deviationOneStepFixture`, `deviationTwoStepFixture` |
+| D-02          | Data-gap dominance: any RED/YELLOW beats any GREY                                      | unit        | `yarn jest markers.test.ts -t "precedence"`             | 🆕 uses `precedenceViolationOverGapFixture`                               |
+| D-03          | Rule applies uniformly to BC/DO/BP                                                     | unit        | `yarn jest evaluator.test.ts -t "uniform"`              | 🆕 parallel cases per rootType                                            |
+| D-04          | Downstream leaf fill = its own deviation vs effective-Req; ring = worseStatus of below | unit        | `yarn jest markers.test.ts -t "downstream leaf"`        | 🆕 new cases                                                              |
+| D-05          | Effective-Req = max over ancestor chain — multi-level BC                               | unit        | `yarn jest evaluator.test.ts -t "ancestor max"`         | 🆕 `ancestorMaxWinsFixture`                                               |
+| D-05          | Effective-Req = max over ancestor chain — multi-level BP via HAS_PARENT_PROCESS        | unit        | `yarn jest evaluator.test.ts -t "process ancestor max"` | 🆕 BP counterpart fixture                                                 |
+| D-05          | DataObject: effective-Req = own required (no parent)                                   | unit        | `yarn jest evaluator.test.ts -t "dataObject"`           | ✅ existing `dataObjectChainFixture` — assertion value changes            |
+| Integration   | Repository → evaluator → markers → resolver end-to-end chain-premise                   | integration | `yarn jest evaluator.parity.test.ts`                    | ✅ existing — assertion values update                                     |
+| Integration   | Cycle safety preserved under new ancestor walk                                         | integration | `yarn jest evaluator.cycles.test.ts`                    | ✅ existing — assertion values update                                     |
+| Companyrollup | YELLOW findings contribute to achievedSovereigntyScore                                 | unit        | `yarn jest companyRollup.test.ts -t "YELLOW"`           | 🆕 new test in `companyRollup.test.ts`                                    |
 
 ### Sampling Rate
 
@@ -476,21 +496,21 @@ None — all test files exist. Wave 0 is fixture-rewire only; no new file creati
 
 ### Applicable ASVS Categories
 
-| ASVS Category | Applies | Standard Control |
-|---------------|---------|-----------------|
-| V2 Authentication | no (phase touches evaluator internals; auth already applied at resolver boundary) | — |
-| V3 Session Management | no | — |
-| V4 Access Control | yes (repository ancestor walk crosses tenant boundary) | `parentCompany.id IN $companyIds` filter preserved on the new `HAS_PARENT*0..` walk (mirrors T-02.3-04) |
-| V5 Input Validation | yes | existing `sovereigntyAnalysisArgsSchema` / `sovereigntyMarkerNodesSchema` at [`validation.ts`](server/src/sovereignty/validation.ts) unchanged |
-| V6 Cryptography | no | — |
+| ASVS Category         | Applies                                                                           | Standard Control                                                                                                                               |
+| --------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| V2 Authentication     | no (phase touches evaluator internals; auth already applied at resolver boundary) | —                                                                                                                                              |
+| V3 Session Management | no                                                                                | —                                                                                                                                              |
+| V4 Access Control     | yes (repository ancestor walk crosses tenant boundary)                            | `parentCompany.id IN $companyIds` filter preserved on the new `HAS_PARENT*0..` walk (mirrors T-02.3-04)                                        |
+| V5 Input Validation   | yes                                                                               | existing `sovereigntyAnalysisArgsSchema` / `sovereigntyMarkerNodesSchema` at [`validation.ts`](server/src/sovereignty/validation.ts) unchanged |
+| V6 Cryptography       | no                                                                                | —                                                                                                                                              |
 
 ### Known Threat Patterns for this Phase
 
-| Pattern | STRIDE | Standard Mitigation |
-|---------|--------|---------------------|
-| Cross-tenant ancestor leak via `HAS_PARENT*0..` | Information Disclosure | Repeat T-02.3-04 tenant filter on `ancestorCompany.id`. Regression test: an ancestor owned by another company must be silently excluded from the max fold — assert effective-Req reflects only in-tenant ancestors. |
-| Unbounded ancestor walk consumes memory / CPU | Denial of Service | Neo4j's variable-length path traversal is bounded to simple paths; realistic BC hierarchies never exceed ~10 levels. No per-request cap added; a synthetic pathological fixture (10K-node chain) is out of scope. |
-| Cyclic `HAS_PARENT` creates infinite loop in TS-side fold | DoS | TS-side `maturityIndex` fold operates on the `collect(DISTINCT ancestor)` output (a Set) — cannot loop. |
+| Pattern                                                   | STRIDE                 | Standard Mitigation                                                                                                                                                                                                 |
+| --------------------------------------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Cross-tenant ancestor leak via `HAS_PARENT*0..`           | Information Disclosure | Repeat T-02.3-04 tenant filter on `ancestorCompany.id`. Regression test: an ancestor owned by another company must be silently excluded from the max fold — assert effective-Req reflects only in-tenant ancestors. |
+| Unbounded ancestor walk consumes memory / CPU             | Denial of Service      | Neo4j's variable-length path traversal is bounded to simple paths; realistic BC hierarchies never exceed ~10 levels. No per-request cap added; a synthetic pathological fixture (10K-node chain) is out of scope.   |
+| Cyclic `HAS_PARENT` creates infinite loop in TS-side fold | DoS                    | TS-side `maturityIndex` fold operates on the `collect(DISTINCT ancestor)` output (a Set) — cannot loop.                                                                                                             |
 
 ## 10. Task Decomposition Hint
 
@@ -499,6 +519,7 @@ None — all test files exist. Wave 0 is fixture-rewire only; no new file creati
 **Plan A — Tracer: BC single-dimension end-to-end deviation math**
 
 Scope:
+
 - Extend [`types.ts`](server/src/sovereignty/types.ts) to add `effectiveRequiredLevels: RequirementLevels` on `BusinessCapabilityChain`.
 - Extend [`fetchBusinessCapabilityChain`](server/src/sovereignty/repository.ts) with the variable-length `HAS_PARENT*0..` walk (TS-side max fold).
 - Rework `classifyNode` in [`evaluator.ts`](server/src/sovereignty/evaluator.ts) to emit YELLOW at 1-step deviation, RED at ≥2 (single dimension end-to-end — `security` chosen for parity with Phase 02.3's tracer dimension).
@@ -512,6 +533,7 @@ Success signal: yarn tsc clean, the single new tracer test passes, existing test
 **Plan B — Expansion: 4-dimension aggregation, BP + DO parity, D-06 removal, precedence, rollup fix, full test rewire**
 
 Scope:
+
 - Extend deviation math to all 4 dimensions.
 - Rewrite `projectMarkers` per §3 (delete `selfViolatingIds`, `comparedIds`, backfill loop).
 - Extend BP fetch with `HAS_PARENT_PROCESS*0..` variable-length walk; add `effectiveRequiredLevels` to `BusinessProcessChain`.
@@ -526,6 +548,7 @@ Success signal: full sovereignty suite green (unit + parity + cycles + rollup).
 **Plan C — Polish: client detail-view text updates**
 
 Scope:
+
 - Update `sovereigntyDetail` i18n keys in `messages/de.json` + `messages/en.json`.
 - Add `findingRowYellow` / `findingRowRed` / `findingRowGrey` dispatch in the three `SovereigntyXView.tsx` renderers.
 - No structural JSX change; no query change.
