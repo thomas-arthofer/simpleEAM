@@ -6,7 +6,7 @@ import {
   findLinkedTextElement,
   ensureTextContainerBindings,
 } from './textContainerUtils'
-import { updateCanvasElementName, getInfrastructureDisplayName } from './architectureElements'
+import { updateCanvasElementName, getInfrastructureDisplayName, stripInfrastructureTypePrefix } from './architectureElements'
 import { syncSovereigntyMarkers } from './sovereigntyMarkers'
 
 interface DiagramElement {
@@ -348,7 +348,12 @@ export const updateElementName = async (
       mutation,
       variables: {
         id: databaseId,
-        name: prepareTextForDatabase(newName),
+        // For infrastructure elements the diagram label is rendered as
+        // "<TypeLabel> - <name>". Strip that display-only prefix so the DB
+        // never persists it as part of the actual entity name.
+        name: prepareTextForDatabase(
+          normalizedElementType === 'infrastructure' ? stripInfrastructureTypePrefix(newName) : newName
+        ),
       },
     })
 

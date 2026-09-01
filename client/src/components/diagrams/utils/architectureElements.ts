@@ -1,5 +1,5 @@
 import type { ElementType } from '@/graphql/library'
-import type { InfrastructureType } from '@/gql/generated'
+import { InfrastructureType } from '@/gql/generated'
 import { getInfrastructureTypeLabel } from '@/components/infrastructure/utils'
 import { generateElementId, generateSeed, getNextIndex } from './elementIdManager'
 import type { ExcalidrawElement, ElementCustomizations } from './capabilityMapTypes'
@@ -233,6 +233,30 @@ export function getInfrastructureDisplayName(
 ): string {
   if (elementType === 'infrastructure' && infrastructureType) {
     return `${getInfrastructureTypeLabel(infrastructureType as InfrastructureType)} - ${name}`
+  }
+  return name
+}
+
+// All possible InfrastructureType label prefixes, precomputed once so the strip
+// helper stays O(1) w.r.t. enum size and doesn't rebuild the list per element.
+const INFRASTRUCTURE_TYPE_PREFIXES: readonly string[] = Object.values(InfrastructureType)
+  .map(t => `${getInfrastructureTypeLabel(t)} - `)
+  // Longest first so e.g. "On-Premise-Rechenzentrum - " is tried before a
+  // shorter label that could accidentally match its head.
+  .sort((a, b) => b.length - a.length)
+
+/**
+ * Strips a known Infrastructure Type label prefix (as produced by
+ * `getInfrastructureDisplayName`) from `name`. Used on the save path so the
+ * database `Infrastructure.name` never gets the diagram-only prefix persisted.
+ * Returns `name` unchanged if no known prefix matches.
+ */
+export function stripInfrastructureTypePrefix(name: string): string {
+  if (!name) return name
+  for (const prefix of INFRASTRUCTURE_TYPE_PREFIXES) {
+    if (name.startsWith(prefix)) {
+      return name.slice(prefix.length)
+    }
   }
   return name
 }
