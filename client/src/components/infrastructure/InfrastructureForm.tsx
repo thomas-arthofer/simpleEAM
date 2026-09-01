@@ -1,8 +1,6 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { useStore } from '@tanstack/react-form'
-import { Alert } from '@mui/material'
 import { useForm } from '@tanstack/react-form'
 import { z } from 'zod'
 import { useQuery } from '@apollo/client'
@@ -194,19 +192,6 @@ const InfrastructureForm: React.FC<GenericFormProps<Infrastructure, Infrastructu
   // Verwende erstmal das Basis-Schema ohne erweiterte Validierung
   const infrastructureSchema = baseInfrastructureSchema
 
-  const hasAnySovereigntyData = (entity: any | null | undefined): boolean => {
-    if (!entity) return false
-    return (
-      entity.sovereigntyAchStrategicAutonomy != null ||
-      entity.sovereigntyAchResilience != null ||
-      entity.sovereigntyAchSecurity != null ||
-      entity.sovereigntyAchControl != null ||
-      (typeof entity.sovereigntyAchStrategicAutonomyEvidence === 'string' &&
-        entity.sovereigntyAchStrategicAutonomyEvidence.trim() !== '') ||
-      entity.lastSovereigntyAssessmentAt != null
-    )
-  }
-
   // Helper function for Infrastructure Type Labels
   const getInfrastructureTypeLabel = (type: InfrastructureType) => {
     switch (type) {
@@ -361,35 +346,6 @@ const InfrastructureForm: React.FC<GenericFormProps<Infrastructure, Infrastructu
       onSubmit: infrastructureSchema,
     },
   })
-
-  const selectedParentInfrastructureIds = useStore(
-    form.store,
-    state => state.values.parentInfrastructure
-  ) as string[] | undefined
-
-  const selectedParentInfrastructureId =
-    selectedParentInfrastructureIds && selectedParentInfrastructureIds.length > 0
-      ? selectedParentInfrastructureIds[0]
-      : null
-
-  const selectedParentInfrastructure = React.useMemo(() => {
-    if (!selectedParentInfrastructureId) return null
-    const fromOptions =
-      infrastructuresData?.infrastructures?.find(
-        (infra: Infrastructure) => infra.id === selectedParentInfrastructureId
-      ) ?? null
-    if (fromOptions) return fromOptions
-
-    const currentParent = (infrastructure as any)?.parentInfrastructure
-    if (currentParent?.id === selectedParentInfrastructureId) {
-      return currentParent
-    }
-
-    return null
-  }, [infrastructure, infrastructuresData?.infrastructures, selectedParentInfrastructureId])
-
-  const parentWithInheritedSovereignty = selectedParentInfrastructure
-  const parentHasSovereigntyData = hasAnySovereigntyData(parentWithInheritedSovereignty)
 
   // Update form when data changes
   useEffect(() => {
@@ -978,36 +934,7 @@ const InfrastructureForm: React.FC<GenericFormProps<Infrastructure, Infrastructu
       onChipClick: createChipClickHandler('depictedInDiagrams'),
     },
     ...(isSovereigntyEnabled
-      ? parentWithInheritedSovereignty
-        ? [
-            {
-              name: 'sovereigntyInheritanceNotice',
-              label: '',
-              type: 'custom' as const,
-              tabId: 'sovereignty',
-              size: 12,
-              customRender: () => (
-                <Alert severity="info" sx={{ mt: 0.5 }}>
-                  {`${t('sovereigntyInheritedFromParent' as any)} ${parentWithInheritedSovereignty.name}.`}
-                </Alert>
-              ),
-            },
-            {
-              name: 'sovereigntyParentAvailabilityInfo',
-              label: '',
-              type: 'custom' as const,
-              tabId: 'sovereignty',
-              size: 12,
-              customRender: () => (
-                <Alert severity={parentHasSovereigntyData ? 'success' : 'warning'}>
-                  {parentHasSovereigntyData
-                    ? t('parentSovereigntyDataAvailable' as any)
-                    : t('parentSovereigntyDataMissing' as any)}
-                </Alert>
-              ),
-            },
-          ]
-        : buildSovereigntyAchievedFields((key: string) => tCommon(key as any))
+      ? buildSovereigntyAchievedFields((key: string) => tCommon(key as any))
       : []),
   ]
 
