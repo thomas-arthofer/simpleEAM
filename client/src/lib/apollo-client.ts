@@ -42,9 +42,12 @@ export function createApolloClient(initialToken?: string, graphqlUrl?: string) {
           )}, Path: ${path}`
         )
 
-        // Bei Authentifizierungsfehlern versuche Token-Refresh
-        if (message.includes('unauthenticated') || message.includes('Unauthorized')) {
-          // Trigger token refresh via custom event
+        // Server returns "Unauthenticated" (capital U) but this used to check
+        // `.includes('unauthenticated')` — the case-sensitive miss meant the
+        // authError event was never dispatched from graphQLErrors and the
+        // login-recovery path in AppLayout.handleAuthError never ran.
+        const lower = message.toLowerCase()
+        if (lower.includes('unauthenticated') || lower.includes('unauthorized')) {
           window.dispatchEvent(new CustomEvent('authError'))
         }
       })

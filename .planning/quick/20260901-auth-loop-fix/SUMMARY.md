@@ -50,7 +50,7 @@ Error-Link.
 ```ts
 const handleAuthError = () => {
   const unauthenticatedClient = createApolloClient(undefined, graphqlConfig.url)
-  setClient(unauthenticatedClient)   // ❌ neuer Client ohne Token in State
+  setClient(unauthenticatedClient) // ❌ neuer Client ohne Token in State
 }
 ```
 
@@ -117,3 +117,54 @@ Empfohlen vom User zu prüfen:
 - Optional: `checkLoginIframe: false` überdenken — verhindert
   Keycloaks aktive Session-Prüfung, was den ganzen abgelaufenen-Token-
   im-offenen-Tab-Fall überhaupt erst schwer erkennbar macht.
+
+## Postscript (2026-09-01): tatsächliche Root Cause war Multi-Tab-Race
+
+Die Two-Bug-Analyse oben war unvollständig. Nach dem Deploy loopte der Tab
+weiter. Temporäre Server-Query-Logging + Client-`setSelectedCompanyId`-Trace
+haben gezeigt: es war **kein Auth-Loop**, sondern ein
+**Cross-Tab-Ping-Pong über `localStorage.selectedCompanyId:v1`** in
+`client/src/contexts/CompanyContext.tsx`.
+
+Ablauf (ein zweiter offener Tab derselben App):
+
+1. Tab A schreibt `selectedCompanyId = X` → `localStorage.setItem(...)`.
+2. Tab B empfängt `storage`-Event → `setSelectedCompanyIdState(X)`.
+3. Tab B's "auto-select / clean invalid selection"-Effect feuert wegen des
+   State-Change, entscheidet dass ein anderer Wert "besser" ist (z. B.
+   erste verfügbare Company oder null bei transient leerem `companies`-Array)
+   → schreibt localStorage neu.
+4. Tab A empfängt `storage`-Event, wechselt seinerseits Wert → Loop.
+
+Serverseitig sichtbar als ~150–200 req/s pro Tab, wobei die Queries
+zwischen `where={company: eq: 76d4…}` und `vars={}` toggeln.
+
+User-side Fix im Handbetrieb: den zweiten Tab schließen.
+
+Struktureller Fix (nicht in dieser Quick-Task angegangen — separate Task
+wenn Multi-Tab-Nutzung wichtig wird): CompanyContext braucht Guards, dass
+der `storage`-Event-Pfad NICHT die "auto-select / clean"-Logik retriggert
+(z. B. Ref-basierter Suppressor für "der nächste State-Change kommt aus
+localStorage-Reconcile, nicht daraus resultierend schreiben") oder ein
+Debounce, oder Ausklinken der cross-tab-Sync mit Trust-First-Write-Wins.
+
+## Was aus dem gescheiterten Debug wirklich als Fix bleibt
+
+Die zwei ursprünglichen Änderungen (commit b7816ab) sind trotzdem echte
+Bugfixes, auch wenn sie den beobachteten Loop nicht getroffen haben:
+
+- `apollo-client.ts`: kein unbedingtes `forward(operation)` mehr auf
+  Netzwerkfehlern (unbegrenzter Retry-Loop bei persistenter Netzwerk-
+  Störung — real, wenn auch nicht Ursache dieses konkreten Falls).
+- `AppLayout.tsx`: `handleAuthError` erzeugt keinen token-losen Apollo-
+  Client mehr in State (löst Cascading-remount aller `useQuery`-Konsumenten
+  bei 401 — real, wenn auch hier nicht Ursache).
+
+Als Nachtrag (heutiger Cleanup-Commit) noch der Case-Sensitivity-Bug im
+gleichen errorLink:
+
+- `apollo-client.ts`: `.includes('unauthenticated')` matched den vom Server
+  gesendeten `"Unauthenticated"` (großes U) case-sensitive nicht. Fix auf
+  `.toLowerCase().includes(...)`. Ohne den Fix würde der `authError`-Event
+  bei einem echten abgelaufenen Token nie gefeuert und der User bliebe in
+  einem inhaltlich leeren UI ohne Re-Login-Redirect stecken.
