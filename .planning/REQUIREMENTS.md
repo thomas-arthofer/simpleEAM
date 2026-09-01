@@ -90,14 +90,16 @@ Requirements for this milestone. Each requirement maps to exactly one roadmap ph
 | SUX-02      | Phase 2 | Complete |
 | SUX-03      | Phase 2 | Complete |
 | SUX-04      | Phase 2 | Complete |
+| SOVX-02     | Phase 4 | Complete |
 
 **Coverage:**
 
 - v1 requirements: 14 total
 - Mapped to phases: 14
 - Unmapped: 0
+- v2 requirements mapped: SOVX-02 (Phase 4)
 
 ---
 
 _Requirements defined: 2026-07-22_
-_Last updated: 2026-07-22 after initial definition_
+_Last updated: 2026-09-01 — SOVX-02 marked complete after Phase 4 verification (7/8 → 8/8)_
