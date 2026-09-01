@@ -115,7 +115,14 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   }, [selectedCompanyId])
 
-  // When companies are loaded, make sensible preselection and clean up invalid selection
+  // When companies are loaded, make sensible preselection and clean up invalid selection.
+  // This effect intentionally does NOT write to localStorage — only the public
+  // `setSelectedCompanyId` (user-facing dropdown pick) persists cross-tab.
+  // If the auto-select branches also wrote localStorage, a transient empty
+  // `companies` array (during a refetch) in tab A would clear localStorage,
+  // fire a storage event in tab B, remount tab B's queries, and both tabs
+  // would ping-pong forever via the storage-event handler above (quick task
+  // 260901-ctm). See PLAN.md for the exact loop trace.
   useEffect(() => {
     // Wait until localStorage is initialized and companies are loaded
     if (!isInitialized) return
@@ -133,7 +140,6 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({ child
       )
       if (selectedCompanyId) {
         setSelectedCompanyIdState(null)
-        if (typeof window !== 'undefined') localStorage.removeItem(STORAGE_KEY)
       }
       return
     }
@@ -143,7 +149,6 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({ child
     if (companies.length === 1) {
       if (selectedCompanyId !== companies[0].id) {
         setSelectedCompanyIdState(companies[0].id)
-        if (typeof window !== 'undefined') localStorage.setItem(STORAGE_KEY, companies[0].id)
       }
       return
     }
@@ -158,7 +163,6 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({ child
       const first = companies[0]?.id
       if (first) {
         setSelectedCompanyIdState(first)
-        if (typeof window !== 'undefined') localStorage.setItem(STORAGE_KEY, first)
       }
       return
     }
@@ -172,7 +176,6 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({ child
       const first = companies[0]?.id
       if (first) {
         setSelectedCompanyIdState(first)
-        if (typeof window !== 'undefined') localStorage.setItem(STORAGE_KEY, first)
       }
     }
   }, [authenticated, companies, initialized, selectedCompanyId, isInitialized, loading])
