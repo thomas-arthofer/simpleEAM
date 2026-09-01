@@ -181,6 +181,20 @@ export interface BusinessCapabilityChain extends SupportChain {
     readonly name?: string
     readonly required: RequirementLevels
   }[]
+  /**
+   * Phase 5 D-05: the max-per-dimension fold over the analysis root's own
+   * required plus every ancestor's required, walked via `HAS_PARENT*0..` at
+   * fetch time by the repository. This is the requirement passed to
+   * `classifyNode` for the root's direct downstream Application/AIComponent/
+   * Infrastructure walks, so an ancestor-stricter dimension propagates its
+   * requirement down the achieved-chain instead of silently being ignored in
+   * favour of the root's own (weaker) requirement (Phase 5 chain-premise
+   * semantics). Populated by the repository only for the analysis root;
+   * nested `childCapabilities` always carry a null-quadruple here — the
+   * recursive descendant walk in `analyzeCapabilitySubtree` threads the
+   * correct effective-Req for descendants (Plan B), not the repository.
+   */
+  readonly effectiveRequiredLevels: RequirementLevels
 }
 
 /**

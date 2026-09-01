@@ -29,12 +29,31 @@ function maturityIndex(level: SovereigntyMaturityLevel): number {
 }
 
 /**
+ * Phase 5 D-05: exported so `repository.ts` can share the sole ordinal
+ * source of truth when folding max-per-dimension over the ancestor chain,
+ * instead of duplicating the mapping (which would silently drift). Same
+ * semantics as the private `maturityIndex` used inside this module.
+ */
+export function maturityIndexOrDefault(
+  level: SovereigntyMaturityLevel | null,
+  fallback: number = -1
+): number {
+  return level === null ? fallback : maturityIndex(level)
+}
+
+/**
  * Classifies a single support-chain node against the root's requirements,
  * producing one finding per dimension where the node is not GREEN. Missing
  * achieved values are always GREY (SOV-03), even when no requirement is set
  * for that dimension — GREY must never silently read as compliant-by-default.
- * A requirement that IS set and violated (`actual < required`) is RED.
- * Otherwise no finding is produced (implicit GREEN).
+ *
+ * Phase 5 D-02 chain-premise deviation math: when both required and actual
+ * are set, the deviation `maturityIndex(required) − maturityIndex(actual)`
+ * decides the finding — `=== 1` is a one-step deviation (YELLOW), `>= 2` is
+ * a two-or-more-step deviation (RED), `<= 0` is compliant (implicit GREEN,
+ * no finding). The math uses `maturityIndex` only — no literal scale bound
+ * (e.g. `4`) appears here, so extending `SOVEREIGNTY_MATURITY_LEVELS` never
+ * requires touching this function (D-02 scale-independence).
  *
  * Shared by `analyzeBusinessCapability` and `analyzeDataObject` (Task 2) so
  * detail views, diagram markers, and the Temporal rollup never see two
@@ -66,18 +85,21 @@ export function classifyNode(
       continue
     }
 
-    if (requiredLevel !== null && maturityIndex(actualLevel) < maturityIndex(requiredLevel)) {
-      findings.push({
-        violatingElementId: node.id,
-        violatingElementType: node.type,
-        violatingElementName: node.name,
-        dimension,
-        status: 'RED',
-        requiredLevel,
-        actualLevel,
-        chainPath: fullPath,
-      })
-    }
+    if (requiredLevel === null) continue
+
+    const deviation = maturityIndex(requiredLevel) - maturityIndex(actualLevel)
+    if (deviation <= 0) continue
+
+    findings.push({
+      violatingElementId: node.id,
+      violatingElementType: node.type,
+      violatingElementName: node.name,
+      dimension,
+      status: deviation === 1 ? 'YELLOW' : 'RED',
+      requiredLevel,
+      actualLevel,
+      chainPath: fullPath,
+    })
   }
 
   return findings
@@ -256,16 +278,27 @@ function walkAIComponent(
  * visited-set branch (D-01) seeded only with the root id, so multi-parent/
  * composite/AIComponent edges are always evaluated independently of one
  * another.
+ *
+ * Phase 5 D-03: an optional `requiredOverride` lets the caller pass a folded
+ * effective-Req (e.g. `BusinessCapabilityChain.effectiveRequiredLevels`)
+ * instead of the raw `chain.required`, so downstream Application/AIComponent/
+ * Infrastructure walks classify against the strictest requirement in the
+ * ancestor chain rather than just the root's own. Undefined = keep today's
+ * behavior (DataObject/BusinessProcess call sites unaffected until Plan B).
  */
-function collectOwnFindings(chain: SupportChain): Finding[] {
+function collectOwnFindings(
+  chain: SupportChain,
+  requiredOverride?: RequirementLevels
+): Finding[] {
+  const required = requiredOverride ?? chain.required
   const findings: Finding[] = []
 
   for (const app of chain.supportingApplications) {
-    findings.push(...walkApplication(app, chain.required, [chain.rootId], new Set([chain.rootId])))
+    findings.push(...walkApplication(app, required, [chain.rootId], new Set([chain.rootId])))
   }
   for (const aiComponent of chain.supportingAIComponents) {
     findings.push(
-      ...walkAIComponent(aiComponent, chain.required, [chain.rootId], new Set([chain.rootId]))
+      ...walkAIComponent(aiComponent, required, [chain.rootId], new Set([chain.rootId]))
     )
   }
 
@@ -322,7 +355,8 @@ interface CapabilitySubtreeResult {
 
 function analyzeCapabilitySubtree(
   chain: BusinessCapabilityChain,
-  visited: ReadonlySet<string>
+  visited: ReadonlySet<string>,
+  requiredOverride?: RequirementLevels
 ): CapabilitySubtreeResult {
   if (visited.has(chain.rootId))
     return { findings: [], capabilityIds: [], comparedCapabilityIds: [] }
@@ -330,7 +364,7 @@ function analyzeCapabilitySubtree(
   const pathVisited = new Set(visited)
   pathVisited.add(chain.rootId)
 
-  const ownFindings = collectOwnFindings(chain)
+  const ownFindings = collectOwnFindings(chain, requiredOverride)
 
   const descendantFindings: Finding[] = []
   const capabilityIds: string[] = [chain.rootId]
@@ -394,11 +428,20 @@ function analyzeCapabilitySubtree(
  * or a parent-less root with no required levels set at all).
  */
 export function analyzeBusinessCapability(chain: BusinessCapabilityChain): SovereigntyAnalysis {
+  // Phase 5 D-05: prefer the repository-folded effectiveRequiredLevels when
+  // it carries any dimension; otherwise fall back to the root's own required.
+  // The fallback covers hand-authored fixtures that leave effectiveRequiredLevels
+  // as a null-quadruple; production always populates it (the root itself sits
+  // at HAS_PARENT*0 in the fold, so a lone root's effectiveRequiredLevels
+  // equals its own required — the fallback preserves that identity).
+  const effectiveRequirement = hasAnyRequirement(chain.effectiveRequiredLevels)
+    ? chain.effectiveRequiredLevels
+    : chain.required
   const {
     findings,
     capabilityIds,
     comparedCapabilityIds: nestedComparedIds,
-  } = analyzeCapabilitySubtree(chain, new Set())
+  } = analyzeCapabilitySubtree(chain, new Set(), effectiveRequirement)
 
   const parentResults = chain.parentRequiredLevels.map(parentEntry =>
     classifyCapabilityAgainstParent(chain, parentEntry, [])

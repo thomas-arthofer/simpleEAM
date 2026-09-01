@@ -1,5 +1,6 @@
 import { analyzeBusinessCapability, analyzeBusinessProcess, analyzeDataObject } from '../evaluator'
 import {
+  ancestorStricterOneStepFixture,
   businessProcessGreenFixture,
   businessProcessGreyFixture,
   businessProcessMultiParentFixture,
@@ -420,15 +421,19 @@ describe('analyzeDataObject', () => {
     const result = analyzeDataObject(dataObjectChainFixture)
 
     expect(result.selfStatus).toBe('GREY')
-    expect(result.downstreamStatus).toBe('RED')
+    // Phase 5 D-02: HIGH vs MEDIUM is a 1-step deviation, now YELLOW under
+    // the deviation math (was RED under the old strict `actual < required`
+    // rule; the intent — "the supporting App is below the DataObject's
+    // requirement" — is preserved).
+    expect(result.downstreamStatus).toBe('YELLOW')
 
-    const redFindings = result.findings.filter(f => f.status === 'RED')
-    expect(redFindings).toHaveLength(1)
-    expect(redFindings[0]).toMatchObject({
+    const yellowFindings = result.findings.filter(f => f.status === 'YELLOW')
+    expect(yellowFindings).toHaveLength(1)
+    expect(yellowFindings[0]).toMatchObject({
       violatingElementId: 'app-consumer',
       violatingElementType: 'application',
       dimension: 'security',
-      status: 'RED',
+      status: 'YELLOW',
       requiredLevel: 'HIGH',
       actualLevel: 'MEDIUM',
       chainPath: ['dataobject-customer-records', 'app-consumer'],
@@ -439,8 +444,9 @@ describe('analyzeDataObject', () => {
     const result = analyzeDataObject(dataObjectChainFixture)
 
     // No dimension is missing an achieved value in this fixture, so no GREY
-    // findings are expected — only the one RED violation.
-    expect(result.findings.every(f => f.status === 'RED')).toBe(true)
+    // findings are expected — only the one YELLOW deviation-1 violation
+    // (post Phase 5 D-02 deviation math; was RED historically).
+    expect(result.findings.every(f => f.status === 'YELLOW')).toBe(true)
   })
 })
 
@@ -579,5 +585,75 @@ describe('analyzeBusinessProcess — parentProcess required-vs-required consiste
     const result = analyzeBusinessProcess(fixture)
 
     expect(result.findings.filter(f => f.dimension === 'security')).toHaveLength(0)
+  })
+})
+
+// Phase 5 Plan A tracer: proves the chain-premise math end-to-end for
+// BusinessCapability on one dimension (security) — repository fold produces
+// `effectiveRequiredLevels.security = HIGH` from a root that only requires
+// MEDIUM but sits under a stricter ancestor, and classifyNode's new
+// deviation math yields YELLOW at delta=1, RED at delta>=2, no finding when
+// achieved meets/exceeds effective-Req, GREY when achieved is null. All other
+// dimensions stay null so each case asserts exactly one finding on security.
+describe('Phase 5 tracer: BC ancestor-stricter deviation (security)', () => {
+  it('emits exactly one YELLOW finding when leaf achieved is one step below effective-Req (MEDIUM vs HIGH)', () => {
+    const result = analyzeBusinessCapability(ancestorStricterOneStepFixture('MEDIUM'))
+
+    const securityFindings = result.findings.filter(f => f.dimension === 'security')
+    expect(securityFindings).toHaveLength(1)
+    expect(securityFindings[0]).toMatchObject({
+      violatingElementId: 'app-tracer-leaf',
+      violatingElementType: 'application',
+      dimension: 'security',
+      status: 'YELLOW',
+      requiredLevel: 'HIGH',
+      actualLevel: 'MEDIUM',
+    })
+    expect(result.downstreamStatus).toBe('YELLOW')
+    // No findings on any other dimension (all other required/achieved are null).
+    expect(result.findings.filter(f => f.dimension !== 'security')).toHaveLength(0)
+  })
+
+  it('emits exactly one RED finding when leaf achieved is two steps below effective-Req (LOW vs HIGH)', () => {
+    const result = analyzeBusinessCapability(ancestorStricterOneStepFixture('LOW'))
+
+    const securityFindings = result.findings.filter(f => f.dimension === 'security')
+    expect(securityFindings).toHaveLength(1)
+    expect(securityFindings[0]).toMatchObject({
+      violatingElementId: 'app-tracer-leaf',
+      dimension: 'security',
+      status: 'RED',
+      requiredLevel: 'HIGH',
+      actualLevel: 'LOW',
+    })
+    expect(result.downstreamStatus).toBe('RED')
+    expect(result.findings.filter(f => f.dimension !== 'security')).toHaveLength(0)
+  })
+
+  it('emits no finding when leaf achieved meets effective-Req (HIGH == HIGH)', () => {
+    const result = analyzeBusinessCapability(ancestorStricterOneStepFixture('HIGH'))
+
+    expect(result.findings.filter(f => f.dimension === 'security')).toHaveLength(0)
+    // No non-security findings either — all other dims are null on both sides.
+    expect(result.findings).toHaveLength(0)
+    expect(result.downstreamStatus).toBe('GREEN')
+  })
+
+  it('emits a single GREY finding when leaf achieved is null on the security dimension', () => {
+    const result = analyzeBusinessCapability(ancestorStricterOneStepFixture(null))
+
+    const greyFindings = result.findings.filter(f => f.dimension === 'security')
+    expect(greyFindings).toHaveLength(1)
+    expect(greyFindings[0]).toMatchObject({
+      violatingElementId: 'app-tracer-leaf',
+      dimension: 'security',
+      status: 'GREY',
+      requiredLevel: 'HIGH',
+      actualLevel: null,
+    })
+    // Every other dimension of the leaf is also achieved=null → GREY finding
+    // per SOV-03. This is expected and shared with all leaves in the suite.
+    expect(result.findings.every(f => f.status === 'GREY')).toBe(true)
+    expect(result.downstreamStatus).toBe('GREY')
   })
 })

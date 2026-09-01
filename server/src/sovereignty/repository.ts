@@ -10,6 +10,13 @@ import type {
   SovereigntyMaturityLevel,
   SovereigntyRootType,
 } from './types'
+import { maturityIndexOrDefault } from './evaluator'
+
+// Phase 5 T-05-02 defensive cap: Neo4j's per-edge uniqueness already bounds
+// `HAS_PARENT*0..` cyclic expansion, but a pathologically deep or fan-out-heavy
+// ancestor chain would still return many rows. Anything above this cap is
+// almost certainly bad data — log-warn and truncate the fold (D-05).
+const ANCESTOR_FOLD_MAX_ROWS = 100
 
 function toMaturityLevel(value: string | null | undefined): SovereigntyMaturityLevel | null {
   return (value as SovereigntyMaturityLevel | null | undefined) ?? null
@@ -245,6 +252,64 @@ async function fetchApplication(
   return node
 }
 
+function nullRequirementLevels(): RequirementLevels {
+  return {
+    strategicAutonomy: null,
+    resilience: null,
+    security: null,
+    control: null,
+  }
+}
+
+/**
+ * Phase 5 D-05: max-per-dimension fold over an ancestor's required rows.
+ * `null` never wins (`maturityIndexOrDefault(null, -1)`). Anything above
+ * `ANCESTOR_FOLD_MAX_ROWS` is truncated with a `console.warn` naming the
+ * root id (T-05-02 defensive cap). Uses the sole ordinal source of truth
+ * (`maturityIndexOrDefault` exported by evaluator.ts) so this fold and
+ * `classifyNode` cannot silently drift.
+ */
+function foldEffectiveRequiredLevels(
+  ancestorRows: readonly {
+    id: string | null
+    sovereigntyReqStrategicAutonomy: string | null
+    sovereigntyReqResilience: string | null
+    sovereigntyReqSecurity: string | null
+    sovereigntyReqControl: string | null
+  }[],
+  rootId: string
+): RequirementLevels {
+  const rows = ancestorRows.filter(r => r.id !== null)
+  if (rows.length > ANCESTOR_FOLD_MAX_ROWS) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      `[sovereignty] BusinessCapability ${rootId} ancestor fold exceeded ${ANCESTOR_FOLD_MAX_ROWS} rows (${rows.length}); truncating fold — bad data or a HAS_PARENT cycle expanding uniquely-edged.`
+    )
+  }
+  const bounded = rows.slice(0, ANCESTOR_FOLD_MAX_ROWS)
+
+  const foldDim = (key: keyof (typeof bounded)[number]): SovereigntyMaturityLevel | null => {
+    let best: SovereigntyMaturityLevel | null = null
+    let bestIdx = -1
+    for (const r of bounded) {
+      const level = toMaturityLevel(r[key] as string | null)
+      const idx = maturityIndexOrDefault(level)
+      if (idx > bestIdx) {
+        bestIdx = idx
+        best = level
+      }
+    }
+    return best
+  }
+
+  return {
+    strategicAutonomy: foldDim('sovereigntyReqStrategicAutonomy'),
+    resilience: foldDim('sovereigntyReqResilience'),
+    security: foldDim('sovereigntyReqSecurity'),
+    control: foldDim('sovereigntyReqControl'),
+  }
+}
+
 /**
  * Loads a BusinessCapability's own requirements plus its full support chain:
  * supporting Applications (recursively expanded through `components` and
@@ -297,6 +362,23 @@ async function fetchBusinessCapabilityChain(
     ? `collect(DISTINCT parent { .id, .name, .sovereigntyReqStrategicAutonomy, .sovereigntyReqResilience, .sovereigntyReqSecurity, .sovereigntyReqControl }) AS parentRequiredRows`
     : '[] AS parentRequiredRows'
 
+  // Phase 5 D-05: variable-length ancestor walk (HAS_PARENT*0..) that
+  // includes the root itself at distance 0. T-05-02 cycle-safety is provided
+  // by Neo4j's per-edge uniqueness; T-05-03 multi-tenancy is enforced by
+  // the ancestorCompany.id IN $companyIds filter — cross-tenant ancestor
+  // rows are silently excluded from the max fold. Gated on `isRoot` (same
+  // as parent match) so nested capability recursions don't re-run the walk
+  // — descendants carry a null-quadruple `effectiveRequiredLevels`; Plan B
+  // threads the correct descendant effective-Req through the evaluator.
+  const ancestorMatchClause = isRoot
+    ? `
+    OPTIONAL MATCH (cap)-[:HAS_PARENT*0..]->(ancestor:BusinessCapability)-[:OWNED_BY]->(ancestorCompany:Company)
+    WHERE $isAdmin OR ancestorCompany.id IN $companyIds`
+    : ''
+  const ancestorReturnClause = isRoot
+    ? `collect(DISTINCT ancestor { .id, .sovereigntyReqStrategicAutonomy, .sovereigntyReqResilience, .sovereigntyReqSecurity, .sovereigntyReqControl }) AS ancestorRequiredRows`
+    : '[] AS ancestorRequiredRows'
+
   const result = await session.run(
     `
     MATCH (cap:BusinessCapability {id: $rootId})-[:OWNED_BY]->(c:Company)
@@ -306,6 +388,7 @@ async function fetchBusinessCapabilityChain(
     OPTIONAL MATCH (cap)<-[:SUPPORTS]-(aiComponent:AIComponent)
     OPTIONAL MATCH (cap)<-[:HAS_PARENT]-(child:BusinessCapability)
     ${parentMatchClause}
+    ${ancestorMatchClause}
     RETURN
       cap.id AS id,
       cap.name AS name,
@@ -316,7 +399,8 @@ async function fetchBusinessCapabilityChain(
       collect(DISTINCT app.id) AS appIds,
       collect(DISTINCT aiComponent.id) AS aiComponentIds,
       collect(DISTINCT child.id) AS childIds,
-      ${parentReturnClause}
+      ${parentReturnClause},
+      ${ancestorReturnClause}
     `,
     { rootId, companyIds: [...companyIds], isAdmin }
   )
@@ -339,6 +423,13 @@ async function fetchBusinessCapabilityChain(
     parentRequiredRows: {
       id: string | null
       name: string | null
+      sovereigntyReqStrategicAutonomy: string | null
+      sovereigntyReqResilience: string | null
+      sovereigntyReqSecurity: string | null
+      sovereigntyReqControl: string | null
+    }[]
+    ancestorRequiredRows: {
+      id: string | null
       sovereigntyReqStrategicAutonomy: string | null
       sovereigntyReqResilience: string | null
       sovereigntyReqSecurity: string | null
@@ -395,6 +486,15 @@ async function fetchBusinessCapabilityChain(
       },
     }))
 
+  // Phase 5 D-05: max-per-dimension fold over the ancestor chain (own root
+  // included via HAS_PARENT*0..). `maturityIndexOrDefault(null, -1)` guarantees
+  // null ancestor rows never win the fold. Only populated for the analysis
+  // root; nested children carry a null-quadruple. T-05-02 defensive cap: warn
+  // and truncate if the row count exceeds ANCESTOR_FOLD_MAX_ROWS.
+  const effectiveRequiredLevels = isRoot
+    ? foldEffectiveRequiredLevels(row.ancestorRequiredRows ?? [], row.id)
+    : nullRequirementLevels()
+
   const node: BusinessCapabilityChain = {
     rootId: row.id,
     name: row.name ?? row.id,
@@ -404,6 +504,7 @@ async function fetchBusinessCapabilityChain(
     supportingAIComponents,
     childCapabilities,
     parentRequiredLevels,
+    effectiveRequiredLevels,
   }
   cache.capabilities.set(rootId, node)
 

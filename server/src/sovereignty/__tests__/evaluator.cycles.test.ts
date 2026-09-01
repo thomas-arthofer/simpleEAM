@@ -24,16 +24,17 @@ describe('analyzeBusinessCapability — cycle safety (D-03)', () => {
     // by re-entering the cycle.
     // security: required MEDIUM. A achieves MEDIUM (satisfied, no finding for
     // that dimension — but the other 3 dims are GREY since unset). B
-    // achieves LOW (RED for security) plus 3 GREY.
+    // achieves LOW → deviation = 1 → YELLOW under Phase 5 D-02 (was RED
+    // pre-Phase-5) plus 3 GREY.
     expect(aFindings).toHaveLength(3)
     expect(aFindings.every(f => f.status === 'GREY')).toBe(true)
     expect(aFindings.some(f => f.status === 'RED')).toBe(false)
 
     expect(bFindings).toHaveLength(4)
     expect(bFindings.filter(f => f.status === 'GREY')).toHaveLength(3)
-    const bRed = bFindings.filter(f => f.status === 'RED')
-    expect(bRed).toHaveLength(1)
-    expect(bRed[0]).toMatchObject({
+    const bYellow = bFindings.filter(f => f.status === 'YELLOW')
+    expect(bYellow).toHaveLength(1)
+    expect(bYellow[0]).toMatchObject({
       violatingElementId: 'app-cycle-b',
       dimension: 'security',
       requiredLevel: 'MEDIUM',
