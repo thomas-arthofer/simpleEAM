@@ -145,10 +145,19 @@ function FindingsPanel({
               </Typography>
             </Box>
             <Typography variant="body2" sx={{ mt: 0.5 }}>
-              {t('findingRow', {
-                required: finding.requiredLevel ?? '–',
-                actual: finding.actualLevel ?? '–',
-              })}
+              {t(
+                finding.status === 'YELLOW'
+                  ? 'findingRowYellow'
+                  : finding.status === 'RED'
+                    ? 'findingRowRed'
+                    : finding.status === 'GREY'
+                      ? 'findingRowGrey'
+                      : 'findingRow',
+                {
+                  required: finding.requiredLevel ?? '–',
+                  actual: finding.actualLevel ?? '–',
+                }
+              )}
             </Typography>
             <Typography
               variant="caption"

@@ -4148,8 +4148,11 @@
     "greenEmptyHeading": "No violations found",
     "greenEmptyBody": "All required sovereignty dimensions are satisfied for this element and its chain.",
     "greyEmptyHeading": "No evaluation on record",
-    "greyEmptyBody": "No sovereignty evaluation has been recorded for this element yet. A missing evaluation is not treated as compliant.",
+    "greyEmptyBody": "No data available and no violation detected.",
     "findingRow": "required: {required} → actual: {actual}",
+    "findingRowYellow": "1-step deviation: required {required} → actual {actual}",
+    "findingRowRed": "Deviation of 2 or more steps: required {required} → actual {actual}",
+    "findingRowGrey": "Achieved value is unknown for this dimension (data gap)",
     "chainContext": "Chain: {chainPath}",
     "loadError": "Sovereignty data could not be loaded.",
     "dimensions": {

@@ -4103,8 +4103,11 @@
     "greenEmptyHeading": "Keine Verstöße gefunden",
     "greenEmptyBody": "Alle geforderten Souveränitätsdimensionen sind für dieses Element und seine Kette erfüllt.",
     "greyEmptyHeading": "Keine Bewertung vorhanden",
-    "greyEmptyBody": "Für dieses Element wurde noch keine Souveränitätsbewertung erfasst. Eine fehlende Bewertung gilt nicht als erfüllt.",
+    "greyEmptyBody": "Keine Daten vorhanden und kein Verstoß festgestellt.",
     "findingRow": "gefordert: {required} → vorhanden: {actual}",
+    "findingRowYellow": "1-Schritt-Abweichung: gefordert {required} → vorhanden {actual}",
+    "findingRowRed": "Abweichung von 2 oder mehr Schritten: gefordert {required} → vorhanden {actual}",
+    "findingRowGrey": "Erreichter Wert unbekannt für diese Dimension (Datenlücke)",
     "chainContext": "Kette: {chainPath}",
     "loadError": "Souveränitätsdaten konnten nicht geladen werden.",
     "dimensions": {
