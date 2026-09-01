@@ -52,22 +52,19 @@ export type SovereigntyRootType = 'businessCapability' | 'dataObject' | 'busines
 /**
  * Canonical analysis result for a requirement root. A BusinessCapability/
  * DataObject owns no achieved rating of its own and can never be the cause
- * of a violation, only affected by one (D-05). `selfStatus` is GREEN once a
- * real parent comparison passed, or — for a true hierarchy root with no
- * parent at all — once its own required levels are simply filled in
- * (nothing to contradict without a parent); YELLOW on a parent-vs-own
- * contradiction; GREY only when genuinely nothing is comparable and nothing
- * is filled in.
+ * of a violation, only affected by one (D-05).
+ *
+ * Phase 5 D-06 Option (a): the pre-Phase-5 tri-state `selfStatus`
+ * (parent-vs-own required-level contradiction) and its supporting per-
+ * capability comparison-set field are retired. `selfStatus` is now GREEN
+ * when the root's own required is filled in and GREY otherwise —
+ * projectMarkers seeds off this value and lets subsequent findings-fold
+ * updates decide the per-element fill.
  *
  * `capabilityIds` lists every BusinessCapability id that is part of this
  * analysis's own subtree — the root itself plus, recursively, every nested
- * `childCapabilities` id (D-11/D-05). Every nested (non-root) id among these
- * still resolves via its own real parent comparison only (the "filled in"
- * exception above applies only to the analysis's own top-level root, which
- * has no in-scope parent to compare against) — this is what lets
- * `projectMarkers` force GREY on a nested capability appearing mid-chain in
- * an ancestor's findings whenever it has no real comparison of its own. For
- * a DataObject analysis (no nesting), this is always exactly `[rootId]`.
+ * `childCapabilities` id (D-11/D-05). For a DataObject or BusinessProcess
+ * analysis (no nesting), this is always exactly `[rootId]`.
  */
 export interface SovereigntyAnalysis {
   readonly rootId: string
@@ -76,15 +73,6 @@ export interface SovereigntyAnalysis {
   readonly selfStatus: SovereigntyStatus
   readonly downstreamStatus: SovereigntyStatus
   readonly capabilityIds: readonly string[]
-  /**
-   * The subset of `capabilityIds` that had at least one real (non-excluded —
-   * both parent and child sides non-null) dimension compared against at
-   * least one parent, regardless of whether that comparison passed or
-   * contradicted (03-CONTEXT.md D-01/D-02). Consumed only by `markers.ts` to
-   * distinguish "genuinely nothing to compare" (GREY) from "compared and
-   * found consistent" (GREEN) — never exposed via GraphQL.
-   */
-  readonly comparedCapabilityIds: readonly string[]
 }
 
 export interface RequirementLevels {
@@ -171,17 +159,6 @@ export interface BusinessCapabilityChain extends SupportChain {
   readonly rootType: 'businessCapability'
   readonly childCapabilities: readonly BusinessCapabilityChain[]
   /**
-   * Direct parents' (`HAS_PARENT` outgoing) own required levels only — never
-   * their full support chains (02.3 D-01). Populated by the repository only
-   * for the analysis root; nested `childCapabilities` always carry `[]` here
-   * since their in-scope parent is the ancestor already present in the walk.
-   */
-  readonly parentRequiredLevels: readonly {
-    readonly id: string
-    readonly name?: string
-    readonly required: RequirementLevels
-  }[]
-  /**
    * Phase 5 D-05: the max-per-dimension fold over the analysis root's own
    * required plus every ancestor's required, walked via `HAS_PARENT*0..` at
    * fetch time by the repository. This is the requirement passed to
@@ -192,7 +169,8 @@ export interface BusinessCapabilityChain extends SupportChain {
    * semantics). Populated by the repository only for the analysis root;
    * nested `childCapabilities` always carry a null-quadruple here — the
    * recursive descendant walk in `analyzeCapabilitySubtree` threads the
-   * correct effective-Req for descendants (Plan B), not the repository.
+   * correct effective-Req for descendants via `parentEffectiveReq` +
+   * `maxByDimension`, not this field.
    */
   readonly effectiveRequiredLevels: RequirementLevels
 }
@@ -204,6 +182,13 @@ export interface BusinessCapabilityChain extends SupportChain {
  */
 export interface DataObjectChain extends SupportChain {
   readonly rootType: 'dataObject'
+  /**
+   * Phase 5 D-05 uniform shape: DataObject has no parent/ancestor concept, so
+   * `effectiveRequiredLevels` is set to `required` verbatim at load time by
+   * `loadDataObjectSupportChain`. This lets `classifyNode` read a single
+   * uniform field across BC / DO / BP without any per-rootType dispatch.
+   */
+  readonly effectiveRequiredLevels: RequirementLevels
 }
 
 /**
@@ -217,17 +202,10 @@ export interface DataObjectChain extends SupportChain {
 export interface BusinessProcessChain extends SupportChain {
   readonly rootType: 'businessProcess'
   /**
-   * Direct parents' (`HAS_PARENT_PROCESS`-OUT) own required levels only —
-   * never their full support chains (D-04, mirrors `BusinessCapabilityChain
-   * .parentRequiredLevels` verbatim). Root-only: every BusinessProcess is
-   * independently analyzed as its own root — there is no nested achieved-chain
-   * subtree to distinguish "root" from "descendant" for, unlike
-   * BusinessCapability, so this is always populated by the repository for
-   * every fetch, not gated by an `isRoot` parameter.
+   * Phase 5 D-05: max-per-dimension fold over the process's own required
+   * plus every ancestor's required, walked via `HAS_PARENT_PROCESS*0..` at
+   * fetch time by the repository. Mirrors `BusinessCapabilityChain
+   * .effectiveRequiredLevels` semantics.
    */
-  readonly parentRequiredLevels: readonly {
-    readonly id: string
-    readonly name?: string
-    readonly required: RequirementLevels
-  }[]
+  readonly effectiveRequiredLevels: RequirementLevels
 }

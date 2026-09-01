@@ -63,14 +63,6 @@ export function collectChainLabels(
     for (const app of chain.supportingApplications) addApplication(app)
     for (const aiComponent of chain.supportingAIComponents) addAIComponent(aiComponent)
 
-    if (chain.rootType === 'businessCapability' || chain.rootType === 'businessProcess') {
-      for (const parent of chain.parentRequiredLevels) {
-        if (!labels.has(parent.id)) {
-          labels.set(parent.id, { name: parent.name ?? parent.id, type: chain.rootType })
-        }
-      }
-    }
-
     if (chain.rootType === 'businessCapability') {
       for (const child of chain.childCapabilities) addChain(child)
     }

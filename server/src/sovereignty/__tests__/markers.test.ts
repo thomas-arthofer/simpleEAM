@@ -1,23 +1,18 @@
 import { analyzeBusinessCapability, analyzeBusinessProcess } from '../evaluator'
 import { DEFAULT_MARKER, projectMarkers, resolveMarker } from '../markers'
+import type { Finding, SovereigntyAnalysis } from '../types'
 import {
-  businessProcessParentAllExcludedFixture,
-  businessProcessParentContradictionFixture,
-  businessProcessParentNoContradictionFixture,
-  diamondSharedCapabilityFixture,
+  ancestorStricterOneStepFixture,
+  businessProcessGreenFixture,
+  businessProcessNoParentUnfilledFixture,
   greenChainFixture,
   greyChainFixture,
-  multiParentOneEmptyOneConsistentFixture,
-  nestedCapabilityGreenFixture,
   nestedCapabilitySubtreeFixture,
   redChainFixture,
-  rootParentAllExcludedFixture,
-  rootParentContradictionFixture,
-  rootParentNoContradictionFixture,
 } from './fixtures'
 
 describe('projectMarkers', () => {
-  it('gives a BusinessCapability root a GREEN selfStatus once its own required levels are filled in, even without a parent to compare against', () => {
+  it('gives a BusinessCapability root a GREEN selfStatus once its own required levels are filled in (Phase 5 D-06 seed)', () => {
     const analysis = analyzeBusinessCapability(redChainFixture)
     const markers = projectMarkers(analysis)
 
@@ -43,8 +38,8 @@ describe('projectMarkers', () => {
     const analysis = analyzeBusinessCapability(greyChainFixture)
     const markers = projectMarkers(analysis)
 
-    // cap-grey has its own required level filled in (control: MEDIUM) and no
-    // parent, so it resolves GREEN-self even though its downstream is GREY.
+    // cap-grey has its own required level filled in (control: MEDIUM), so
+    // its selfStatus is GREEN (Phase 5 D-06 seed rule).
     expect(markers.get('cap-grey')).toEqual({ selfStatus: 'GREEN', downstreamStatus: 'GREY' })
     // app-unassessed has no achieved values at all — stays GREY regardless.
     expect(markers.get('app-unassessed')).toEqual({ selfStatus: 'GREY', downstreamStatus: 'GREY' })
@@ -63,148 +58,125 @@ describe('projectMarkers', () => {
     // uses) must still return an explicit GREEN/GREEN marker for them.
     expect(resolveMarker(markers, 'app-compliant')).toEqual(DEFAULT_MARKER)
     expect(resolveMarker(markers, 'infra-compliant')).toEqual(DEFAULT_MARKER)
-    expect(resolveMarker(markers, 'infra-compliant')).toEqual({
-      selfStatus: 'GREEN',
-      downstreamStatus: 'GREEN',
-    })
 
-    // The root itself is GREEN-self (own required levels filled in, no
-    // parent to contradict) with a GREEN ring when fully compliant.
+    // The root itself is GREEN-self (own required levels filled in) with a
+    // GREEN ring when fully compliant.
     expect(markers.get('cap-green')).toEqual({ selfStatus: 'GREEN', downstreamStatus: 'GREEN' })
   })
 
-  // sovereignty-low-dc-green: a nested BusinessCapability child appearing
-  // mid-chain in its ancestor's own findings (not as the analysis's own
-  // rootId) must still stay GREY-self forever (D-05) — it must never fall
-  // back to the DEFAULT_MARKER's GREEN just because it is never a finding's
-  // `violatingElementId` (only Application/AIComponent/Infrastructure ever
-  // are). Reproduces the "gemeinsamer max" -> "Wichtiger Businesscase" ->
-  // "TEST" topology from the nested-bc-sov-inheritance precedent.
-  //
-  // 03-CONTEXT.md D-01: this stays GREY under the new three-valued rule too
-  // (not a behavior change) — "cap-test"/"cap-wichtiger-businesscase"'s
-  // immediate parent ("cap-gemeinsamer-max") has `required: requirementLevels()`
-  // (every dimension null), so every dimension is excluded for both children,
-  // landing in the same "genuinely nothing compared" bucket as
-  // `rootParentAllExcludedFixture`, not the "no parent at all" bucket.
-  it('gives every nested BusinessCapability child a GREY selfStatus too, not just the analysis root (D-05, D-11)', () => {
+  // Phase 5 Design A (RESEARCH §3.4): a nested BC whose subtree contains a
+  // real deviation receives its own fill via a synthesised premise finding
+  // emitted by `analyzeCapabilitySubtree` — projectMarkers picks this up
+  // naturally via the `isViolatingElement` branch, so no
+  // `capabilityIds`/`comparedIds` machinery is needed.
+  it('gives a failing nested BusinessCapability its own RED fill via a synthesised premise finding (Phase 5 Design A)', () => {
     const analysis = analyzeBusinessCapability(nestedCapabilitySubtreeFixture)
     const markers = projectMarkers(analysis)
 
+    // Root has no requirement of its own, so seed selfStatus is GREY; the
+    // synthesised premise finding at `cap-test` also updates its
+    // downstream to RED (violation is in its subtree).
     expect(markers.get('cap-gemeinsamer-max')).toEqual({
       selfStatus: 'GREY',
       downstreamStatus: 'RED',
     })
-    // "cap-test" is the violating child (its own app is below requirement).
-    expect(markers.get('cap-test')?.selfStatus).toBe('GREY')
-    // "cap-wichtiger-businesscase" is a fully-compliant *sibling* child that
-    // never violates anything itself — before the fix it fell back to the
-    // GREEN default here since it's never a finding's violatingElementId.
-    expect(resolveMarker(markers, 'cap-wichtiger-businesscase').selfStatus).toBe('GREY')
+    // `cap-test`: fill = RED (synthesised premise finding) + ring = RED
+    // (its own subtree has a leaf RED via classifyNode).
+    expect(markers.get('cap-test')).toEqual({ selfStatus: 'RED', downstreamStatus: 'RED' })
+    // `cap-wichtiger-businesscase`: compliant sibling; never appears in any
+    // finding's chainPath → resolves to DEFAULT_MARKER (GREEN/GREEN).
+    expect(markers.has('cap-wichtiger-businesscase')).toBe(false)
+    expect(resolveMarker(markers, 'cap-wichtiger-businesscase')).toEqual(DEFAULT_MARKER)
   })
 
-  // 02.3 D-05: the one narrow exception to the GREY-self invariant above — a
-  // capability that IS the violating element of its own parent-vs-child
-  // required-level contradiction finding gets a real YELLOW selfStatus.
-  it('gives a capability YELLOW selfStatus when its own required level contradicts its parent (Test E, 02.3 D-05)', () => {
-    const analysis = analyzeBusinessCapability(rootParentContradictionFixture)
-    const markers = projectMarkers(analysis)
-
-    expect(markers.get(rootParentContradictionFixture.rootId)?.selfStatus).toBe('YELLOW')
-  })
-
-  // 03-CONTEXT.md D-01: a capability whose own required level was genuinely
-  // compared (both sides non-null) against a parent and found consistent
-  // (no contradiction anywhere) resolves selfStatus GREEN — distinct from
-  // both the general "no parent at all" GREY invariant above and the
-  // YELLOW contradiction case below.
-  it('resolves GREEN when parentRequiredLevels is populated and produces no contradiction — a genuine comparison passed (Test F, D-01)', () => {
-    const analysis = analyzeBusinessCapability(rootParentNoContradictionFixture)
-    const markers = projectMarkers(analysis)
-
-    expect(markers.get(rootParentNoContradictionFixture.rootId)).toEqual({
+  // Phase 5 D-02: on the same element, a real violation (RED/YELLOW) always
+  // beats a data-gap GREY on any other dimension via the STATUS_RANK
+  // (GREEN<GREY<YELLOW<RED). Verified here by hand-constructing a
+  // two-finding fixture rather than relying on evaluator plumbing.
+  it('precedence: a YELLOW finding on one dim beats a GREY finding on another dim for the same element', () => {
+    const analysis: SovereigntyAnalysis = {
+      rootId: 'root',
+      rootType: 'businessCapability',
       selfStatus: 'GREEN',
-      downstreamStatus: 'GREEN',
+      downstreamStatus: 'YELLOW',
+      capabilityIds: ['root'],
+      findings: [
+        {
+          violatingElementId: 'leaf',
+          violatingElementType: 'application',
+          violatingElementName: 'Leaf',
+          dimension: 'security',
+          status: 'GREY',
+          requiredLevel: null,
+          actualLevel: null,
+          chainPath: ['root', 'leaf'],
+        },
+        {
+          violatingElementId: 'leaf',
+          violatingElementType: 'application',
+          violatingElementName: 'Leaf',
+          dimension: 'control',
+          status: 'YELLOW',
+          requiredLevel: 'HIGH',
+          actualLevel: 'MEDIUM',
+          chainPath: ['root', 'leaf'],
+        },
+      ] as Finding[],
+    }
+
+    const markers = projectMarkers(analysis)
+
+    expect(markers.get('leaf')).toEqual({ selfStatus: 'YELLOW', downstreamStatus: 'YELLOW' })
+    // Root still has a GREEN seed; its downstream picks up the YELLOW ring.
+    expect(markers.get('root')).toEqual({ selfStatus: 'GREEN', downstreamStatus: 'YELLOW' })
+  })
+
+  // Phase 5 D-04: a downstream Application receives its per-element fill
+  // directly from `classifyNode`'s deviation math — no additional lookup or
+  // backfill needed.
+  it("downstream App inherits YELLOW fill at 1-step deviation against the root's effective-Req", () => {
+    const analysis = analyzeBusinessCapability(ancestorStricterOneStepFixture('MEDIUM'))
+    const markers = projectMarkers(analysis)
+
+    // Root: GREEN-self (own required filled in) + YELLOW ring.
+    expect(markers.get('cap-tracer-root')).toEqual({
+      selfStatus: 'GREEN',
+      downstreamStatus: 'YELLOW',
+    })
+    // Leaf App: YELLOW-self (it is the violating element on the security
+    // dim, deviation=1) + YELLOW ring.
+    expect(markers.get('app-tracer-leaf')).toEqual({
+      selfStatus: 'YELLOW',
+      downstreamStatus: 'YELLOW',
     })
   })
 
-  // 03-CONTEXT.md D-01: a parent IS present, but every one of its 4
-  // dimensions is null (excluded from comparison regardless of the child's
-  // own values) — genuinely nothing was compared, so this must stay GREY,
-  // distinct from the GREEN case immediately above.
-  it('stays GREY when a parent is present but every dimension is excluded from comparison (genuinely nothing compared)', () => {
-    const analysis = analyzeBusinessCapability(rootParentAllExcludedFixture)
+  it('downstream App inherits RED fill at ≥2-step deviation', () => {
+    const analysis = analyzeBusinessCapability(ancestorStricterOneStepFixture('LOW'))
     const markers = projectMarkers(analysis)
 
-    expect(markers.get(rootParentAllExcludedFixture.rootId)).toEqual({
-      selfStatus: 'GREY',
-      downstreamStatus: 'GREEN',
+    expect(markers.get('cap-tracer-root')).toEqual({
+      selfStatus: 'GREEN',
+      downstreamStatus: 'RED',
+    })
+    expect(markers.get('app-tracer-leaf')).toEqual({
+      selfStatus: 'RED',
+      downstreamStatus: 'RED',
     })
   })
 
-  // CR-01 regression: a capability shared by two parents in the same
-  // subtree (diamond topology, no memoization by design per D-02) genuinely
-  // self-violates against only ONE of its two parents. Its selfStatus must
-  // stay YELLOW even though a LATER, unrelated finding block (the other
-  // parent's copy, which has its own real Application/AIComponent violation
-  // below it) also touches the same id as a mid-chain passthrough member.
-  //
-  // 03-CONTEXT.md D-02 precedence regression: "cap-shared"'s `cap-p2` edge
-  // (security LOW vs. parent LOW — equal, not stricter, a real PASSING
-  // comparison) now ALSO contributes to `comparedIds` (this phase's new
-  // GREEN-eligibility signal), yet `selfStatus` must still resolve YELLOW,
-  // never GREEN, because the `cap-p1` edge's genuine contradiction wins —
-  // proving "any contradiction beats any GREEN-eligible comparison" holds
-  // even when the same capability id has both kinds of edge in one analysis.
-  it("keeps a diamond-shared capability's genuine YELLOW self-violation even when a later finding block also passes through it (Test N, CR-01)", () => {
-    const analysis = analyzeBusinessCapability(diamondSharedCapabilityFixture)
+  // BP root has its own required filled in → GREEN seed (Phase 5 D-06).
+  it('resolves a BusinessProcess root to GREEN when its own required is filled in', () => {
+    const analysis = analyzeBusinessProcess(businessProcessGreenFixture)
     const markers = projectMarkers(analysis)
 
-    expect(markers.get('cap-shared')?.selfStatus).toBe('YELLOW')
+    expect(markers.get(businessProcessGreenFixture.rootId)?.selfStatus).toBe('GREEN')
   })
 
-  it('resolves GREEN for a descendant whose own required level was genuinely compared against its immediate parent and found consistent (D-01 descendant half)', () => {
-    const analysis = analyzeBusinessCapability(nestedCapabilityGreenFixture)
+  it('resolves a BusinessProcess root to GREY when nothing is filled in', () => {
+    const analysis = analyzeBusinessProcess(businessProcessNoParentUnfilledFixture)
     const markers = projectMarkers(analysis)
 
-    expect(markers.get('cap-child-nested-green')?.selfStatus).toBe('GREEN')
-  })
-
-  it('D-02: resolves GREEN overall when one parent contributes zero comparable dimensions but another contributes a real, consistent one', () => {
-    const analysis = analyzeBusinessCapability(multiParentOneEmptyOneConsistentFixture)
-    const markers = projectMarkers(analysis)
-
-    expect(markers.get(multiParentOneEmptyOneConsistentFixture.rootId)?.selfStatus).toBe('GREEN')
-  })
-
-  // Critical regression (04-RESEARCH.md § selfViolatingIds Filter Gap): before
-  // the fix, `selfViolatingIds` hardcoded `f.violatingElementType ===
-  // 'businessCapability'`, so a BusinessProcess's genuine YELLOW
-  // parent-contradiction finding was silently swallowed into GREEN (its
-  // dimension was also a real comparison, so `comparedIds` resolved it
-  // GREEN) instead of surfacing as YELLOW. This test is the fix for that
-  // exact gap — it must fail before the `capabilityIds.has(...)` fix is
-  // applied and pass after.
-  it('gives a BusinessProcess YELLOW selfStatus when its own required level contradicts its parentProcess (D-04 critical fix)', () => {
-    const analysis = analyzeBusinessProcess(businessProcessParentContradictionFixture)
-    const markers = projectMarkers(analysis)
-
-    expect(markers.get(businessProcessParentContradictionFixture.rootId)?.selfStatus).toBe('YELLOW')
-  })
-
-  it('resolves GREEN for a BusinessProcess genuinely compared against its parentProcess and found consistent', () => {
-    const analysis = analyzeBusinessProcess(businessProcessParentNoContradictionFixture)
-    const markers = projectMarkers(analysis)
-
-    expect(markers.get(businessProcessParentNoContradictionFixture.rootId)?.selfStatus).toBe(
-      'GREEN'
-    )
-  })
-
-  it('resolves GREY for a BusinessProcess whose parentProcess is present but every dimension is excluded from comparison', () => {
-    const analysis = analyzeBusinessProcess(businessProcessParentAllExcludedFixture)
-    const markers = projectMarkers(analysis)
-
-    expect(markers.get(businessProcessParentAllExcludedFixture.rootId)?.selfStatus).toBe('GREY')
+    expect(markers.get(businessProcessNoParentUnfilledFixture.rootId)?.selfStatus).toBe('GREY')
   })
 })

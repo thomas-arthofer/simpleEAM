@@ -74,7 +74,6 @@ export const redChainFixture: BusinessCapabilityChain = {
   rootId: 'cap-abrechnung',
   rootType: 'businessCapability',
   effectiveRequiredLevels: requirementLevels(),
-  parentRequiredLevels: [],
   required: requirementLevels({
     strategicAutonomy: 'MEDIUM',
     resilience: 'HIGH',
@@ -117,7 +116,6 @@ export const greyChainFixture: BusinessCapabilityChain = {
   rootId: 'cap-grey',
   rootType: 'businessCapability',
   effectiveRequiredLevels: requirementLevels(),
-  parentRequiredLevels: [],
   required: requirementLevels({ control: 'MEDIUM' }),
   supportingAIComponents: [],
   childCapabilities: [],
@@ -140,7 +138,6 @@ export const greenChainFixture: BusinessCapabilityChain = {
   rootId: 'cap-green',
   rootType: 'businessCapability',
   effectiveRequiredLevels: requirementLevels(),
-  parentRequiredLevels: [],
   required: requirementLevels({
     strategicAutonomy: 'HIGH',
     resilience: 'HIGH',
@@ -176,7 +173,7 @@ export const greenChainFixture: BusinessCapabilityChain = {
 }
 
 /**
- * A true hierarchy root (no parent at all, `parentRequiredLevels: []`) with
+ * A true hierarchy root (no parent at all, ``) with
  * no required levels set on itself either — the one remaining GREY case
  * after the revised rule: `redChainFixture`/`greyChainFixture`/
  * `greenChainFixture` all have SOME required level set on the root and now
@@ -187,7 +184,6 @@ export const rootNoParentUnfilledFixture: BusinessCapabilityChain = {
   rootId: 'cap-no-parent-unfilled',
   rootType: 'businessCapability',
   effectiveRequiredLevels: requirementLevels(),
-  parentRequiredLevels: [],
   required: requirementLevels(),
   supportingAIComponents: [],
   childCapabilities: [],
@@ -203,7 +199,6 @@ export const multiParentInfrastructureFixture: BusinessCapabilityChain = {
   rootId: 'cap-multi-parent',
   rootType: 'businessCapability',
   effectiveRequiredLevels: requirementLevels(),
-  parentRequiredLevels: [],
   required: requirementLevels({ resilience: 'HIGH' }),
   supportingAIComponents: [],
   childCapabilities: [],
@@ -265,7 +260,6 @@ export const compositeApplicationFixture: BusinessCapabilityChain = {
   rootId: 'cap-composite',
   rootType: 'businessCapability',
   effectiveRequiredLevels: requirementLevels(),
-  parentRequiredLevels: [],
   required: requirementLevels({ control: 'MEDIUM' }),
   supportingAIComponents: [],
   childCapabilities: [],
@@ -326,8 +320,7 @@ function buildCyclicApplicationFixture(): BusinessCapabilityChain {
   return {
     rootId: 'cap-cycle',
     rootType: 'businessCapability',
-  effectiveRequiredLevels: requirementLevels(),
-    parentRequiredLevels: [],
+    effectiveRequiredLevels: requirementLevels(),
     required: requirementLevels({ security: 'MEDIUM' }),
     supportingAIComponents: [],
     supportingApplications: [appA],
@@ -344,6 +337,7 @@ export const cyclicApplicationFixture: BusinessCapabilityChain = buildCyclicAppl
 export const dataObjectChainFixture: DataObjectChain = {
   rootId: 'dataobject-customer-records',
   rootType: 'dataObject',
+  effectiveRequiredLevels: requirementLevels(),
   required: requirementLevels({ security: 'HIGH' }),
   supportingAIComponents: [],
   supportingApplications: [
@@ -369,7 +363,7 @@ export const dataObjectChainFixture: DataObjectChain = {
 export const businessProcessRedFixture: BusinessProcessChain = {
   rootId: 'process-onboarding',
   rootType: 'businessProcess',
-  parentRequiredLevels: [],
+  effectiveRequiredLevels: requirementLevels(),
   required: requirementLevels({
     strategicAutonomy: 'MEDIUM',
     resilience: 'HIGH',
@@ -411,7 +405,7 @@ export const businessProcessRedFixture: BusinessProcessChain = {
 export const businessProcessGreyFixture: BusinessProcessChain = {
   rootId: 'process-grey',
   rootType: 'businessProcess',
-  parentRequiredLevels: [],
+  effectiveRequiredLevels: requirementLevels(),
   required: requirementLevels({ control: 'MEDIUM' }),
   supportingAIComponents: [],
   supportingApplications: [
@@ -432,7 +426,7 @@ export const businessProcessGreyFixture: BusinessProcessChain = {
 export const businessProcessGreenFixture: BusinessProcessChain = {
   rootId: 'process-green',
   rootType: 'businessProcess',
-  parentRequiredLevels: [],
+  effectiveRequiredLevels: requirementLevels(),
   required: requirementLevels({
     strategicAutonomy: 'HIGH',
     resilience: 'HIGH',
@@ -476,7 +470,7 @@ export const businessProcessGreenFixture: BusinessProcessChain = {
 export const businessProcessNoParentUnfilledFixture: BusinessProcessChain = {
   rootId: 'process-no-parent-unfilled',
   rootType: 'businessProcess',
-  parentRequiredLevels: [],
+  effectiveRequiredLevels: requirementLevels(),
   required: requirementLevels(),
   supportingAIComponents: [],
   supportingApplications: [],
@@ -492,10 +486,8 @@ export const businessProcessNoParentUnfilledFixture: BusinessProcessChain = {
 export const businessProcessParentContradictionFixture: BusinessProcessChain = {
   rootId: 'process-root-weaker',
   rootType: 'businessProcess',
+  effectiveRequiredLevels: requirementLevels(),
   required: requirementLevels({ security: 'MEDIUM' }),
-  parentRequiredLevels: [
-    { id: 'proc-parent-strict', required: requirementLevels({ security: 'HIGH' }) },
-  ],
   supportingAIComponents: [],
   supportingApplications: [],
 }
@@ -510,10 +502,8 @@ export const businessProcessParentContradictionFixture: BusinessProcessChain = {
 export const businessProcessParentNoContradictionFixture: BusinessProcessChain = {
   rootId: 'process-root-stricter',
   rootType: 'businessProcess',
+  effectiveRequiredLevels: requirementLevels(),
   required: requirementLevels({ security: 'LOW' }),
-  parentRequiredLevels: [
-    { id: 'proc-parent-looser', required: requirementLevels({ security: 'LOW' }) },
-  ],
   supportingAIComponents: [],
   supportingApplications: [],
 }
@@ -529,8 +519,8 @@ export const businessProcessParentNoContradictionFixture: BusinessProcessChain =
 export const businessProcessParentAllExcludedFixture: BusinessProcessChain = {
   rootId: 'process-root-all-excluded',
   rootType: 'businessProcess',
+  effectiveRequiredLevels: requirementLevels(),
   required: requirementLevels({ security: 'HIGH', resilience: 'MEDIUM' }),
-  parentRequiredLevels: [{ id: 'proc-parent-vacuous', required: requirementLevels() }],
   supportingAIComponents: [],
   supportingApplications: [],
 }
@@ -545,11 +535,8 @@ export const businessProcessParentAllExcludedFixture: BusinessProcessChain = {
 export const businessProcessMultiParentFixture: BusinessProcessChain = {
   rootId: 'process-root-multi',
   rootType: 'businessProcess',
+  effectiveRequiredLevels: requirementLevels(),
   required: requirementLevels({ control: 'MEDIUM' }),
-  parentRequiredLevels: [
-    { id: 'proc-p-strict', required: requirementLevels({ control: 'HIGH' }) },
-    { id: 'proc-p-loose', required: requirementLevels({ control: 'LOW' }) },
-  ],
   supportingAIComponents: [],
   supportingApplications: [],
 }
@@ -563,7 +550,6 @@ export const partialAchievedFixture: BusinessCapabilityChain = {
   rootId: 'cap-partial',
   rootType: 'businessCapability',
   effectiveRequiredLevels: requirementLevels(),
-  parentRequiredLevels: [],
   required: requirementLevels({ strategicAutonomy: 'HIGH', resilience: 'HIGH' }),
   supportingAIComponents: [],
   childCapabilities: [],
@@ -592,7 +578,6 @@ export const nestedCapabilitySubtreeFixture: BusinessCapabilityChain = {
   rootId: 'cap-gemeinsamer-max',
   rootType: 'businessCapability',
   effectiveRequiredLevels: requirementLevels(),
-  parentRequiredLevels: [],
   required: requirementLevels(),
   supportingAIComponents: [],
   supportingApplications: [],
@@ -600,8 +585,7 @@ export const nestedCapabilitySubtreeFixture: BusinessCapabilityChain = {
     {
       rootId: 'cap-test',
       rootType: 'businessCapability',
-  effectiveRequiredLevels: requirementLevels(),
-      parentRequiredLevels: [],
+      effectiveRequiredLevels: requirementLevels(),
       required: requirementLevels({ strategicAutonomy: 'VERY_HIGH' }),
       supportingAIComponents: [],
       childCapabilities: [],
@@ -616,8 +600,7 @@ export const nestedCapabilitySubtreeFixture: BusinessCapabilityChain = {
     {
       rootId: 'cap-wichtiger-businesscase',
       rootType: 'businessCapability',
-  effectiveRequiredLevels: requirementLevels(),
-      parentRequiredLevels: [],
+      effectiveRequiredLevels: requirementLevels(),
       required: requirementLevels({ strategicAutonomy: 'MEDIUM' }),
       supportingAIComponents: [],
       childCapabilities: [],
@@ -649,9 +632,6 @@ export const rootParentContradictionFixture: BusinessCapabilityChain = {
   rootType: 'businessCapability',
   effectiveRequiredLevels: requirementLevels(),
   required: requirementLevels({ security: 'MEDIUM' }),
-  parentRequiredLevels: [
-    { id: 'cap-parent-strict', required: requirementLevels({ security: 'HIGH' }) },
-  ],
   supportingAIComponents: [],
   supportingApplications: [],
   childCapabilities: [],
@@ -668,9 +648,6 @@ export const rootParentNoContradictionFixture: BusinessCapabilityChain = {
   rootType: 'businessCapability',
   effectiveRequiredLevels: requirementLevels(),
   required: requirementLevels({ security: 'HIGH' }),
-  parentRequiredLevels: [
-    { id: 'cap-parent-looser', required: requirementLevels({ security: 'MEDIUM' }) },
-  ],
   supportingAIComponents: [],
   supportingApplications: [],
   childCapabilities: [],
@@ -691,7 +668,6 @@ export const rootParentAllExcludedFixture: BusinessCapabilityChain = {
   rootType: 'businessCapability',
   effectiveRequiredLevels: requirementLevels(),
   required: requirementLevels({ security: 'HIGH', resilience: 'MEDIUM' }),
-  parentRequiredLevels: [{ id: 'cap-parent-vacuous', required: requirementLevels() }],
   supportingAIComponents: [],
   supportingApplications: [],
   childCapabilities: [],
@@ -710,25 +686,22 @@ export const descendantParentContradictionFixture: BusinessCapabilityChain = {
   rootType: 'businessCapability',
   effectiveRequiredLevels: requirementLevels(),
   required: requirementLevels({ security: 'HIGH' }),
-  parentRequiredLevels: [],
   supportingAIComponents: [],
   supportingApplications: [],
   childCapabilities: [
     {
       rootId: 'cap-child-3lvl',
       rootType: 'businessCapability',
-  effectiveRequiredLevels: requirementLevels(),
+      effectiveRequiredLevels: requirementLevels(),
       required: requirementLevels({ security: 'MEDIUM' }),
-      parentRequiredLevels: [],
       supportingAIComponents: [],
       supportingApplications: [],
       childCapabilities: [
         {
           rootId: 'cap-grandchild-3lvl',
           rootType: 'businessCapability',
-  effectiveRequiredLevels: requirementLevels(),
+          effectiveRequiredLevels: requirementLevels(),
           required: requirementLevels({ security: 'LOW' }),
-          parentRequiredLevels: [],
           supportingAIComponents: [],
           supportingApplications: [],
           childCapabilities: [],
@@ -748,10 +721,6 @@ export const multiParentBothStricterFixture: BusinessCapabilityChain = {
   rootType: 'businessCapability',
   effectiveRequiredLevels: requirementLevels(),
   required: requirementLevels({ control: 'LOW' }),
-  parentRequiredLevels: [
-    { id: 'p1', required: requirementLevels({ control: 'MEDIUM' }) },
-    { id: 'p2', required: requirementLevels({ control: 'HIGH' }) },
-  ],
   supportingAIComponents: [],
   supportingApplications: [],
   childCapabilities: [],
@@ -768,10 +737,6 @@ export const multiParentOnlyOneStricterFixture: BusinessCapabilityChain = {
   rootType: 'businessCapability',
   effectiveRequiredLevels: requirementLevels(),
   required: requirementLevels({ control: 'MEDIUM' }),
-  parentRequiredLevels: [
-    { id: 'p-strict', required: requirementLevels({ control: 'HIGH' }) },
-    { id: 'p-loose', required: requirementLevels({ control: 'LOW' }) },
-  ],
   supportingAIComponents: [],
   supportingApplications: [],
   childCapabilities: [],
@@ -790,16 +755,14 @@ export const capabilityCycleFixture: BusinessCapabilityChain = {
   rootType: 'businessCapability',
   effectiveRequiredLevels: requirementLevels(),
   required: requirementLevels({ security: 'HIGH' }),
-  parentRequiredLevels: [],
   supportingAIComponents: [],
   supportingApplications: [],
   childCapabilities: [
     {
       rootId: 'cap-cycle-child',
       rootType: 'businessCapability',
-  effectiveRequiredLevels: requirementLevels(),
+      effectiveRequiredLevels: requirementLevels(),
       required: requirementLevels({ security: 'LOW' }),
-      parentRequiredLevels: [],
       supportingAIComponents: [],
       supportingApplications: [],
       childCapabilities: [
@@ -808,9 +771,8 @@ export const capabilityCycleFixture: BusinessCapabilityChain = {
           // visited branch — must terminate silently, not recurse forever.
           rootId: 'cap-cycle-root',
           rootType: 'businessCapability',
-  effectiveRequiredLevels: requirementLevels(),
+          effectiveRequiredLevels: requirementLevels(),
           required: requirementLevels({ security: 'HIGH' }),
-          parentRequiredLevels: [],
           supportingAIComponents: [],
           supportingApplications: [],
           childCapabilities: [],
@@ -836,16 +798,14 @@ export const capabilityCycleTriggeringFixture: BusinessCapabilityChain = {
   rootType: 'businessCapability',
   effectiveRequiredLevels: requirementLevels(),
   required: requirementLevels({ security: 'HIGH' }),
-  parentRequiredLevels: [],
   supportingAIComponents: [],
   supportingApplications: [],
   childCapabilities: [
     {
       rootId: 'cap-cycle-child-2',
       rootType: 'businessCapability',
-  effectiveRequiredLevels: requirementLevels(),
+      effectiveRequiredLevels: requirementLevels(),
       required: requirementLevels({ security: 'LOW' }),
-      parentRequiredLevels: [],
       supportingAIComponents: [],
       supportingApplications: [],
       childCapabilities: [
@@ -856,9 +816,8 @@ export const capabilityCycleTriggeringFixture: BusinessCapabilityChain = {
           // edge were not skipped entirely (WR-01).
           rootId: 'cap-cycle-root-2',
           rootType: 'businessCapability',
-  effectiveRequiredLevels: requirementLevels(),
+          effectiveRequiredLevels: requirementLevels(),
           required: requirementLevels({ security: 'NONE' }),
-          parentRequiredLevels: [],
           supportingAIComponents: [],
           supportingApplications: [],
           childCapabilities: [],
@@ -886,7 +845,6 @@ export const diamondSharedCapabilityFixture: BusinessCapabilityChain = {
   rootType: 'businessCapability',
   effectiveRequiredLevels: requirementLevels(),
   required: requirementLevels({ security: 'LOW' }),
-  parentRequiredLevels: [],
   supportingAIComponents: [],
   supportingApplications: [],
   childCapabilities: [
@@ -895,18 +853,16 @@ export const diamondSharedCapabilityFixture: BusinessCapabilityChain = {
       // this parent's HIGH requirement — genuine self-violation.
       rootId: 'cap-p1',
       rootType: 'businessCapability',
-  effectiveRequiredLevels: requirementLevels(),
+      effectiveRequiredLevels: requirementLevels(),
       required: requirementLevels({ security: 'HIGH' }),
-      parentRequiredLevels: [],
       supportingAIComponents: [],
       supportingApplications: [],
       childCapabilities: [
         {
           rootId: 'cap-shared',
           rootType: 'businessCapability',
-  effectiveRequiredLevels: requirementLevels(),
+          effectiveRequiredLevels: requirementLevels(),
           required: requirementLevels({ security: 'LOW' }),
-          parentRequiredLevels: [],
           supportingAIComponents: [],
           supportingApplications: [],
           childCapabilities: [],
@@ -922,18 +878,16 @@ export const diamondSharedCapabilityFixture: BusinessCapabilityChain = {
       // finding processed AFTER the cap-p1 block above.
       rootId: 'cap-p2',
       rootType: 'businessCapability',
-  effectiveRequiredLevels: requirementLevels(),
+      effectiveRequiredLevels: requirementLevels(),
       required: requirementLevels({ security: 'LOW' }),
-      parentRequiredLevels: [],
       supportingAIComponents: [],
       supportingApplications: [],
       childCapabilities: [
         {
           rootId: 'cap-shared',
           rootType: 'businessCapability',
-  effectiveRequiredLevels: requirementLevels(),
+          effectiveRequiredLevels: requirementLevels(),
           required: requirementLevels({ security: 'LOW' }),
-          parentRequiredLevels: [],
           supportingAIComponents: [
             aiComponentNode({
               id: 'ai-under-shared',
@@ -962,16 +916,14 @@ export const nestedCapabilityGreenFixture: BusinessCapabilityChain = {
   rootType: 'businessCapability',
   effectiveRequiredLevels: requirementLevels(),
   required: requirementLevels({ security: 'MEDIUM' }),
-  parentRequiredLevels: [],
   supportingAIComponents: [],
   supportingApplications: [],
   childCapabilities: [
     {
       rootId: 'cap-child-nested-green',
       rootType: 'businessCapability',
-  effectiveRequiredLevels: requirementLevels(),
+      effectiveRequiredLevels: requirementLevels(),
       required: requirementLevels({ security: 'HIGH' }),
-      parentRequiredLevels: [],
       supportingAIComponents: [],
       supportingApplications: [],
       childCapabilities: [],
@@ -992,10 +944,6 @@ export const multiParentOneEmptyOneConsistentFixture: BusinessCapabilityChain = 
   rootType: 'businessCapability',
   effectiveRequiredLevels: requirementLevels(),
   required: requirementLevels({ control: 'MEDIUM' }),
-  parentRequiredLevels: [
-    { id: 'p-empty', required: requirementLevels() },
-    { id: 'p-consistent', required: requirementLevels({ control: 'LOW' }) },
-  ],
   supportingAIComponents: [],
   supportingApplications: [],
   childCapabilities: [],
@@ -1024,7 +972,6 @@ export function ancestorStricterOneStepFixture(
     rootType: 'businessCapability',
     required: requirementLevels({ security: 'MEDIUM' }),
     effectiveRequiredLevels: requirementLevels({ security: 'HIGH' }),
-    parentRequiredLevels: [],
     supportingAIComponents: [],
     childCapabilities: [],
     supportingApplications: [
@@ -1044,4 +991,188 @@ export function ancestorStricterOneStepFixture(
       }),
     ],
   }
+}
+
+/**
+ * Phase 5 Plan B — deviation math coverage across all four dimensions.
+ * Root req + effectiveReq populated on all four dims (mimicking a repository
+ * fold with no ancestors); one leaf App whose achieved values are exactly
+ * 1 step below required on each dim → four YELLOW findings.
+ */
+export const deviationOneStepFixture: BusinessCapabilityChain = {
+  rootId: 'cap-dev-1',
+  name: 'DevOne',
+  rootType: 'businessCapability',
+  effectiveRequiredLevels: requirementLevels({
+    strategicAutonomy: 'HIGH',
+    resilience: 'HIGH',
+    security: 'HIGH',
+    control: 'HIGH',
+  }),
+  required: requirementLevels({
+    strategicAutonomy: 'HIGH',
+    resilience: 'HIGH',
+    security: 'HIGH',
+    control: 'HIGH',
+  }),
+  supportingAIComponents: [],
+  childCapabilities: [],
+  supportingApplications: [
+    applicationNode({
+      id: 'app-dev-1',
+      name: 'DevOneApp',
+      achieved: achievedLevels({
+        strategicAutonomy: 'MEDIUM',
+        resilience: 'MEDIUM',
+        security: 'MEDIUM',
+        control: 'MEDIUM',
+      }),
+    }),
+  ],
+}
+
+/** Same shape, but leaf achieved is 2 steps below on every dim → four RED findings. */
+export const deviationTwoStepFixture: BusinessCapabilityChain = {
+  rootId: 'cap-dev-2',
+  name: 'DevTwo',
+  rootType: 'businessCapability',
+  effectiveRequiredLevels: requirementLevels({
+    strategicAutonomy: 'HIGH',
+    resilience: 'HIGH',
+    security: 'HIGH',
+    control: 'HIGH',
+  }),
+  required: requirementLevels({
+    strategicAutonomy: 'HIGH',
+    resilience: 'HIGH',
+    security: 'HIGH',
+    control: 'HIGH',
+  }),
+  supportingAIComponents: [],
+  childCapabilities: [],
+  supportingApplications: [
+    applicationNode({
+      id: 'app-dev-2',
+      name: 'DevTwoApp',
+      achieved: achievedLevels({
+        strategicAutonomy: 'LOW',
+        resilience: 'LOW',
+        security: 'LOW',
+        control: 'LOW',
+      }),
+    }),
+  ],
+}
+
+/**
+ * Scale-boundary exercise: required VERY_HIGH, achieved NONE → deviation = 4
+ * → RED. Proves the deviation math handles the widest span without hardcoding
+ * any literal scale bound (D-02 scale-independence).
+ */
+export const deviationBoundaryFixture: BusinessCapabilityChain = {
+  rootId: 'cap-dev-bnd',
+  name: 'DevBoundary',
+  rootType: 'businessCapability',
+  effectiveRequiredLevels: requirementLevels({
+    strategicAutonomy: 'VERY_HIGH',
+    resilience: 'VERY_HIGH',
+    security: 'VERY_HIGH',
+    control: 'VERY_HIGH',
+  }),
+  required: requirementLevels({
+    strategicAutonomy: 'VERY_HIGH',
+    resilience: 'VERY_HIGH',
+    security: 'VERY_HIGH',
+    control: 'VERY_HIGH',
+  }),
+  supportingAIComponents: [],
+  childCapabilities: [],
+  supportingApplications: [
+    applicationNode({
+      id: 'app-dev-bnd',
+      name: 'DevBoundaryApp',
+      achieved: achievedLevels({
+        strategicAutonomy: 'NONE',
+        resilience: 'NONE',
+        security: 'NONE',
+        control: 'NONE',
+      }),
+    }),
+  ],
+}
+
+/**
+ * Precedence exercise: one leaf App with one dim RED (≥2-step deviation) and
+ * one dim GREY (achieved null). Proves the STATUS_RANK ordering makes the RED
+ * dominate the GREY on the same element without any explicit precedence code
+ * (RESEARCH §4 — data-gap dominance).
+ */
+export const precedenceViolationOverGapFixture: BusinessCapabilityChain = {
+  rootId: 'cap-prec',
+  name: 'Precedence',
+  rootType: 'businessCapability',
+  effectiveRequiredLevels: requirementLevels({
+    strategicAutonomy: 'HIGH',
+    security: 'HIGH',
+  }),
+  required: requirementLevels({
+    strategicAutonomy: 'HIGH',
+    security: 'HIGH',
+  }),
+  supportingAIComponents: [],
+  childCapabilities: [],
+  supportingApplications: [
+    applicationNode({
+      id: 'app-prec',
+      name: 'PrecedenceApp',
+      achieved: achievedLevels({
+        // Real 2-step RED deviation on strategicAutonomy.
+        strategicAutonomy: 'LOW',
+        // Achieved null → GREY on security.
+        security: null,
+      }),
+    }),
+  ],
+}
+
+/**
+ * Ancestor-max-wins fold verification: a two-level BC chain where the root
+ * requires only MEDIUM but the child (in analyzeCapabilitySubtree's fold
+ * with the ancestor's effectiveReq HIGH) sees HIGH threaded down. The child's
+ * downstream App with achieved MEDIUM → deviation=1 → YELLOW under the folded
+ * requirement (would be no finding under just the child's own MEDIUM).
+ */
+export const ancestorMaxWinsFixture: BusinessCapabilityChain = {
+  rootId: 'cap-anc-root',
+  name: 'AncestorRoot',
+  rootType: 'businessCapability',
+  effectiveRequiredLevels: requirementLevels({ security: 'HIGH' }),
+  required: requirementLevels({ security: 'HIGH' }),
+  supportingAIComponents: [],
+  supportingApplications: [],
+  childCapabilities: [
+    {
+      rootId: 'cap-anc-child',
+      name: 'AncestorChild',
+      rootType: 'businessCapability',
+      // Child's own required is MEDIUM (weaker than root's HIGH), so
+      // maxByDimension(child.required=MEDIUM, ancestorEff=HIGH) = HIGH.
+      required: requirementLevels({ security: 'MEDIUM' }),
+      effectiveRequiredLevels: requirementLevels(),
+      supportingAIComponents: [],
+      childCapabilities: [],
+      supportingApplications: [
+        applicationNode({
+          id: 'app-anc',
+          name: 'AncestorApp',
+          achieved: achievedLevels({
+            strategicAutonomy: 'VERY_HIGH',
+            resilience: 'VERY_HIGH',
+            security: 'MEDIUM',
+            control: 'VERY_HIGH',
+          }),
+        }),
+      ],
+    },
+  ],
 }

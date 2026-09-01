@@ -349,27 +349,16 @@ async function fetchBusinessCapabilityChain(
   if (inFlight.has(rootId)) return null
   inFlight.add(rootId)
 
-  // T-02.3-04: the parent match is scoped to the caller's own company
-  // (or admin) exactly like the root's own `OWNED_BY` check above, so a
-  // parent belonging to a different tenant is silently excluded rather than
-  // leaking its required levels into `parentRequiredRows`.
-  const parentMatchClause = isRoot
-    ? `
-    OPTIONAL MATCH (cap)-[:HAS_PARENT]->(parent:BusinessCapability)-[:OWNED_BY]->(parentCompany:Company)
-    WHERE parent IS NULL OR $isAdmin OR parentCompany.id IN $companyIds`
-    : ''
-  const parentReturnClause = isRoot
-    ? `collect(DISTINCT parent { .id, .name, .sovereigntyReqStrategicAutonomy, .sovereigntyReqResilience, .sovereigntyReqSecurity, .sovereigntyReqControl }) AS parentRequiredRows`
-    : '[] AS parentRequiredRows'
-
   // Phase 5 D-05: variable-length ancestor walk (HAS_PARENT*0..) that
   // includes the root itself at distance 0. T-05-02 cycle-safety is provided
   // by Neo4j's per-edge uniqueness; T-05-03 multi-tenancy is enforced by
   // the ancestorCompany.id IN $companyIds filter — cross-tenant ancestor
   // rows are silently excluded from the max fold. Gated on `isRoot` (same
-  // as parent match) so nested capability recursions don't re-run the walk
-  // — descendants carry a null-quadruple `effectiveRequiredLevels`; Plan B
-  // threads the correct descendant effective-Req through the evaluator.
+  // as the pre-Phase-5 parent-required match was) so nested capability
+  // recursions don't re-run the walk — descendants carry a null-quadruple
+  // `effectiveRequiredLevels`; the evaluator's `analyzeCapabilitySubtree`
+  // threads the correct descendant effective-Req via `parentEffectiveReq`
+  // + `maxByDimension` at classification time.
   const ancestorMatchClause = isRoot
     ? `
     OPTIONAL MATCH (cap)-[:HAS_PARENT*0..]->(ancestor:BusinessCapability)-[:OWNED_BY]->(ancestorCompany:Company)
@@ -387,7 +376,6 @@ async function fetchBusinessCapabilityChain(
     OPTIONAL MATCH (cap)<-[:SUPPORTS]-(app:Application)
     OPTIONAL MATCH (cap)<-[:SUPPORTS]-(aiComponent:AIComponent)
     OPTIONAL MATCH (cap)<-[:HAS_PARENT]-(child:BusinessCapability)
-    ${parentMatchClause}
     ${ancestorMatchClause}
     RETURN
       cap.id AS id,
@@ -399,7 +387,6 @@ async function fetchBusinessCapabilityChain(
       collect(DISTINCT app.id) AS appIds,
       collect(DISTINCT aiComponent.id) AS aiComponentIds,
       collect(DISTINCT child.id) AS childIds,
-      ${parentReturnClause},
       ${ancestorReturnClause}
     `,
     { rootId, companyIds: [...companyIds], isAdmin }
@@ -420,14 +407,6 @@ async function fetchBusinessCapabilityChain(
     appIds: (string | null)[]
     aiComponentIds: (string | null)[]
     childIds: (string | null)[]
-    parentRequiredRows: {
-      id: string | null
-      name: string | null
-      sovereigntyReqStrategicAutonomy: string | null
-      sovereigntyReqResilience: string | null
-      sovereigntyReqSecurity: string | null
-      sovereigntyReqControl: string | null
-    }[]
     ancestorRequiredRows: {
       id: string | null
       sovereigntyReqStrategicAutonomy: string | null
@@ -473,19 +452,6 @@ async function fetchBusinessCapabilityChain(
     if (child) childCapabilities.push(child)
   }
 
-  const parentRequiredLevels = (row.parentRequiredRows ?? [])
-    .filter((parentRow): parentRow is typeof parentRow & { id: string } => Boolean(parentRow?.id))
-    .map(parentRow => ({
-      id: parentRow.id,
-      name: parentRow.name ?? parentRow.id,
-      required: {
-        strategicAutonomy: toMaturityLevel(parentRow.sovereigntyReqStrategicAutonomy),
-        resilience: toMaturityLevel(parentRow.sovereigntyReqResilience),
-        security: toMaturityLevel(parentRow.sovereigntyReqSecurity),
-        control: toMaturityLevel(parentRow.sovereigntyReqControl),
-      },
-    }))
-
   // Phase 5 D-05: max-per-dimension fold over the ancestor chain (own root
   // included via HAS_PARENT*0..). `maturityIndexOrDefault(null, -1)` guarantees
   // null ancestor rows never win the fold. Only populated for the analysis
@@ -503,7 +469,6 @@ async function fetchBusinessCapabilityChain(
     supportingApplications,
     supportingAIComponents,
     childCapabilities,
-    parentRequiredLevels,
     effectiveRequiredLevels,
   }
   cache.capabilities.set(rootId, node)
@@ -608,6 +573,10 @@ async function loadDataObjectSupportChain(
     name: row.name ?? row.id,
     rootType: 'dataObject',
     required,
+    // Phase 5 D-05 uniform shape: DataObject has no ancestor concept, so
+    // effectiveRequiredLevels is just its own required verbatim. Lets
+    // classifyNode read one uniform field across BC / DO / BP.
+    effectiveRequiredLevels: required,
     supportingApplications,
     supportingAIComponents,
   }
@@ -615,17 +584,16 @@ async function loadDataObjectSupportChain(
 
 /**
  * Loads a BusinessProcess's own requirements plus the Applications it is
- * directly supported by (`supportedByApplications`, D-02 \u2014 flat,
+ * directly supported by (`supportedByApplications`, D-02 — flat,
  * DataObject-shaped: no nested childProcesses achieved-chain walk).
  * BusinessProcess has no direct AIComponent relationship in schema.graphql,
- * so `supportingAIComponents` is always `[]` \u2014 never fetched. Also fetches
- * `parentRequiredLevels` (D-04): a root-only `HAS_PARENT_PROCESS`-OUT upward
- * fetch of the process's own direct parents' required levels, company-scoped
- * identically to `fetchBusinessCapabilityChain`'s T-02.3-04 parent guard \u2014
- * no `isRoot` parameter needed since every call to this function is already
- * root-only (BusinessProcess has no recursive descendant walk). Returns
- * `null` when the BusinessProcess does not exist or is not owned by a
- * company in `companyIds` (and the caller is not admin).
+ * so `supportingAIComponents` is always `[]` — never fetched. Phase 5 D-05:
+ * folds `effectiveRequiredLevels` via a `HAS_PARENT_PROCESS*0..` ancestor
+ * walk (mirrors `fetchBusinessCapabilityChain`'s BC counterpart);
+ * cross-tenant ancestor rows are silently excluded by
+ * `ancestorCompany.id IN $companyIds` (T-05-03). Returns `null` when the
+ * BusinessProcess does not exist or is not owned by a company in
+ * `companyIds` (and the caller is not admin).
  */
 async function loadBusinessProcessSupportChain(
   session: Session,
@@ -639,8 +607,8 @@ async function loadBusinessProcessSupportChain(
     WHERE $isAdmin OR c.id IN $companyIds
     WITH DISTINCT proc
     OPTIONAL MATCH (proc)<-[:SUPPORTS]-(app:Application)
-    OPTIONAL MATCH (proc)-[:HAS_PARENT_PROCESS]->(parent:BusinessProcess)-[:OWNED_BY]->(parentCompany:Company)
-    WHERE parent IS NULL OR $isAdmin OR parentCompany.id IN $companyIds
+    OPTIONAL MATCH (proc)-[:HAS_PARENT_PROCESS*0..]->(ancestor:BusinessProcess)-[:OWNED_BY]->(ancestorCompany:Company)
+    WHERE $isAdmin OR ancestorCompany.id IN $companyIds
     RETURN
       proc.id AS id,
       proc.name AS name,
@@ -649,7 +617,7 @@ async function loadBusinessProcessSupportChain(
       proc.sovereigntyReqSecurity AS reqSecurity,
       proc.sovereigntyReqControl AS reqControl,
       collect(DISTINCT app.id) AS appIds,
-      collect(DISTINCT parent { .id, .name, .sovereigntyReqStrategicAutonomy, .sovereigntyReqResilience, .sovereigntyReqSecurity, .sovereigntyReqControl }) AS parentRequiredRows
+      collect(DISTINCT ancestor { .id, .sovereigntyReqStrategicAutonomy, .sovereigntyReqResilience, .sovereigntyReqSecurity, .sovereigntyReqControl }) AS ancestorRequiredRows
     `,
     { rootId, companyIds: [...companyIds], isAdmin }
   )
@@ -664,9 +632,8 @@ async function loadBusinessProcessSupportChain(
     reqSecurity: string | null
     reqControl: string | null
     appIds: (string | null)[]
-    parentRequiredRows: {
+    ancestorRequiredRows: {
       id: string | null
-      name: string | null
       sovereigntyReqStrategicAutonomy: string | null
       sovereigntyReqResilience: string | null
       sovereigntyReqSecurity: string | null
@@ -691,18 +658,11 @@ async function loadBusinessProcessSupportChain(
     if (app) supportingApplications.push(app)
   }
 
-  const parentRequiredLevels = (row.parentRequiredRows ?? [])
-    .filter((parentRow): parentRow is typeof parentRow & { id: string } => Boolean(parentRow?.id))
-    .map(parentRow => ({
-      id: parentRow.id,
-      name: parentRow.name ?? parentRow.id,
-      required: {
-        strategicAutonomy: toMaturityLevel(parentRow.sovereigntyReqStrategicAutonomy),
-        resilience: toMaturityLevel(parentRow.sovereigntyReqResilience),
-        security: toMaturityLevel(parentRow.sovereigntyReqSecurity),
-        control: toMaturityLevel(parentRow.sovereigntyReqControl),
-      },
-    }))
+  // Phase 5 D-05: same fold shape as fetchBusinessCapabilityChain (BC counterpart).
+  const effectiveRequiredLevels = foldEffectiveRequiredLevels(
+    row.ancestorRequiredRows ?? [],
+    row.id
+  )
 
   return {
     rootId: row.id,
@@ -711,7 +671,7 @@ async function loadBusinessProcessSupportChain(
     required,
     supportingApplications,
     supportingAIComponents: [],
-    parentRequiredLevels,
+    effectiveRequiredLevels,
   }
 }
 

@@ -31,6 +31,11 @@ const STATUS_RANK: Record<SovereigntyStatus, number> = {
  * RED always wins (eam-konzept.md: "ein Element mit auch nur einem roten
  * Befund gilt als rot"), then YELLOW, then GREY, with GREEN as the
  * fully-compliant floor: GREEN < GREY < YELLOW < RED.
+ *
+ * Data-gap dominance (Phase 5 D-02) falls out of this rank automatically:
+ * `worseStatus(GREY, YELLOW) = YELLOW` and `worseStatus(GREY, RED) = RED`,
+ * so a real violation on any dimension always beats a data-gap GREY on any
+ * other dimension when both findings target the same element.
  */
 function worseStatus(a: SovereigntyStatus, b: SovereigntyStatus): SovereigntyStatus {
   return STATUS_RANK[b] > STATUS_RANK[a] ? b : a
@@ -38,154 +43,61 @@ function worseStatus(a: SovereigntyStatus, b: SovereigntyStatus): SovereigntySta
 
 /**
  * Projects a `SovereigntyAnalysis`'s flat `Finding[]` into a per-element
- * self/downstream marker map. Folds over `analysis.findings` only — no new
- * comparison/classification logic is introduced here, this only aggregates
- * `Finding[]` already produced by `evaluator.ts` (RESEARCH.md Anti-Pattern
- * 3: one classifier, reused everywhere).
+ * self/downstream marker map via a single unified findings-fold — no
+ * classification logic is introduced here (RESEARCH.md Anti-Pattern 3: one
+ * classifier, reused everywhere).
  *
- * - The root always has an entry (D-05 — a BusinessCapability/DataObject
- *   owns no achieved rating of its own): `selfStatus` is GREEN when a real
- *   comparison against a parent was made and found consistent, YELLOW on a
- *   parent-vs-own contradiction, GREY only when there is genuinely nothing
- *   to compare and nothing filled in (03-CONTEXT.md D-01/D-02, revised); a
- *   BusinessCapability/BusinessProcess with no parent at all (a true
- *   hierarchy root) resolves GREEN as soon as its own required levels are
- *   filled in — it is internally consistent by definition, so grey must not
- *   mean "will never be green" — while a DataObject root (no parent concept
- *   at all) always stays GREY. `downstreamStatus` equals the analysis's own
- *   aggregate.
- * - Every other element that appears anywhere in a finding's `chainPath`
- *   gets its own `selfStatus` (worst status among findings where it is the
- *   `violatingElementId`) and `downstreamStatus` (worst status among all
- *   findings whose `chainPath` contains it at any position at-or-below it).
+ * Phase 5 D-06 rewrite (RESEARCH §3.3): the pre-Phase-5 per-capability
+ * self-violation / compared-set / GREEN-backfill machinery is gone. Every
+ * element — including requirement roots and nested BCs — resolves its fill
+ * from findings via this single loop.
+ *
+ * Semantics:
+ * - The root ALWAYS has an entry (D-05, "never omit a requested node"),
+ *   seeded with `analysis.selfStatus` / `analysis.downstreamStatus`. The
+ *   evaluator's `analyzeBusinessCapability` / `analyzeBusinessProcess` /
+ *   `analyzeDataObject` all return `selfStatus = GREEN` when the root has
+ *   its own required filled in and `GREY` otherwise (Phase 5 D-06 seed).
+ * - Nested BusinessCapabilities pick up their fill via the per-nested-BC
+ *   premise findings that `analyzeCapabilitySubtree` synthesises (Design A,
+ *   RESEARCH §3.4): a synthesised finding names the nested BC as its own
+ *   `violatingElementId`, so the `isViolatingElement` branch below produces
+ *   the correct nested-BC fill without any special-case machinery.
+ * - Downstream Application/Infrastructure/AIComponent leaves receive their
+ *   fill via `classifyNode`'s per-leaf findings (deviation math against the
+ *   root's effective-Req, RESEARCH §2.4 + §3.5).
+ * - Every id on any `chainPath` also picks up a `downstreamStatus` update
+ *   (worseStatus, unconditionally) — this is what propagates the "worst
+ *   status anywhere below me" ring up through every ancestor of a leaf
+ *   violation.
  * - An element that never appears in any finding's `chainPath` has no entry
  *   in the returned map — callers must resolve missing ids via
- *   `resolveMarker`/`DEFAULT_MARKER`, which is always `{ GREEN, GREEN }`,
+ *   `resolveMarker` / `DEFAULT_MARKER`, which is always `{ GREEN, GREEN }`,
  *   so GREEN is never silently omitted end-to-end.
  */
 export function projectMarkers(analysis: SovereigntyAnalysis): Map<string, SovereigntyMarker> {
   const markers = new Map<string, SovereigntyMarker>()
-  const capabilityIds = new Set(analysis.capabilityIds)
 
-  // 02.3 D-05: a capability can be analyzed more than once when it is shared
-  // by two or more parents in the same subtree (diamond topology — no
-  // memoization by design, per D-02 independent-per-parent evaluation). Each
-  // occurrence produces its own block of findings in `analysis.findings`, so
-  // whether `id` keeps its self-violation status must be decided from the
-  // FULL finding set up front, not per-finding as the loop below walks
-  // blocks in order — otherwise a later block's non-violating passthrough
-  // for the same id would unconditionally reset an earlier block's genuine
-  // YELLOW self-violation back to GREY (CR-01).
-  //
-  // Derived from `capabilityIds` membership (Phase 4 04-02 fix) rather than
-  // an enumerated `violatingElementType === 'businessCapability'` string
-  // check: the old hardcoded literal silently excluded every other
-  // requirement-root type's own self-violation findings (BusinessProcess's
-  // `violatingElementType: 'businessProcess'` parent-contradiction findings,
-  // D-04) from this set, downgrading a genuine YELLOW contradiction to
-  // GREEN/GREY. `capabilityIds` already identifies every requirement-root id
-  // in this analysis (Pattern 3, BusinessCapability and BusinessProcess
-  // today, extensible to a future third root type without another code
-  // change here) — a finding's `violatingElementId` is a self-violation
-  // exactly when that id is itself a requirement root.
-  const selfViolatingIds = new Set(
-    analysis.findings
-      .filter(f => capabilityIds.has(f.violatingElementId))
-      .map(f => f.violatingElementId)
-  )
-
-  // 03-CONTEXT.md D-01/D-02: the set of capability ids that had at least one
-  // real (non-excluded) dimension compared against a parent, whether that
-  // comparison passed or contradicted. Consulted below alongside
-  // `selfViolatingIds` to resolve the three-valued GREEN/YELLOW/GREY
-  // selfStatus — YELLOW (selfViolatingIds) still wins over GREEN
-  // (comparedIds) for free, since a genuine contradiction is by construction
-  // also a hasRealComparison=true case (no new precedence logic needed).
-  const comparedIds = new Set(analysis.comparedCapabilityIds)
-
-  function ensure(id: string): SovereigntyMarker {
-    const existing = markers.get(id)
-    if (existing) return existing
-    const created = DEFAULT_MARKER
-    markers.set(id, created)
-    return created
-  }
-
-  // The root always gets an entry, GREY-self by default, regardless of
-  // whether any findings exist at all (D-05) — the loop below and the
-  // backfill loop after it may still upgrade this to GREEN (via
-  // `comparedIds`) or YELLOW (via `selfViolatingIds`) for a capability root
-  // whose own required level was genuinely compared against a parent.
+  // Root always exists in the map (never omitted). The seed carries the
+  // requirement-root's own selfStatus (Phase 5 D-06: GREEN when own required
+  // is filled in, GREY otherwise) and the analysis's aggregate downstream
+  // status. Subsequent findings-fold updates may worsen either value.
   markers.set(analysis.rootId, {
-    selfStatus: 'GREY',
+    selfStatus: analysis.selfStatus,
     downstreamStatus: analysis.downstreamStatus,
   })
 
   for (const finding of analysis.findings) {
     for (const id of finding.chainPath) {
-      // Every BusinessCapability in this analysis's own subtree (D-11) must
-      // stay GREY-self forever, not just the outermost query root (D-05): a
-      // capability owns no achieved rating, whether it's the id the caller
-      // asked about or a nested `childCapabilities` id merely passed through
-      // on the way to a descendant's violation. Without this, a nested
-      // capability's selfStatus fell back to the DEFAULT_MARKER's GREEN,
-      // since it is never a finding's own `violatingElementId` (only
-      // Application/AIComponent/Infrastructure ever are).
-      const isCapability = capabilityIds.has(id)
-      const current = ensure(id)
+      const current = markers.get(id) ?? DEFAULT_MARKER
       const isViolatingElement = id === finding.violatingElementId
-      // 02.3 D-05 narrow exception: a capability that IS the violating element
-      // of its own parent-vs-child required-level contradiction finding gets a
-      // real selfStatus (YELLOW) instead of the unconditional GREY every other
-      // capability keeps. Every other isCapability case (mid-chain pass-through,
-      // or a violating element of a non-businessCapability type) resolves via
-      // `comparedIds` (03-CONTEXT.md D-01/D-02): GREEN if a real comparison
-      // happened for this id anywhere in the analysis, GREY otherwise.
-      //
-      // Checked against `selfViolatingIds` (computed once from the full
-      // finding set above), NOT against this single `finding` in isolation —
-      // a diamond-shared capability's self-violation, once true anywhere in
-      // the analysis, must never be reset to GREY by a later, unrelated
-      // passthrough finding for the same id (CR-01).
-      const isCapabilitySelfViolation = isCapability && selfViolatingIds.has(id)
-
       markers.set(id, {
-        selfStatus: isCapabilitySelfViolation
-          ? isViolatingElement
-            ? worseStatus(current.selfStatus, finding.status)
-            : current.selfStatus
-          : isCapability
-            ? comparedIds.has(id)
-              ? 'GREEN'
-              : 'GREY'
-            : isViolatingElement
-              ? worseStatus(current.selfStatus, finding.status)
-              : current.selfStatus,
+        selfStatus: isViolatingElement
+          ? worseStatus(current.selfStatus, finding.status)
+          : current.selfStatus,
         downstreamStatus: worseStatus(current.downstreamStatus, finding.status),
       })
     }
-  }
-
-  // A BusinessCapability with zero findings anywhere in its own subtree
-  // (fully compliant, e.g. a compliant sibling next to a violating one)
-  // never appears in the loop above at all, so without this it would fall
-  // through to `resolveMarker`'s DEFAULT_MARKER (GREEN/GREEN) — wrong for a
-  // capability, which must resolve GREEN-self only when a real comparison
-  // actually happened (`comparedIds`), GREY otherwise (D-05/D-01). Backfills
-  // every capability id with an explicit self-status entry, defaulting its
-  // downstream to GREEN only when no finding ever touched it.
-  // 02.3 D-05: skip the unconditional backfill for a capability that IS the
-  // violating element of a parent-vs-child required-level contradiction
-  // finding (its selfStatus was already set to YELLOW in the loop above) —
-  // every other capability id still gets backfilled to GREEN/GREY exactly as
-  // determined by `comparedIds`.
-  for (const id of capabilityIds) {
-    const current = ensure(id)
-    if (selfViolatingIds.has(id)) continue
-    markers.set(id, {
-      selfStatus: comparedIds.has(id) ? 'GREEN' : 'GREY',
-      downstreamStatus: current.downstreamStatus,
-    })
   }
 
   return markers

@@ -34,6 +34,11 @@ const OWNED_IDS: Record<
     dataObjectIds: [],
     businessProcessIds: ['proc-red'],
   },
+  'company-3': {
+    capabilityIds: ['cap-yellow'],
+    dataObjectIds: [],
+    businessProcessIds: [],
+  },
   'company-empty': { capabilityIds: [], dataObjectIds: [], businessProcessIds: [] },
 }
 
@@ -86,6 +91,16 @@ const CHAIN_ROWS: Record<string, Record<string, unknown>> = {
     reqControl: null,
     appIds: ['app-proc-red'],
   },
+  'cap-yellow': {
+    id: 'cap-yellow',
+    reqStrategicAutonomy: null,
+    reqResilience: 'HIGH',
+    reqSecurity: null,
+    reqControl: null,
+    appIds: ['app-yellow'],
+    aiComponentIds: [],
+    childIds: [],
+  },
 }
 
 const NODE_ROWS: Record<string, Record<string, unknown>> = {
@@ -124,6 +139,17 @@ const NODE_ROWS: Record<string, Record<string, unknown>> = {
     name: 'Process App Red',
     strategicAutonomy: 'HIGH',
     resilience: 'LOW',
+    security: 'HIGH',
+    control: 'HIGH',
+    infraIds: [],
+    componentIds: [],
+  },
+  'app-yellow': {
+    id: 'app-yellow',
+    name: 'Yellow App',
+    strategicAutonomy: 'HIGH',
+    // Req HIGH vs achieved MEDIUM → deviation 1 → YELLOW under Phase 5 D-02.
+    resilience: 'MEDIUM',
     security: 'HIGH',
     control: 'HIGH',
     infraIds: [],
@@ -209,5 +235,27 @@ describe('analyzeCompanyRollup', () => {
     expect(result.achievedSovereigntyScore).toBe(2)
     expect(result.sovereigntyGap).toBe(2)
     expect(result.sovereigntyScorePercent).toBe(50)
+  })
+
+  // Phase 5 D-02 / RESEARCH §8: pre-Phase-5 pushAchievedScores had only RED
+  // and GREY branches — the evaluator now emits YELLOW for 1-step
+  // deviations, and without the added YELLOW branch here those findings
+  // would silently drop out, hiding degraded companies as fully-compliant.
+  it('YELLOW findings contribute their actualLevel to achievedSovereigntyScore (Phase 5)', async () => {
+    const stubSession = createStubSession()
+    ;(neo4jDriver.session as jest.Mock).mockReturnValue(stubSession)
+
+    const result = await analyzeCompanyRollup(stubSession as never, 'company-3')
+
+    // requiredScores: cap-yellow resilience=HIGH(4) → max=4
+    expect(result.expectedSovereigntyScore).toBe(4)
+    // achievedScores: app-yellow's resilience MEDIUM=3 (YELLOW: 1-step
+    // deviation from HIGH). Under the pre-Phase-5 rollup this YELLOW
+    // finding was silently dropped and the score resolved null — asserting
+    // 3 here proves the YELLOW branch of pushAchievedScores exists and
+    // contributes to the rollup.
+    expect(result.achievedSovereigntyScore).toBe(3)
+    expect(result.sovereigntyGap).toBe(1)
+    expect(result.sovereigntyScorePercent).toBe(75)
   })
 })

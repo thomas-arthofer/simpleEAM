@@ -106,66 +106,32 @@ export function classifyNode(
 }
 
 /**
- * Classifies a BusinessCapability's own required levels against one direct
- * parent's required levels (02.3 D-01/D-02/D-06) — a required-vs-required
- * tree-consistency check, distinct from `classifyNode`'s achieved-vs-required
- * comparison. Diverges from `classifyNode` in two ways: (1) EITHER side being
- * `null` excludes the dimension entirely (no finding, not even GREY) per
- * D-03/D-04 — a missing child requirement is never treated as "weakest"; (2)
- * only a weaker child level than the parent produces a finding, always
- * YELLOW (a structural requirement-tree contradiction, not an achieved-value
- * violation). Each parent edge is classified independently (D-02) — callers
- * loop over every entry in `parentRequiredLevels` and concatenate results,
- * never collapsing multiple parents into one "worst of" finding.
- *
- * Also reports `hasRealComparison` (03-CONTEXT.md D-01/D-02): true when at
- * least one dimension reached the maturity comparison (both sides non-null),
- * whether or not it then produced a finding — this is the "was anything
- * genuinely compared" signal `markers.ts` needs to distinguish GREEN
- * (compared and consistent) from GREY (nothing to compare), since both cases
- * otherwise produce zero findings and are indistinguishable downstream.
- *
- * Generalized in Phase 4 Plan 04-02 to serve both BusinessCapability (its two
- * existing call sites below, unchanged via the defaulted `violatingElementType`
- * param) and BusinessProcess's root-only `parentProcess` check (D-04) — the
- * first parameter is loosened to the minimal `{ rootId, required }` shape both
- * chain types satisfy structurally, rather than duplicating this function as
- * a parallel `classifyProcessAgainstParent` (04-RESEARCH.md Pattern 2).
+ * Phase 5 D-05: max-per-dimension merge of two RequirementLevels. Used to
+ * fold a nested BC's `chain.required` with its ancestor's already-folded
+ * `parentEffectiveReq`, producing the effective requirement seen by that
+ * BC's downstream walkers. Reused from `foldEffectiveRequiredLevels` in
+ * `repository.ts` for the same fold semantics, but exposed as a per-pair
+ * pure helper here so the evaluator's descendant threading doesn't need a
+ * whole ancestor-rows array.
  */
-export function classifyCapabilityAgainstParent(
-  chain: { readonly rootId: string; readonly name?: string; readonly required: RequirementLevels },
-  parentEntry: { readonly id: string; readonly required: RequirementLevels },
-  chainPathPrefix: readonly string[],
-  violatingElementType: ViolatingElementType = 'businessCapability'
-): { readonly findings: Finding[]; readonly hasRealComparison: boolean } {
-  const findings: Finding[] = []
-  let hasRealComparison = false
-
-  for (const dimension of SOVEREIGNTY_DIMENSIONS) {
-    const parentRequired = parentEntry.required[dimension]
-    const childRequired = chain.required[dimension]
-
-    if (parentRequired === null || childRequired === null) continue
-
-    hasRealComparison = true
-
-    if (maturityIndex(childRequired) < maturityIndex(parentRequired)) {
-      findings.push({
-        violatingElementId: chain.rootId,
-        violatingElementType,
-        // Falls back to the raw id only for fixtures/data with no `name`
-        // fetched (SOV-04 chain readability — see `SupportChain.name`).
-        violatingElementName: chain.name ?? chain.rootId,
-        dimension,
-        status: 'YELLOW',
-        requiredLevel: parentRequired,
-        actualLevel: childRequired,
-        chainPath: [...chainPathPrefix, parentEntry.id, chain.rootId],
-      })
-    }
+export function maxByDimension(
+  a: RequirementLevels,
+  b: RequirementLevels
+): RequirementLevels {
+  const pick = (
+    left: SovereigntyMaturityLevel | null,
+    right: SovereigntyMaturityLevel | null
+  ): SovereigntyMaturityLevel | null => {
+    if (left === null) return right
+    if (right === null) return left
+    return maturityIndex(left) >= maturityIndex(right) ? left : right
   }
-
-  return { findings, hasRealComparison }
+  return {
+    strategicAutonomy: pick(a.strategicAutonomy, b.strategicAutonomy),
+    resilience: pick(a.resilience, b.resilience),
+    security: pick(a.security, b.security),
+    control: pick(a.control, b.control),
+  }
 }
 
 function aggregateDownstreamStatus(findings: readonly Finding[]): SovereigntyStatus {
@@ -286,10 +252,7 @@ function walkAIComponent(
  * ancestor chain rather than just the root's own. Undefined = keep today's
  * behavior (DataObject/BusinessProcess call sites unaffected until Plan B).
  */
-function collectOwnFindings(
-  chain: SupportChain,
-  requiredOverride?: RequirementLevels
-): Finding[] {
+function collectOwnFindings(chain: SupportChain, requiredOverride?: RequirementLevels): Finding[] {
   const required = requiredOverride ?? chain.required
   const findings: Finding[] = []
 
@@ -312,21 +275,37 @@ function collectOwnFindings(
  * `walkChildCapabilities` below so detail views, diagram markers, and the
  * Temporal rollup never see two diverging traversal implementations
  * (RESEARCH.md Anti-Pattern 3).
+ *
+ * Phase 5 D-05: reads `chain.effectiveRequiredLevels` (repository-folded for
+ * BC/BP, `= required` for DO) instead of `chain.required`, so downstream
+ * walks classify against the strictest requirement seen in the ancestor
+ * chain — not just this root's own.
  */
 function analyzeSupportChain(
-  chain: SupportChain,
+  chain: SupportChain & { readonly effectiveRequiredLevels: RequirementLevels },
   rootType: SovereigntyRootType
 ): SovereigntyAnalysis {
-  const findings = collectOwnFindings(chain)
+  // Same fallback as analyzeBusinessCapability/analyzeBusinessProcess:
+  // hand-authored fixtures may leave effectiveRequiredLevels as a
+  // null-quadruple; production paths always populate it (DO copies
+  // `required` verbatim at load, BP folds via HAS_PARENT_PROCESS*0..).
+  const effectiveRequirement = hasAnyRequirement(chain.effectiveRequiredLevels)
+    ? chain.effectiveRequiredLevels
+    : chain.required
+  const findings = collectOwnFindings(chain, effectiveRequirement)
 
   return {
     rootId: chain.rootId,
     rootType,
     findings,
-    selfStatus: 'GREY',
+    // Phase 5 D-06 / RESEARCH §3.3: a requirement root's `selfStatus` seeds
+    // `projectMarkers` — GREEN when the root's own required is filled in,
+    // GREY otherwise (nothing to say about a root that has no requirement of
+    // its own). No more parent-vs-own contradiction path exists after the
+    // D-06 retirement, so the tri-state selfStatus collapses to this pair.
+    selfStatus: hasAnyRequirement(chain.required) ? 'GREEN' : 'GREY',
     downstreamStatus: aggregateDownstreamStatus(findings),
     capabilityIds: [chain.rootId],
-    comparedCapabilityIds: [],
   }
 }
 
@@ -346,68 +325,97 @@ function analyzeSupportChain(
  * stops silently instead of recursing forever, while a capability shared by
  * two different parents (diamond shape) is still evaluated independently on
  * each path (D-01).
+ *
+ * Phase 5 D-05: `parentEffectiveReq` is the effective-Req of the outer BC in
+ * the ancestor walk (equals `analysis root effectiveRequiredLevels` at the
+ * top call). Each level's own `effectiveReq = maxByDimension(chain.required,
+ * parentEffectiveReq)` — this is what walkers classify against AND what
+ * recursion passes down to descendants. Descendants therefore see the
+ * strictest requirement anywhere along their entire ancestor chain.
+ *
+ * Phase 5 Design A: for each nested BC whose subtree fails the BC's own
+ * `effectiveReq`, synthesise a `Finding` naming the nested BC as
+ * `violatingElementId` (violatingElementType `'businessCapability'`,
+ * status = worst-of-dim over that subtree). This gives `projectMarkers`
+ * everything it needs to produce the nested-BC fill via a single unified
+ * findings-fold — no per-capability GREEN-backfill, no special-case
+ * self-violation-set machinery.
  */
 interface CapabilitySubtreeResult {
   readonly findings: Finding[]
   readonly capabilityIds: string[]
-  readonly comparedCapabilityIds: string[]
+}
+
+function worstStatusOf(findings: readonly Finding[]): SovereigntyStatus | null {
+  if (findings.length === 0) return null
+  if (findings.some(f => f.status === 'RED')) return 'RED'
+  if (findings.some(f => f.status === 'YELLOW')) return 'YELLOW'
+  if (findings.some(f => f.status === 'GREY')) return 'GREY'
+  return null
 }
 
 function analyzeCapabilitySubtree(
   chain: BusinessCapabilityChain,
   visited: ReadonlySet<string>,
-  requiredOverride?: RequirementLevels
+  parentEffectiveReq: RequirementLevels
 ): CapabilitySubtreeResult {
-  if (visited.has(chain.rootId))
-    return { findings: [], capabilityIds: [], comparedCapabilityIds: [] }
+  if (visited.has(chain.rootId)) return { findings: [], capabilityIds: [] }
 
   const pathVisited = new Set(visited)
   pathVisited.add(chain.rootId)
 
-  const ownFindings = collectOwnFindings(chain, requiredOverride)
+  // Phase 5 D-05: descendant effective-Req = max of ancestor's already-folded
+  // effectiveReq and this level's own required.
+  const effectiveReq = maxByDimension(chain.required, parentEffectiveReq)
+
+  const ownFindings = collectOwnFindings(chain, effectiveReq)
 
   const descendantFindings: Finding[] = []
   const capabilityIds: string[] = [chain.rootId]
-  const comparedCapabilityIds: string[] = []
   for (const child of chain.childCapabilities) {
     // D-03 cycle-safety: a `childCapabilities` entry that re-enters an
     // already-visited ancestor (including `chain` itself, an immediate
-    // self-loop) must stop completely silently — no recursion AND no
-    // contradiction finding. `analyzeCapabilitySubtree` below already no-ops
-    // for this case (returns `{ findings: [], capabilityIds: [] }`) via its
-    // own `pathVisited.has(child.rootId)` check, but the descendant-vs-parent
-    // classifier is a flat call, not a recursive one, so it needs the same
-    // guard explicitly here or it would still emit a spurious finding
-    // comparing the cyclic node against this "parent" on the re-entrant edge.
+    // self-loop) must stop completely silently — no recursion.
     if (pathVisited.has(child.rootId)) continue
 
-    const nested = analyzeCapabilitySubtree(child, pathVisited)
+    const nested = analyzeCapabilitySubtree(child, pathVisited, effectiveReq)
+    // Re-prefix nested findings' chainPath with this level's rootId so the
+    // displayed chain always starts at the analysis root.
     for (const finding of nested.findings) {
       descendantFindings.push({ ...finding, chainPath: [chain.rootId, ...finding.chainPath] })
     }
     capabilityIds.push(...nested.capabilityIds)
-    comparedCapabilityIds.push(...nested.comparedCapabilityIds)
 
-    // Descendant-vs-immediate-parent contradiction (02.3 D-01 second half):
-    // the parent (`chain`) is already in scope at this recursion level, so no
-    // new fetch or traversal is needed — piggybacks on the existing walk.
-    // Pushed directly (NOT re-prefixed like `nested.findings` above):
-    // `classifyCapabilityAgainstParent` already produces the correct
-    // `[chain.rootId, child.rootId]` chainPath for this level, and
-    // re-prefixing again here would double-prepend `chain.rootId`.
-    const { findings: parentCheckFindings, hasRealComparison } = classifyCapabilityAgainstParent(
-      child,
-      { id: chain.rootId, required: chain.required },
-      []
-    )
-    descendantFindings.push(...parentCheckFindings)
-    if (hasRealComparison) comparedCapabilityIds.push(child.rootId)
+    // Phase 5 Design A (RESEARCH §3.4): synthesise a per-nested-BC premise
+    // finding whenever this child's subtree carries a real deviation
+    // (RED/YELLOW/GREY) against its own effective-Req. Marker-only signal —
+    // gives projectMarkers a natural fill for the nested BC via the single
+    // findings-fold branch (id === violatingElementId → worseStatus), so no
+    // per-capability GREEN-backfill or self-violation-set machinery is needed.
+    const status = worstStatusOf(nested.findings)
+    if (status !== null) {
+      descendantFindings.push({
+        violatingElementId: child.rootId,
+        violatingElementType: 'businessCapability',
+        violatingElementName: child.name ?? child.rootId,
+        // Premise-verdict finding: single conceptual dimension. Dimension
+        // 'strategicAutonomy' is used as a stable placeholder — projectMarkers
+        // ignores the dimension for the isViolatingElement fold, and the
+        // detail-view i18n copy renders the finding via its status alone.
+        // (RESEARCH §3.4 Design A: "carries a different meaning conveyed via
+        // i18n copy".)
+        dimension: 'strategicAutonomy',
+        status,
+        requiredLevel: null,
+        actualLevel: null,
+        chainPath: [chain.rootId, child.rootId],
+      })
+    }
   }
 
   return {
     findings: [...ownFindings, ...descendantFindings],
     capabilityIds,
-    comparedCapabilityIds,
   }
 }
 
@@ -416,16 +424,12 @@ function analyzeCapabilitySubtree(
  * supporting Applications (with their composite `components` and
  * multi-parent `hostedOn` Infrastructure) and AIComponents, PLUS — recursively
  * — every nested child BusinessCapability's own support chain (D-11), each
- * evaluated against that child's own requirements. `selfStatus` is
- * three-valued (03-CONTEXT.md D-01/D-02, revised): YELLOW if any parent-vs-own
- * required-level contradiction was found, GREEN if no contradiction but
- * either at least one real (non-excluded) dimension was compared against a
- * parent OR (having no parent at all) the root's own required levels are
- * filled in — a true hierarchy root is internally consistent by definition
- * (no parent to contradict), so GREY must mean "not filled in yet", not
- * "will never be green". GREY only when there is genuinely nothing to
- * compare AND nothing filled in (every dimension excluded on every parent,
- * or a parent-less root with no required levels set at all).
+ * evaluated against that child's own requirements folded with the ancestor
+ * chain's effective-Req (D-05, max-per-dim).
+ *
+ * Phase 5 D-06: parent-vs-own required-level contradiction machinery is
+ * retired. `selfStatus` is now GREEN when the root's own required is filled
+ * in, GREY otherwise — no YELLOW-on-contradiction path (RESEARCH §5 Option a).
  */
 export function analyzeBusinessCapability(chain: BusinessCapabilityChain): SovereigntyAnalysis {
   // Phase 5 D-05: prefer the repository-folded effectiveRequiredLevels when
@@ -437,48 +441,19 @@ export function analyzeBusinessCapability(chain: BusinessCapabilityChain): Sover
   const effectiveRequirement = hasAnyRequirement(chain.effectiveRequiredLevels)
     ? chain.effectiveRequiredLevels
     : chain.required
-  const {
-    findings,
-    capabilityIds,
-    comparedCapabilityIds: nestedComparedIds,
-  } = analyzeCapabilitySubtree(chain, new Set(), effectiveRequirement)
-
-  const parentResults = chain.parentRequiredLevels.map(parentEntry =>
-    classifyCapabilityAgainstParent(chain, parentEntry, [])
+  const { findings, capabilityIds } = analyzeCapabilitySubtree(
+    chain,
+    new Set(),
+    effectiveRequirement
   )
-  const parentContradictionFindings = parentResults.flatMap(r => r.findings)
-  const rootHasRealComparison = parentResults.some(r => r.hasRealComparison)
-  // A true hierarchy root (no parent at all) has nothing to be inconsistent
-  // with — its own filled-in required levels are the only meaningful signal.
-  const rootIsFilledIn =
-    chain.parentRequiredLevels.length === 0 && hasAnyRequirement(chain.required)
-  const combinedFindings = [...findings, ...parentContradictionFindings]
-  const comparedCapabilityIds =
-    rootHasRealComparison || rootIsFilledIn
-      ? [...nestedComparedIds, chain.rootId]
-      : nestedComparedIds
-
-  // Blocker fix: this is the SAME data markers.ts independently derives its
-  // own GREEN/GREY resolution from (via comparedCapabilityIds) — computing
-  // selfStatus here from it, instead of a hardcoded 'GREY' literal, is what
-  // keeps the `/sovereignty` detail page (this function's own selfStatus)
-  // and the diagram markers (projectMarkers()'s SovereigntyMarker.selfStatus)
-  // from ever disagreeing about the same capability.
-  const selfStatus: SovereigntyStatus =
-    parentContradictionFindings.length > 0
-      ? 'YELLOW'
-      : rootHasRealComparison || rootIsFilledIn
-        ? 'GREEN'
-        : 'GREY'
 
   return {
     rootId: chain.rootId,
     rootType: 'businessCapability',
-    findings: combinedFindings,
-    selfStatus,
-    downstreamStatus: aggregateDownstreamStatus(combinedFindings),
+    findings,
+    selfStatus: hasAnyRequirement(chain.required) ? 'GREEN' : 'GREY',
+    downstreamStatus: aggregateDownstreamStatus(findings),
     capabilityIds,
-    comparedCapabilityIds,
   }
 }
 
@@ -487,6 +462,10 @@ export function analyzeBusinessCapability(chain: BusinessCapabilityChain): Sover
  * serve as one of its data sources, and AIComponents trained with it (D-08).
  * Shares `classifyNode`/`analyzeSupportChain` with `analyzeBusinessCapability`
  * so both root types are classified identically.
+ *
+ * Phase 5 D-05 uniform shape: `chain.effectiveRequiredLevels` is set to
+ * `chain.required` at load time by `loadDataObjectSupportChain` — no
+ * per-rootType dispatch needed inside classifyNode.
  */
 export function analyzeDataObject(chain: DataObjectChain): SovereigntyAnalysis {
   return analyzeSupportChain(chain, 'dataObject')
@@ -494,47 +473,29 @@ export function analyzeDataObject(chain: DataObjectChain): SovereigntyAnalysis {
 
 /**
  * Analyzes a BusinessProcess's achieved-chain (own requirements vs. the
- * Applications it is directly supported by, D-02) PLUS its root-only
- * `parentProcess` required-vs-required consistency check (D-04), composed
- * via the generalized `classifyCapabilityAgainstParent` — mirrors
- * `analyzeBusinessCapability`'s root-parent half exactly, but WITHOUT the
- * `analyzeCapabilitySubtree` nested-descendant half: BusinessProcess has no
- * `childProcesses` achieved-chain subtree to piggyback a descendant-vs-parent
- * check onto (D-02 established it flat in Plan 04-01) — every BusinessProcess
- * is analyzed as its own independent root, so the "child compared against
- * its immediate parent" case is automatically covered whenever that child is
- * itself queried as a root (04-RESEARCH.md Pitfall 1). `selfStatus` is
- * three-valued (03-CONTEXT.md D-01/D-02, revised): YELLOW on any parent
- * contradiction, GREEN when no contradiction but either at least one real
- * (non-excluded) dimension was compared against a `parentProcess` OR (having
- * no parentProcess at all) the root's own required levels are filled in —
- * mirrors `analyzeBusinessCapability`'s `rootIsFilledIn` exactly. GREY only
- * when genuinely nothing is comparable and nothing is filled in.
+ * Applications it is directly supported by, D-02). Phase 5 D-06 retires the
+ * parentProcess required-vs-required consistency check that used to live
+ * here — BP now behaves exactly like DO in shape (flat, no nested subtree),
+ * with `chain.effectiveRequiredLevels` (repository-folded from
+ * HAS_PARENT_PROCESS*0..) as the requirement seen by walkers. `selfStatus`
+ * is GREEN if the root's own required is filled in, GREY otherwise (same
+ * rule as BC, DO, and the DataObject entry point above).
  */
 export function analyzeBusinessProcess(chain: BusinessProcessChain): SovereigntyAnalysis {
-  const base = analyzeSupportChain(chain, 'businessProcess')
-
-  const parentResults = chain.parentRequiredLevels.map(parentEntry =>
-    classifyCapabilityAgainstParent(chain, parentEntry, [], 'businessProcess')
-  )
-  const parentContradictionFindings = parentResults.flatMap(r => r.findings)
-  const rootHasRealComparison = parentResults.some(r => r.hasRealComparison)
-  const rootIsFilledIn =
-    chain.parentRequiredLevels.length === 0 && hasAnyRequirement(chain.required)
-  const combinedFindings = [...base.findings, ...parentContradictionFindings]
-
-  const selfStatus: SovereigntyStatus =
-    parentContradictionFindings.length > 0
-      ? 'YELLOW'
-      : rootHasRealComparison || rootIsFilledIn
-        ? 'GREEN'
-        : 'GREY'
+  // Fallback identical to BC entry — hand-authored fixtures may leave
+  // effectiveRequiredLevels null; production always populates it via the
+  // HAS_PARENT_PROCESS*0.. fold.
+  const effectiveRequirement = hasAnyRequirement(chain.effectiveRequiredLevels)
+    ? chain.effectiveRequiredLevels
+    : chain.required
+  const findings = collectOwnFindings(chain, effectiveRequirement)
 
   return {
-    ...base,
-    findings: combinedFindings,
-    selfStatus,
-    downstreamStatus: aggregateDownstreamStatus(combinedFindings),
-    comparedCapabilityIds: rootHasRealComparison || rootIsFilledIn ? [chain.rootId] : [],
+    rootId: chain.rootId,
+    rootType: 'businessProcess',
+    findings,
+    selfStatus: hasAnyRequirement(chain.required) ? 'GREEN' : 'GREY',
+    downstreamStatus: aggregateDownstreamStatus(findings),
+    capabilityIds: [chain.rootId],
   }
 }

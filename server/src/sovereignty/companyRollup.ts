@@ -71,16 +71,26 @@ function pushRequiredScores(required: RequirementLevels, scores: number[]): void
 
 /**
  * Findings are the canonical evaluator's own classification of every
- * non-GREEN dimension (RED = violated requirement, GREY = no achieved value
- * anywhere — see evaluator.ts's `classifyNode`). RED findings contribute
- * their actual achieved level; GREY findings contribute NONE's score (1)
- * rather than being skipped — the change from the retired formula's
- * `.filter((s): s is number => s !== null)` step that silently dropped
- * fully-GREY entities from the achieved array (must_haves truth #3).
+ * non-GREEN dimension (RED = ≥2-step deviation, YELLOW = 1-step deviation,
+ * GREY = no achieved value anywhere — see evaluator.ts's `classifyNode`).
+ * RED and YELLOW findings both contribute their actual achieved level;
+ * GREY findings contribute NONE's score (1) rather than being skipped —
+ * the change from the retired formula's `.filter((s): s is number => s !==
+ * null)` step that silently dropped fully-GREY entities from the achieved
+ * array (must_haves truth #3).
+ *
+ * Phase 5 D-02 / RESEARCH §8: the YELLOW branch was missing pre-Phase-5 —
+ * the evaluator now emits YELLOW for 1-step deviations, and without this
+ * branch YELLOW findings would silently drop out of the rollup, hiding
+ * degraded companies as fully-compliant. The regression test in
+ * `companyRollup.test.ts` covers this.
  */
 function pushAchievedScores(findings: readonly Finding[], scores: number[]): void {
   for (const finding of findings) {
-    if (finding.status === 'RED' && finding.actualLevel !== null) {
+    if (
+      (finding.status === 'RED' || finding.status === 'YELLOW') &&
+      finding.actualLevel !== null
+    ) {
       scores.push(MATURITY_SCORE[finding.actualLevel])
     } else if (finding.status === 'GREY') {
       scores.push(MATURITY_SCORE.NONE)
