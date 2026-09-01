@@ -6,9 +6,9 @@ current_phase: 06
 current_phase_name: Diagramm Add all related
 status: planning
 stopped_at: Phase 05 complete
-last_updated: '2026-09-01T16:00:00.000Z'
+last_updated: '2026-09-01T18:00:00.000Z'
 last_activity: 2026-09-01
-last_activity_desc: Quick task 260901-87b — strip infrastructure type prefix on diagram save
+last_activity_desc: Quick task 260901-sev — diagram editor persists all 4 sovereignty evidence fields
 progress:
   total_phases: 10
   completed_phases: 9
@@ -88,7 +88,8 @@ Progress: [██████████] 100% (22/22 plans complete across pha
 | 260901-ctm | Break CompanyContext cross-tab localStorage ping-pong (auto-select branches no longer write localStorage)                 | 2026-09-01 | complete | a86b8c0 |
 | 260901-alf | Fix client auth-refresh loop after 401 (never swap Apollo client to a tokenless one; no unbounded network-error forward)  | 2026-09-01 | complete | b7816ab |
 | 260901-gxv | Infrastructure: remove parent-inheritance UI gate so each layer keeps its own sovereignty fields (D-02, matches Apps fix) | 2026-09-01 | complete | 5ee6af4 |
-| 260901-87b | Diagram save: strip Infrastructure type-label prefix (`"<TypeLabel> - "`) from name before writing to DB                    | 2026-09-01 | complete | 9d26beb |
+| 260901-87b | Diagram save: strip Infrastructure type-label prefix (`"<TypeLabel> - "`) from name before writing to DB                  | 2026-09-01 | complete | 9d26beb |
+| 260901-sev | Diagram element edit: all 4 sovereignty evidence fields persist (was only Autonomy) — form schemas + wrapper mutations   | 2026-09-01 | complete | e075b29 |
 
 ## Accumulated Context
 

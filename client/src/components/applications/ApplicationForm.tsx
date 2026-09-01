@@ -96,6 +96,9 @@ const createBaseApplicationSchema = (t: any) =>
     sovereigntyAchSecurity: z.nativeEnum(SovereigntyMaturity).optional().nullable(),
     sovereigntyAchControl: z.nativeEnum(SovereigntyMaturity).optional().nullable(),
     sovereigntyAchStrategicAutonomyEvidence: z.string().optional().nullable(),
+    sovereigntyAchResilienceEvidence: z.string().optional().nullable(),
+    sovereigntyAchSecurityEvidence: z.string().optional().nullable(),
+    sovereigntyAchControlEvidence: z.string().optional().nullable(),
     lastSovereigntyAssessmentAt: z.date().optional().nullable(),
   })
 
@@ -468,6 +471,9 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
     sovereigntyAchControl: application?.sovereigntyAchControl ?? null,
     sovereigntyAchStrategicAutonomyEvidence:
       application?.sovereigntyAchStrategicAutonomyEvidence ?? '',
+    sovereigntyAchResilienceEvidence: application?.sovereigntyAchResilienceEvidence ?? '',
+    sovereigntyAchSecurityEvidence: application?.sovereigntyAchSecurityEvidence ?? '',
+    sovereigntyAchControlEvidence: application?.sovereigntyAchControlEvidence ?? '',
     lastSovereigntyAssessmentAt: application?.lastSovereigntyAssessmentAt
       ? new Date(application.lastSovereigntyAssessmentAt)
       : new Date(),
@@ -570,6 +576,9 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
         sovereigntyAchControl: application?.sovereigntyAchControl ?? null,
         sovereigntyAchStrategicAutonomyEvidence:
           application?.sovereigntyAchStrategicAutonomyEvidence ?? '',
+        sovereigntyAchResilienceEvidence: application?.sovereigntyAchResilienceEvidence ?? '',
+        sovereigntyAchSecurityEvidence: application?.sovereigntyAchSecurityEvidence ?? '',
+        sovereigntyAchControlEvidence: application?.sovereigntyAchControlEvidence ?? '',
         lastSovereigntyAssessmentAt: application?.lastSovereigntyAssessmentAt
           ? new Date(application.lastSovereigntyAssessmentAt)
           : new Date(),

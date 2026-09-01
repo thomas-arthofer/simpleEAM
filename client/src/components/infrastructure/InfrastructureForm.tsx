@@ -75,6 +75,9 @@ const baseInfrastructureSchema = z.object({
   sovereigntyAchSecurity: z.nativeEnum(SovereigntyMaturity).optional().nullable(),
   sovereigntyAchControl: z.nativeEnum(SovereigntyMaturity).optional().nullable(),
   sovereigntyAchStrategicAutonomyEvidence: z.string().optional().nullable(),
+  sovereigntyAchResilienceEvidence: z.string().optional().nullable(),
+  sovereigntyAchSecurityEvidence: z.string().optional().nullable(),
+  sovereigntyAchControlEvidence: z.string().optional().nullable(),
   lastSovereigntyAssessmentAt: z.date().optional().nullable(),
 })
 
@@ -326,6 +329,9 @@ const InfrastructureForm: React.FC<GenericFormProps<Infrastructure, Infrastructu
       sovereigntyAchControl: infrastructure?.sovereigntyAchControl || null,
       sovereigntyAchStrategicAutonomyEvidence:
         infrastructure?.sovereigntyAchStrategicAutonomyEvidence || '',
+      sovereigntyAchResilienceEvidence: infrastructure?.sovereigntyAchResilienceEvidence || '',
+      sovereigntyAchSecurityEvidence: infrastructure?.sovereigntyAchSecurityEvidence || '',
+      sovereigntyAchControlEvidence: infrastructure?.sovereigntyAchControlEvidence || '',
       lastSovereigntyAssessmentAt: infrastructure?.lastSovereigntyAssessmentAt
         ? new Date(infrastructure.lastSovereigntyAssessmentAt)
         : null,
@@ -406,6 +412,9 @@ const InfrastructureForm: React.FC<GenericFormProps<Infrastructure, Infrastructu
         sovereigntyAchControl: infrastructure.sovereigntyAchControl ?? null,
         sovereigntyAchStrategicAutonomyEvidence:
           infrastructure.sovereigntyAchStrategicAutonomyEvidence ?? '',
+        sovereigntyAchResilienceEvidence: infrastructure.sovereigntyAchResilienceEvidence ?? '',
+        sovereigntyAchSecurityEvidence: infrastructure.sovereigntyAchSecurityEvidence ?? '',
+        sovereigntyAchControlEvidence: infrastructure.sovereigntyAchControlEvidence ?? '',
         lastSovereigntyAssessmentAt: infrastructure.lastSovereigntyAssessmentAt
           ? new Date(infrastructure.lastSovereigntyAssessmentAt)
           : null,

@@ -257,6 +257,15 @@ function ApplicationFormWrapper({
         sovereigntyAchStrategicAutonomyEvidence: {
           set: applicationData.sovereigntyAchStrategicAutonomyEvidence ?? null,
         },
+        sovereigntyAchResilienceEvidence: {
+          set: applicationData.sovereigntyAchResilienceEvidence ?? null,
+        },
+        sovereigntyAchSecurityEvidence: {
+          set: applicationData.sovereigntyAchSecurityEvidence ?? null,
+        },
+        sovereigntyAchControlEvidence: {
+          set: applicationData.sovereigntyAchControlEvidence ?? null,
+        },
         lastSovereigntyAssessmentAt: { set: applicationData.lastSovereigntyAssessmentAt ?? null },
       }
 
@@ -794,6 +803,15 @@ function InfrastructureFormWrapper({
         sovereigntyAchStrategicAutonomyEvidence: {
           set: infrastructureData.sovereigntyAchStrategicAutonomyEvidence ?? null,
         },
+        sovereigntyAchResilienceEvidence: {
+          set: infrastructureData.sovereigntyAchResilienceEvidence ?? null,
+        },
+        sovereigntyAchSecurityEvidence: {
+          set: infrastructureData.sovereigntyAchSecurityEvidence ?? null,
+        },
+        sovereigntyAchControlEvidence: {
+          set: infrastructureData.sovereigntyAchControlEvidence ?? null,
+        },
         lastSovereigntyAssessmentAt: {
           set: infrastructureData.lastSovereigntyAssessmentAt ?? null,
         },
@@ -1085,6 +1103,15 @@ function AiComponentFormWrapper({
       updateInput.sovereigntyAchControl = { set: baseData.sovereigntyAchControl ?? null }
       updateInput.sovereigntyAchStrategicAutonomyEvidence = {
         set: baseData.sovereigntyAchStrategicAutonomyEvidence ?? null,
+      }
+      updateInput.sovereigntyAchResilienceEvidence = {
+        set: baseData.sovereigntyAchResilienceEvidence ?? null,
+      }
+      updateInput.sovereigntyAchSecurityEvidence = {
+        set: baseData.sovereigntyAchSecurityEvidence ?? null,
+      }
+      updateInput.sovereigntyAchControlEvidence = {
+        set: baseData.sovereigntyAchControlEvidence ?? null,
       }
       updateInput.lastSovereigntyAssessmentAt = {
         set: baseData.lastSovereigntyAssessmentAt ?? null,

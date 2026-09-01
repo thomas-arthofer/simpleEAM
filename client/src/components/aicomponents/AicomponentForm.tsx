@@ -68,6 +68,9 @@ export type AicomponentFormValues = {
   sovereigntyAchSecurity?: SovereigntyMaturity | null
   sovereigntyAchControl?: SovereigntyMaturity | null
   sovereigntyAchStrategicAutonomyEvidence?: string
+  sovereigntyAchResilienceEvidence?: string
+  sovereigntyAchSecurityEvidence?: string
+  sovereigntyAchControlEvidence?: string
   lastSovereigntyAssessmentAt?: Date | null
 }
 
@@ -157,6 +160,9 @@ export default function AicomponentForm({
     sovereigntyAchSecurity: z.nativeEnum(SovereigntyMaturity).optional().nullable(),
     sovereigntyAchControl: z.nativeEnum(SovereigntyMaturity).optional().nullable(),
     sovereigntyAchStrategicAutonomyEvidence: z.string().optional(),
+    sovereigntyAchResilienceEvidence: z.string().optional(),
+    sovereigntyAchSecurityEvidence: z.string().optional(),
+    sovereigntyAchControlEvidence: z.string().optional(),
     lastSovereigntyAssessmentAt: z.date().optional().nullable(),
   })
 
@@ -223,6 +229,9 @@ export default function AicomponentForm({
     sovereigntyAchControl: aicomponent?.sovereigntyAchControl ?? null,
     sovereigntyAchStrategicAutonomyEvidence:
       aicomponent?.sovereigntyAchStrategicAutonomyEvidence ?? '',
+    sovereigntyAchResilienceEvidence: aicomponent?.sovereigntyAchResilienceEvidence ?? '',
+    sovereigntyAchSecurityEvidence: aicomponent?.sovereigntyAchSecurityEvidence ?? '',
+    sovereigntyAchControlEvidence: aicomponent?.sovereigntyAchControlEvidence ?? '',
     lastSovereigntyAssessmentAt: aicomponent?.lastSovereigntyAssessmentAt
       ? new Date(aicomponent.lastSovereigntyAssessmentAt)
       : new Date(),
@@ -290,6 +299,9 @@ export default function AicomponentForm({
         sovereigntyAchControl: aicomponent.sovereigntyAchControl ?? null,
         sovereigntyAchStrategicAutonomyEvidence:
           aicomponent.sovereigntyAchStrategicAutonomyEvidence ?? '',
+        sovereigntyAchResilienceEvidence: aicomponent.sovereigntyAchResilienceEvidence ?? '',
+        sovereigntyAchSecurityEvidence: aicomponent.sovereigntyAchSecurityEvidence ?? '',
+        sovereigntyAchControlEvidence: aicomponent.sovereigntyAchControlEvidence ?? '',
         lastSovereigntyAssessmentAt: aicomponent.lastSovereigntyAssessmentAt
           ? new Date(aicomponent.lastSovereigntyAssessmentAt)
           : new Date(),
