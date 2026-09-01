@@ -172,10 +172,21 @@ Plans:
 
 - [ ] 05-01-PLAN.md — Wave 1 tracer: BC single-dimension chain-premise end-to-end (types + repository ancestor walk + classifyNode deviation math) — D-01, D-02, D-03, D-05
 
-**Wave 2** *(blocked on Wave 1 completion)*
+**Wave 2** _(blocked on Wave 1 completion)_
 
 - [ ] 05-02-PLAN.md — Wave 2 expansion: 4-dim aggregation, BP + DO parity, projectMarkers rewrite, D-06 retirement, companyRollup YELLOW fix, full test rewire — D-01, D-02, D-03, D-04, D-05, D-06
 
-**Wave 3** *(blocked on Wave 2 completion)*
+**Wave 3** _(blocked on Wave 2 completion)_
 
 - [ ] 05-03-PLAN.md — Wave 3 polish: client detail-view findingRow dispatch + DE/EN i18n copy — D-04
+
+### Phase 6: Diagramm: Add all related
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 5
+**Plans:** 0 plans
+
+Plans:
+
+- [ ] TBD (run /gsd-plan-phase 6 to break down)

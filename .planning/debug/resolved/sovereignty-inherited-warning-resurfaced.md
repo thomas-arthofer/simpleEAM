@@ -1,6 +1,6 @@
 ---
 slug: sovereignty-inherited-warning-resurfaced
-status: root_cause_found
+status: resolved
 trigger: |
   User: We previously removed the warning "Sovereignty assessment is inherited
   from components. Sovereignty fields are hidden for this application." The
@@ -9,7 +9,7 @@ trigger: |
   and status is collected over the chain. We did undo some changes ago, but why
   did this resurface?
 created: 2026-08-31
-updated: 2026-08-31
+updated: 2026-09-01
 ---
 
 # sovereignty-inherited-warning-resurfaced

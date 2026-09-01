@@ -1,10 +1,10 @@
 ---
-status: diagnosed
+status: resolved
 trigger: 'UAT Phase 02.2 (sovereignty-marker-lifecycle-auto-add-on-drop-delete-with-el) reported 4 failing gaps despite 7/7 static verification passes: G-02.2-3 (auto-add markers on library-sidebar drop of new main element fails live, only Ctrl+R fixes it), G-02.2-4 (native keyboard Delete/Backspace leaves markers orphaned, only Ctrl+R cleans up), G-02.2-5 (custom context-menu Delete leaves markers orphaned, only Ctrl+R cleans up), G-02.2-6 (duplicate/copy/paste of a marked main element does not give the copy its own markers, only Ctrl+R adds them). 2 other UAT checks passed (non-selectability with accepted deviation; reposition-on-drag fully passed).'
 goal: find_root_cause_only
 symptoms_prefilled: true
 created: 2026-08-03T00:00:00.000Z
-updated: 2026-08-03T00:00:00.000Z
+updated: 2026-09-01T00:00:00.000Z
 ---
 
 ## Current Focus

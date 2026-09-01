@@ -2,18 +2,18 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 04
-status: completed
+current_phase: 05
+current_phase_name: Rework Chain Colors
+status: planning
 stopped_at: Phase 5 context gathered
-last_updated: "2026-08-31T12:10:21.247Z"
-last_activity: 2026-08-12
-last_activity_desc: "Completed quick task 260812-jfs: sovereignty root selfStatus GREEN once filled in"
+last_updated: "2026-09-01T08:31:09.667Z"
+last_activity: 2026-09-01
+last_activity_desc: Phase 04 complete, transitioned to Phase 05
 progress:
-  total_phases: 9
+  total_phases: 10
   completed_phases: 8
-  total_plans: 19
+  total_plans: 22
   completed_plans: 19
-current_phase_name: Extend sovereignty hierarchy checks to other EA element types
 ---
 
 # Project State
@@ -23,14 +23,14 @@ current_phase_name: Extend sovereignty hierarchy checks to other EA element type
 See: .planning/PROJECT.md (updated 2026-07-22)
 
 **Core value:** Enterprise architecture data and sovereignty assessments must be trustworthy enough that operators can reproduce the platform and explain exactly where architectural obligations are or are not met.
-**Current focus:** All phases through Phase 4 are complete and verified. Phase 4 extended the canonical sovereignty chain to `BusinessProcess` (achieved-chain + three-valued parent-consistency selfStatus + client UI), including a critical `markers.ts` bug fix (BusinessProcess self-violations were silently rendering GREEN instead of YELLOW). Manual verification checkpoint approved by the user 2026-08-10 (Processes tab and entity-edit dialog explicitly confirmed working). Milestone v1.0 is fully closed — ready for `/gsd-complete-milestone` or a next milestone/phase.
+**Current focus:** Phase 04 — extend-sovereignty-hierarchy-checks-to-other-ea-element-type
 
 ## Current Position
 
-Phase: 04
-Plan: Not started (Phase 04 complete, no Phase 05 defined yet)
-Status: All phases complete
-Last activity: 2026-08-12 — Completed quick task 260812-jfs: sovereignty root selfStatus GREEN once filled in
+Phase: 05 — Rework Chain Colors
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-09-01 — Phase 04 complete, transitioned to Phase 05
 
 Progress: [██████████] 100% (19/19 plans complete across phases)
 
@@ -38,7 +38,7 @@ Progress: [██████████] 100% (19/19 plans complete across pha
 
 **Velocity:**
 
-- Total plans completed: 5
+- Total plans completed: 8
 - Average duration: 0 min
 - Total execution time: 0.0 hours
 
@@ -51,6 +51,7 @@ Progress: [██████████] 100% (19/19 plans complete across pha
 | 02.1  | 2     | -     | -        |
 | 01.1  | 1     | -     | -        |
 | 03    | 1     | -     | -        |
+| 04 | 3 | - | - |
 
 **Recent Trend:**
 
