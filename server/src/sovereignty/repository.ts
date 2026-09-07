@@ -18,6 +18,12 @@ import { maturityIndexOrDefault } from './evaluator'
 // almost certainly bad data — log-warn and truncate the fold (D-05).
 const ANCESTOR_FOLD_MAX_ROWS = 100
 
+// Cypher-level defensive cap on the variable-length HAS_PARENT / HAS_PARENT_PROCESS
+// ancestor walks. Real BC / BP hierarchies rarely exceed ~10 levels; 20 is a
+// safe headroom. Prevents duplicate-edge / cyclic-parent data corruption from
+// blowing up the walk into a >90s hang (post-mortem 2026-09-07).
+const HAS_PARENT_ANCESTOR_MAX_DEPTH = 20
+
 function toMaturityLevel(value: string | null | undefined): SovereigntyMaturityLevel | null {
   return (value as SovereigntyMaturityLevel | null | undefined) ?? null
 }
@@ -349,19 +355,20 @@ async function fetchBusinessCapabilityChain(
   if (inFlight.has(rootId)) return null
   inFlight.add(rootId)
 
-  // Phase 5 D-05: variable-length ancestor walk (HAS_PARENT*0..) that
-  // includes the root itself at distance 0. T-05-02 cycle-safety is provided
-  // by Neo4j's per-edge uniqueness; T-05-03 multi-tenancy is enforced by
-  // the ancestorCompany.id IN $companyIds filter — cross-tenant ancestor
-  // rows are silently excluded from the max fold. Gated on `isRoot` (same
-  // as the pre-Phase-5 parent-required match was) so nested capability
-  // recursions don't re-run the walk — descendants carry a null-quadruple
-  // `effectiveRequiredLevels`; the evaluator's `analyzeCapabilitySubtree`
-  // threads the correct descendant effective-Req via `parentEffectiveReq`
-  // + `maxByDimension` at classification time.
+  // Phase 5 D-05: variable-length ancestor walk that includes the root itself
+  // at distance 0. T-05-02 cycle-safety is provided by Neo4j's per-edge
+  // uniqueness + the explicit *0..HAS_PARENT_ANCESTOR_MAX_DEPTH bound below
+  // — without the bound, duplicate-edge / bidirectional-cycle data corruption
+  // caused this walk to hang the sovereigntyMarkers endpoint for >90s in prod
+  // (post-mortem 2026-09-07). T-05-03 multi-tenancy is enforced by the
+  // ancestorCompany.id IN $companyIds filter. Gated on `isRoot` so nested
+  // capability recursions don't re-run the walk — descendants carry a
+  // null-quadruple `effectiveRequiredLevels`; the evaluator's
+  // `analyzeCapabilitySubtree` threads the correct descendant effective-Req
+  // via `parentEffectiveReq` + `maxByDimension` at classification time.
   const ancestorMatchClause = isRoot
     ? `
-    OPTIONAL MATCH (cap)-[:HAS_PARENT*0..]->(ancestor:BusinessCapability)-[:OWNED_BY]->(ancestorCompany:Company)
+    OPTIONAL MATCH (cap)-[:HAS_PARENT*0..${HAS_PARENT_ANCESTOR_MAX_DEPTH}]->(ancestor:BusinessCapability)-[:OWNED_BY]->(ancestorCompany:Company)
     WHERE $isAdmin OR ancestorCompany.id IN $companyIds`
     : ''
   const ancestorReturnClause = isRoot
@@ -607,7 +614,7 @@ async function loadBusinessProcessSupportChain(
     WHERE $isAdmin OR c.id IN $companyIds
     WITH DISTINCT proc
     OPTIONAL MATCH (proc)<-[:SUPPORTS]-(app:Application)
-    OPTIONAL MATCH (proc)-[:HAS_PARENT_PROCESS*0..]->(ancestor:BusinessProcess)-[:OWNED_BY]->(ancestorCompany:Company)
+    OPTIONAL MATCH (proc)-[:HAS_PARENT_PROCESS*0..${HAS_PARENT_ANCESTOR_MAX_DEPTH}]->(ancestor:BusinessProcess)-[:OWNED_BY]->(ancestorCompany:Company)
     WHERE $isAdmin OR ancestorCompany.id IN $companyIds
     RETURN
       proc.id AS id,
